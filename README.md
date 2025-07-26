@@ -1,8 +1,7 @@
-```markdown
 <div align="center">
-  <img src="https://img.shields.io/badge/React-18-blue?logo=react&logoColor=white" />
-  <img src="https://img.shields.io/badge/Django-4-green?logo=django&logoColor=white" />
-  <img src="https://img.shields.io/badge/TailwindCSS-3-06B6D4?logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/React-18-blue?logo=react&logoColor=white" />&nbsp;
+  <img src="https://img.shields.io/badge/Django-4-green?logo=django&logoColor=white" />&nbsp;
+  <img src="https://img.shields.io/badge/TailwindCSS-3-06B6D4?logo=tailwindcss&logoColor=white" />&nbsp;
   <img src="https://img.shields.io/badge/TypeScript-blue?logo=typescript" />
 </div>
 
@@ -11,6 +10,22 @@
 # 📊 JiEdu Dashboard System
 
 A modern full-stack application built with **React + Django** to manage student allocations, fee tracking, reports, workload assignments, and administrative tasks in an educational setting.
+
+---
+
+## 📚 Table of Contents
+
+- [Screenshots](#️-screenshots)
+- [Technologies Used](#-technologies-used)
+- [Features Overview](#-features-overview)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Token Expiry Handling](#-token-expiry-handling)
+- [Responsive Design](#-responsive-design)
+- [API Endpoints](#-api-endpoints)
+- [Notes](#-notes)
+- [Author](#-author)
+- [License](#-license)
 
 ---
 
@@ -39,10 +54,10 @@ A modern full-stack application built with **React + Django** to manage student 
 - 📊 Student Count & Workload Charts
 - 🧑‍🏫 Staff & Lecturer Assignments
 - 📄 Fee Statement / Structure / Receipt views
-- 🧠 Smart Filters: Class, Term, Department
-- ⚙️ Modals for Creating & Editing Entities
+- 🧠 Advanced filters (Class, Term, Department)
+- ⚙️ Interactive modals for CRUD tasks
 - 📈 Fully responsive dashboards and tab views
-- 🔐 Auto logout on token expiry
+- 🔐 Auto-logout when JWT token expires
 - 🌙 Light/Dark mode switch
 
 ---
@@ -50,7 +65,6 @@ A modern full-stack application built with **React + Django** to manage student 
 ## 📦 Project Structure
 
 ```
-
 .
 ├── backend/
 │   ├── api/                # Django REST API views
@@ -62,8 +76,7 @@ A modern full-stack application built with **React + Django** to manage student 
 │   ├── pages/              # Student, Staff, Allocation Dashboards
 │   ├── utils/axiosInstance.ts # Axios with 401 interceptor
 │   └── App.tsx             # Main frontend entry
-
-````
+```
 
 ---
 
@@ -79,7 +92,7 @@ pip install -r requirements.txt
 
 python manage.py migrate
 python manage.py runserver
-````
+```
 
 ### ⚛️ Frontend (React)
 
@@ -123,38 +136,25 @@ Some sample endpoints:
 
 ## 📌 Notes
 
-* Ensure frontend and backend are on the **same local network** when testing on mobile.
-* Add CORS settings in Django for mobile access:
+- Ensure frontend and backend are on the **same local network** when testing on mobile.
+- Add CORS settings in Django for mobile access:
 
-  ```py
-  CORS_ALLOWED_ORIGINS = [
-      "http://localhost:5173",
-      "http://<your-ip>:5173",
-  ]
-  ```
+```py
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://<your-ip>:5173",
+]
+```
 
 ---
 
 ## 👨‍💻 Author
 
-> Built with 💙 by [Javar](https://github.com/your-profile)
-> For questions, contact: `your.email@example.com`
+> Built with 💙 by [Javar](https://github.com/javarcompany)  
+> For questions, contact: `javarcompany1@gmail.com`
 
 ---
 
 ## 📃 License
 
 MIT License – use freely in educational and administrative environments.
-
-```
-
----
-
-### ✅ What You Can Customize:
-
-- Replace all `placeholder.com` screenshots with real screenshots of your app.
-- Update project title and author information.
-- Add any custom features you've added (e.g., `Fee Waivers`, `Notifications`, etc).
-
-Would you like me to help you generate actual screenshots from your code to embed in the README?
-```

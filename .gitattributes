@@ -1,0 +1,15 @@
+# Auto detect text files and normalize
+* text=auto
+
+# Enforce LF endings for TypeScript
+*.ts text eol=lf
+
+# Optional: enforce LF for other common source code
+*.js  text eol=lf
+*.jsx text eol=lf
+*.ts  text eol=lf
+*.tsx text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md  text eol=lf
