@@ -192,7 +192,7 @@ export default function DaysPreview() {
 							{days.length === 0 ? (
 								<TableRow>
 									<TableCell className="px-5 py-4 sm:px-6 text-start">
-										<div className="p-4 text-sm text-gray-500">No lesson found....</div>
+										<div className="p-4 text-sm text-gray-500">No day found....</div>
 									</TableCell>
 								</TableRow>
 							) : (

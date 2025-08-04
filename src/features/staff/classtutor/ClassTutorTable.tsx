@@ -190,8 +190,8 @@ export default function ClassTutorTable({ searchTerm }: { searchTerm: string }) 
 						<TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
 							{staffs.length === 0 ? (
 								<TableRow>
-									<TableCell className="px-5 py-2 sm:px-6 text-start">
-										<div className="p-4 text-sm text-gray-500">No record found....</div>
+									<TableCell colSpan={3} className="px-5 py-2 sm:px-6 text-start">
+										<div className="p-4 text-sm text-gray-500">No class tutor assigned yet....</div>
 									</TableCell>
 								</TableRow>
 							) : (

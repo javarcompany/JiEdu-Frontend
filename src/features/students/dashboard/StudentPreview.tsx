@@ -133,74 +133,80 @@ export default function StudentPreview() {
 						className="divide-y divide-gray-100 dark:divide-gray-800 transition-transform duration-1000 ease-in-out"
 						style={{ transform: `translateY(-${offset * ROW_HEIGHT}px)` }}
 					>
-
-						{students.map((student) => (
-							<TableRow key={student.id} className="fade-slide-in">
-								<TableCell className="py-3">
-									<div className="flex items-center gap-3">
-										<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-											<img
-												src={student.passport}
-												className="h-[50px] w-[50px]"
-												alt={student.fname}
-											/>
-										</div>
-
-										<div>
-											<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-												{student.fname} {student.mname} {student.sname}
-											</p>
-											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-												{student.regno}
-											</span>
-										</div>
-									</div>
-								</TableCell>
-
-								<TableCell className="py-3">
-									<div className="flex items-center gap-3">
-										<div>
-											<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-												{student.course_name}
-											</span>
-											<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-												Module {student.module_name}
-											</span>
-										</div>
-									</div>
-								</TableCell>
-
-								<TableCell className="py-3">
-									<div className="flex items-center gap-3">
-										<div>
-											<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-												{student.class_name}
-											</span>
-											<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-												Level {student.level}
-											</span>
-										</div>
-									</div>
-								</TableCell>
-
-
-								<TableCell className="py-3">
-									<Badge
-										size="sm"
-										color={
-										student.student_state === "Active"
-											? "success"
-											: student.state === "Suspended"
-											? "warning"
-											: "error"
-										}
-									>
-										{student.student_state}
-									</Badge>
+						{students.length === 0 ? (
+							<TableRow>
+								<TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+									<div className="p-4 text-sm text-gray-500">No Student found.....</div>
 								</TableCell>
 							</TableRow>
-						))}
+						) : (
+							students.map((student) => (
+								<TableRow key={student.id} className="fade-slide-in">
+									<TableCell className="py-3">
+										<div className="flex items-center gap-3">
+											<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
+												<img
+													src={student.passport}
+													className="h-[50px] w-[50px]"
+													alt={student.fname}
+												/>
+											</div>
 
+											<div>
+												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+													{student.fname} {student.mname} {student.sname}
+												</p>
+												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+													{student.regno}
+												</span>
+											</div>
+										</div>
+									</TableCell>
+
+									<TableCell className="py-3">
+										<div className="flex items-center gap-3">
+											<div>
+												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+													{student.course_name}
+												</span>
+												<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+													Module {student.module_name}
+												</span>
+											</div>
+										</div>
+									</TableCell>
+
+									<TableCell className="py-3">
+										<div className="flex items-center gap-3">
+											<div>
+												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+													{student.class_name}
+												</span>
+												<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+													Level {student.level}
+												</span>
+											</div>
+										</div>
+									</TableCell>
+
+
+									<TableCell className="py-3">
+										<Badge
+											size="sm"
+											color={
+											student.student_state === "Active"
+												? "success"
+												: student.state === "Suspended"
+												? "warning"
+												: "error"
+											}
+										>
+											{student.student_state}
+										</Badge>
+									</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 			</div>

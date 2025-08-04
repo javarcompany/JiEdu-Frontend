@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-const useAutoLogout = (timeout = 15 * 60 * 1000) => {
+const useAutoLogout = (timeout = 8 * 60 * 1000) => {
   const navigate = useNavigate();
   const timerId = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -25,6 +25,7 @@ const useAutoLogout = (timeout = 15 * 60 * 1000) => {
     events.forEach(event => window.addEventListener(event, resetTimer));
 
     resetTimer(); // Initial call
+    console.log(timerId.current)
 
     return () => {
       events.forEach(event => window.removeEventListener(event, resetTimer));

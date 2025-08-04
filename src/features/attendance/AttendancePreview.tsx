@@ -134,7 +134,9 @@ export default function AttendancePreview() {
                         >
                             {registers.length === 0 ? (
 								<TableRow>
-									<div className="p-4 text-sm text-gray-500">No Staff Workload found.....</div>
+                                    <TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+									    <div className="p-4 text-sm text-gray-500">No Student Register found.....</div>
+                                    </TableCell>
 								</TableRow>
 							) : (
                                 registers.map((register) => (

@@ -145,73 +145,81 @@ export default function ApproveTable({ searchTerm, selectedIds, setSelectedIds }
 					{/* Table Body */}
 
 					<TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-						{applicants.map((applicant) => (
-						<TableRow key={applicant.id} className="">
-							<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-							<Checkbox
-								checked={selectedIds.includes(applicant.id)}
-								onChange={() => handleSelectOne(applicant.id)}
-							/>
-							</TableCell>
-							<TableCell className="py-3">
-							<div className="flex items-center gap-3">
-								<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-								<img
-									src={applicant.passport}
-									className="h-[50px] w-[50px]"
-									alt={applicant.id}
-								/>
-								</div>
-								<div>
-								<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-									{applicant.fname} {applicant.mname} {applicant.sname}
-								</p>
-								<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-									{applicant.nat_id}
-								</span>
-								</div>
-							</div>
-							</TableCell>
+						{applicants.length === 0 ? (
+								<TableRow>
+									<TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+										<div className="p-4 text-sm text-gray-500">No Enrollment found.....</div>
+									</TableCell>
+								</TableRow>
+							) : (
+							applicants.map((applicant) => (
+								<TableRow key={applicant.id} className="">
+									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+									<Checkbox
+										checked={selectedIds.includes(applicant.id)}
+										onChange={() => handleSelectOne(applicant.id)}
+									/>
+									</TableCell>
+									<TableCell className="py-3">
+									<div className="flex items-center gap-3">
+										<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
+										<img
+											src={applicant.passport}
+											className="h-[50px] w-[50px]"
+											alt={applicant.id}
+										/>
+										</div>
+										<div>
+										<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+											{applicant.fname} {applicant.mname} {applicant.sname}
+										</p>
+										<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+											{applicant.nat_id}
+										</span>
+										</div>
+									</div>
+									</TableCell>
 
-							<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-								{applicant.course_name}
-							</TableCell>
+									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										{applicant.course_name}
+									</TableCell>
 
-							<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-								{applicant.category}
-							</TableCell>
+									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										{applicant.category}
+									</TableCell>
 
-							<TableCell>
-								<div>
-									<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-										{applicant.year_name}
-									</p>
-									<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-										{applicant.intake_name}
-									</span>
-								</div>
-							</TableCell>
-							<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-								<Badge
-									size="sm"
-									color={
-									applicant.state === "Joined"
-										? "success"
-										
-										:applicant.state === "Approved"
-										? "primary"
+									<TableCell>
+										<div>
+											<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+												{applicant.year_name}
+											</p>
+											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+												{applicant.intake_name}
+											</span>
+										</div>
+									</TableCell>
+									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										<Badge
+											size="sm"
+											color={
+											applicant.state === "Joined"
+												? "success"
+												
+												:applicant.state === "Approved"
+												? "primary"
 
-										: applicant.state === "Pending"
-										? "warning"
+												: applicant.state === "Pending"
+												? "warning"
 
-										: "error"
-									}
-								>
-									{applicant.state}
-								</Badge>
-							</TableCell>
-						</TableRow>
-						))}
+												: "error"
+											}
+										>
+											{applicant.state}
+										</Badge>
+									</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 					</Table>
 				</div>

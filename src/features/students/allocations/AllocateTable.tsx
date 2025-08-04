@@ -103,54 +103,6 @@ export default function AllocateTable({filters, selectedIds, setSelectedIds, }: 
 		return <div className="p-4 text-sm text-gray-500">Loading students...</div>;
 	}
 
-	if (filteredData.length === 0) {
-		return (
-			<>
-				<div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-					<div className="max-w-full overflow-x-auto">
-						<Table>
-							{/* Table Header */}
-							<TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-								<TableRow>
-									<TableCell
-										isHeader
-										className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-									>
-										Student
-									</TableCell>
-
-									<TableCell
-										isHeader
-										className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-									>
-										Level
-									</TableCell>
-
-									<TableCell
-										isHeader
-										className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-									>
-										Status
-									</TableCell>
-
-								</TableRow>
-							</TableHeader>
-
-							{/* Table Body */}
-							<TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-								<TableRow>
-									<TableCell>
-										<div className="p-4 text-sm text-gray-500">No pending students allocation found...</div>
-									</TableCell>
-								</TableRow>
-							</TableBody>
-						</Table>
-					</div>
-				</div>
-			</>
-		);
-	}
-
     return (
 		<>
 			<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -212,71 +164,79 @@ export default function AllocateTable({filters, selectedIds, setSelectedIds, }: 
 						{/* Table Body */}
 
 						<TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-							{filteredData.map((student) => (
-								<TableRow key={student.id} className="">
-									<TableCell className="py-3 px-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<Checkbox
-											checked={selectedIds.includes(student.studentno)}
-											onChange={() => handleSelectOne(student.studentno)}
-										/>
-									</TableCell>
-
-									<TableCell className="py-3">
-										<div className="flex items-center gap-3">
-											<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-												<img
-													src={student.passport}
-													className="h-[50px] w-[50px]"
-													alt={student.fname}
-												/>
-											</div>
-											<div>
-												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{student.fname} {student.mname} {student.sname}
-												</p>
-												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-													{student.regno}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<div>
-											<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-												{student.course_name}
-											</p>
-											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-												Module {student.module_name} * Level {student.level}
-											</span>
-										</div>
-									</TableCell>
-
-									<TableCell>
-										<div>
-											<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-												{student.year_name}
-											</p>
-											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-												{student.term_name}
-											</span>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<Badge
-											size="sm"
-											color={
-											student.state === "Allocated"
-												? "success"
-												: "error"
-											}
-										>
-											{student.state}
-										</Badge>
+							{filteredData.length === 0 ? (
+								<TableRow>
+									<TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+										<div className="p-4 text-sm text-gray-500">No student found for class allocation.....</div>
 									</TableCell>
 								</TableRow>
-							))}
+							) : (
+								filteredData.map((student) => (
+									<TableRow key={student.id} className="">
+										<TableCell className="py-3 px-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<Checkbox
+												checked={selectedIds.includes(student.studentno)}
+												onChange={() => handleSelectOne(student.studentno)}
+											/>
+										</TableCell>
+
+										<TableCell className="py-3">
+											<div className="flex items-center gap-3">
+												<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
+													<img
+														src={student.passport}
+														className="h-[50px] w-[50px]"
+														alt={student.fname}
+													/>
+												</div>
+												<div>
+													<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{student.fname} {student.mname} {student.sname}
+													</p>
+													<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+														{student.regno}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<div>
+												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+													{student.course_name}
+												</p>
+												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+													Module {student.module_name} * Level {student.level}
+												</span>
+											</div>
+										</TableCell>
+
+										<TableCell>
+											<div>
+												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+													{student.year_name}
+												</p>
+												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+													{student.term_name}
+												</span>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<Badge
+												size="sm"
+												color={
+												student.state === "Allocated"
+													? "success"
+													: "error"
+												}
+											>
+												{student.state}
+											</Badge>
+										</TableCell>
+									</TableRow>
+								))
+							)}
 						</TableBody>
 					</Table>
 				</div>

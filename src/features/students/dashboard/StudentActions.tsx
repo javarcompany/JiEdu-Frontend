@@ -77,7 +77,7 @@ export default function StudentActions() {
 
     return (
         <div className="flex flex-wrap gap-4 md:gap-6">
-            <div className="w-full sm:w-auto flex-1 min-w-[250px]">
+            <div className="w-full sm:w-auto flex-1 min-w-[200px]">
                 <ClickableStatCard
                     title="Enrollments"
                     value={formatCount(pending_enrollment)}
@@ -94,7 +94,7 @@ export default function StudentActions() {
                     href="/enrollments"
                 />
             </div>
-            <div className="w-full sm:w-auto flex-1 min-w-[250px]">
+            <div className="w-full sm:w-auto flex-1 min-w-[200px]">
                 <ClickableStatCard
                     title="Allocations"
                     value={formatCount(pending_allocation)}
@@ -105,7 +105,7 @@ export default function StudentActions() {
                     icon={<PieChartIcon className="w-5 h-5" />}
                 />
             </div>
-            <div className="w-full sm:w-auto flex-1 min-w-[250px]">
+            <div className="w-full sm:w-auto flex-1 min-w-[200px]">
                 <Actions />
             </div>
         </div>

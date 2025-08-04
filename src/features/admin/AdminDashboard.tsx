@@ -39,6 +39,7 @@ export default function AdminDashboard(){
     const [selectedIcon, setSelectedIcon] = useState("");
     
     const [usersCount, setUsersCount] = useState(0);
+    const [branchCount, setBranchCount] = useState(0);
 
     const { isOpen, openModal, closeModal } = useModal();
 
@@ -93,6 +94,20 @@ export default function AdminDashboard(){
                 console.error("Failed to fetch users count:", error);
             }
         };
+        const fetchBranchCount = async () => {
+            try {
+                const response = await axios.get("/api/branch_count/",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                setBranchCount(response.data.current);
+            } catch (error) {
+                console.error("Failed to fetch branches count:", error);
+            }
+        };
+        fetchBranchCount();
+
         fetchUserCount();
     }, []);
     
@@ -121,8 +136,7 @@ export default function AdminDashboard(){
                         <ClickableStatCard
                             title="Configs"
                             value=""
-                            percentageChange="-14%"
-                            contextText="School Settings"
+                            contextText="Institution's Primary Data"
                             classvalue="bg-red-900 dark:text-white-900 text-white"
                             icon={<AdminIcon className="w-5 h-5" />}
                             href="/configs"
@@ -163,8 +177,7 @@ export default function AdminDashboard(){
                     <div className="col-span-12 xl:col-span-12 py-2">
                         <ClickableStatCard
                             title="Branches"
-                            value="5"
-                            percentageChange="+44%"
+                            value={formatStudentCount(branchCount)}
                             contextText="Active Branches"
                             classvalue="bg-green-900 dark:text-white-900 text-white"
                             icon={<School2Icon className="w-5 h-5" />}

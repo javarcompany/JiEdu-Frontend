@@ -168,72 +168,80 @@ export default function StudentEnrollmentTable({ searchTerm }: { searchTerm: str
 						{/* Table Body */}
 
 						<TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-							{applicants.map((applicant) => (
-								<TableRow key={applicant.id} className="">
-									<TableCell className="py-3">
-										<div className="flex items-center gap-3">
-											<div className="h-[50px] w-[50px] overflow-hidden rounded-lg">
-												<img
-													src={applicant.passport}
-													className="h-[50px] w-[50px]"
-													alt={applicant.nat_id}
-												/>
-											</div>
-											<div>
-												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{applicant.fname} {applicant.sname} {applicant.mname}
-												</p>
-												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-													{applicant.nat_id}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-											{applicant.course_name}
-										</p>
-										<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-											{applicant.year_name} | {applicant.intake_name}
-										</span>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										{applicant.category}
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<Badge
-											size="sm"
-											color={
-											applicant.state === "Approved"
-												? "primary"
-
-												: applicant.state === "Pending"
-												? "warning"
-
-												: applicant.state === "Joined"
-												? "success"
-
-												: "error"
-											}
-										>
-											{applicant.state}
-										</Badge>
-									</TableCell>
-
-									<TableCell>
-										<button
-											title="View Application"
-											className="text-blue-500 hover:text-red-600 transition-colors  px-4"
-											onClick={() => handleViewApplicant(applicant)}
-										>
-											<EyeIcon size={20} />
-										</button>
+							{applicants.length === 0 ? (
+								<TableRow>
+									<TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+										<div className="p-4 text-sm text-gray-500">No Enrollment found.....</div>
 									</TableCell>
 								</TableRow>
-							))}
+							) : (
+								applicants.map((applicant) => (
+									<TableRow key={applicant.id} className="">
+										<TableCell className="py-3">
+											<div className="flex items-center gap-3">
+												<div className="h-[50px] w-[50px] overflow-hidden rounded-lg">
+													<img
+														src={applicant.passport}
+														className="h-[50px] w-[50px]"
+														alt={applicant.nat_id}
+													/>
+												</div>
+												<div>
+													<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{applicant.fname} {applicant.sname} {applicant.mname}
+													</p>
+													<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+														{applicant.nat_id}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+												{applicant.course_name}
+											</p>
+											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+												{applicant.year_name} | {applicant.intake_name}
+											</span>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											{applicant.category}
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<Badge
+												size="sm"
+												color={
+												applicant.state === "Approved"
+													? "primary"
+
+													: applicant.state === "Pending"
+													? "warning"
+
+													: applicant.state === "Joined"
+													? "success"
+
+													: "error"
+												}
+											>
+												{applicant.state}
+											</Badge>
+										</TableCell>
+
+										<TableCell>
+											<button
+												title="View Application"
+												className="text-blue-500 hover:text-red-600 transition-colors  px-4"
+												onClick={() => handleViewApplicant(applicant)}
+											>
+												<EyeIcon size={20} />
+											</button>
+										</TableCell>
+									</TableRow>
+								))
+							)}
 						</TableBody>
 					</Table>
 				</div>

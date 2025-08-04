@@ -210,7 +210,9 @@ export default function StaffWorkloadTable({ searchTerm }: { searchTerm: string 
 						<TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
 							{staffs.length === 0 ? (
 								<TableRow>
-									<div className="p-4 text-sm text-gray-500">No Staff Workload found.....</div>
+									<TableCell  colSpan={4} className="px-5 py-4 sm:px-6 text-start">
+										<div className="p-4 text-sm text-gray-500">No Staff Workload found.....</div>
+									</TableCell>
 								</TableRow>
 							) : (
 								staffs.map((trainer) => (

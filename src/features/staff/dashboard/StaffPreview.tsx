@@ -134,60 +134,68 @@ export default function StaffPreview() {
 						className="divide-y divide-gray-100 dark:divide-gray-800 transition-transform duration-1000 ease-in-out"
 						style={{ transform: `translateY(-${offset * ROW_HEIGHT}px)` }}
 					>
-						{staffs.map((staff) => (
-							<TableRow key={staff.id} className="">
-								<TableCell className="py-3">
-									<div className="flex items-center gap-3">
-										<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
-											<img
-												src={staff.passport}
-												className="h-[50px] w-[50px]"
-												alt={staff.fname}
-											/>
-										</div>
-
-										<div>
-											<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-												{staff.fname} {staff.mname} {staff.sname}
-											</p>
-											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-												{staff.regno}
-											</span>
-										</div>
-									</div>
-								</TableCell>
-
-								<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-									{staff.department_name}
-									<div>
-										<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-											{staff.branch_name} Campus
-										</span>
-									</div>
-								</TableCell>
-
-								<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-									{staff.used_hours}/{staff.weekly_hours} Hrs
-								</TableCell>
-
-								<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-									<Badge
-										size="sm"
-										color={
-										staff.load_state === "Available"
-											? "success"
-											: staff.load_state === "Average"
-											? "primary"
-											: staff.load_state === "Above Optimum"
-											? "warning"
-											: "error"
-										}
-									>
-										{staff.load_state}
-									</Badge>
+						{staffs.length === 0 ? (
+							<TableRow>
+								<TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+									<div className="p-4 text-sm text-gray-500">No Staff found.....</div>
 								</TableCell>
 							</TableRow>
-						))}
+						) : (
+							staffs.map((staff) => (
+								<TableRow key={staff.id} className="">
+									<TableCell className="py-3">
+										<div className="flex items-center gap-3">
+											<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
+												<img
+													src={staff.passport}
+													className="h-[50px] w-[50px]"
+													alt={staff.fname}
+												/>
+											</div>
+
+											<div>
+												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+													{staff.fname} {staff.mname} {staff.sname}
+												</p>
+												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+													{staff.regno}
+												</span>
+											</div>
+										</div>
+									</TableCell>
+
+									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										{staff.department_name}
+										<div>
+											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+												{staff.branch_name} Campus
+											</span>
+										</div>
+									</TableCell>
+
+									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										{staff.used_hours}/{staff.weekly_hours} Hrs
+									</TableCell>
+
+									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										<Badge
+											size="sm"
+											color={
+											staff.load_state === "Available"
+												? "success"
+												: staff.load_state === "Average"
+												? "primary"
+												: staff.load_state === "Above Optimum"
+												? "warning"
+												: "error"
+											}
+										>
+											{staff.load_state}
+										</Badge>
+									</TableCell>
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 			</div>

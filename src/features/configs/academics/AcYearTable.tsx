@@ -132,7 +132,7 @@ export default function AcYearTable() {
 					</div>
 				</div>
 				
-				<div className="max-w-full overflow-x-auto relative h-[calc(4*48px)] overflow-hidden">
+				<div className="max-w-full overflow-x-auto relative overflow-hidden">
 
 					<Table>
 						{/* Table Header */}
@@ -163,47 +163,57 @@ export default function AcYearTable() {
 
 						{/* Table Body */}
 						<TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-							{years.map((acyear) => (
-								<TableRow key={acyear.id}>
-									<TableCell className="px-5 py-4 sm:px-6 text-start">
-										<div className="flex items-center gap-3">
-											<div>
-												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{acyear.name}
-												</span>
-											</div>
+							{years.length === 0 ? (
+								<TableRow>
+									<TableCell colSpan={3} className="text-center">
+										<div className="p-4 text-sm text-gray-500">
+											No academic year found...
 										</div>
-									</TableCell>
-
-									<TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-										<div className="flex items-center gap-3">
-											<div>
-												<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-													{acyear.dor}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-
-									<TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<button
-											title="Edit Group"
-											className="text-green-500 hover:text-green-600 transition-colors"
-											onClick={() => console.log("Edit")}
-										>
-											<Pencil size={16} />
-										</button>
-
-										<button
-											title="Delete Group"
-											className="text-red-500 hover:text-red-600 transition-colors  px-4"
-											onClick={() => console.log("Delete")}
-										>
-											<Trash2 size={16} />
-										</button>
 									</TableCell>
 								</TableRow>
-							))}
+							) : (
+								years.map((acyear) => (
+									<TableRow key={acyear.id}>
+										<TableCell className="px-5 py-4 sm:px-6 text-start">
+											<div className="flex items-center gap-3">
+												<div>
+													<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{acyear.name}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+
+										<TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+											<div className="flex items-center gap-3">
+												<div>
+													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
+														{acyear.dor}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+
+										<TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<button
+												title="Edit Group"
+												className="text-green-500 hover:text-green-600 transition-colors"
+												onClick={() => console.log("Edit")}
+											>
+												<Pencil size={16} />
+											</button>
+
+											<button
+												title="Delete Group"
+												className="text-red-500 hover:text-red-600 transition-colors  px-4"
+												onClick={() => console.log("Delete")}
+											>
+												<Trash2 size={16} />
+											</button>
+										</TableCell>
+									</TableRow>
+								))
+							)}
 						</TableBody>
 					</Table>
 				</div>

@@ -110,69 +110,79 @@ export default function CameraTable({ searchTerm }: { searchTerm: string }) {
 			
 						{/* Table Body */}
 						<TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-							{cameras.map((camera) => (
-								<TableRow key={camera.id}>
-									<TableCell className="px-5 py-4 sm:px-6 text-start">
-										<div className="flex items-center gap-3">
-											<div>
-												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{camera.name}
-												</span>
-											</div>
+							{cameras.length === 0 ? (
+								<TableRow>
+									<TableCell colSpan={6} className="text-center">
+										<div className="p-4 text-sm text-gray-500">
+											No camera found...
 										</div>
-									</TableCell>
-									<TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-										<div className="flex items-center gap-3">
-											<div>
-												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{camera.ip_address}
-												</span>
-												<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-													{camera.stream_url}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-									<TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-										<div className="flex items-center gap-3">
-											<div>
-												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{camera.classroom_name}
-												</span>
-												<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-													{camera.role}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-									<TableCell className="px-5 py-4 sm:px-6 text-start">
-										<div className="flex items-center gap-3">
-											<div>
-												<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-													{camera.stream_type}
-												</span>
-											</div>
-										</div>
-									</TableCell><TableCell className="px-5 py-4 sm:px-6 text-start">
-										<div className="flex items-center gap-3">
-											<div>
-												<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-													{camera.is_active}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-									<TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<button
-											title="Edit Group"
-											className="text-green-500 hover:text-green-600 transition-colors"
-											onClick={() => console.log("Edit")}
-										>
-											<EyeIcon size={16} />
-										</button>
 									</TableCell>
 								</TableRow>
-							))}
+							) : (
+								cameras.map((camera) => (
+									<TableRow key={camera.id}>
+										<TableCell className="px-5 py-4 sm:px-6 text-start">
+											<div className="flex items-center gap-3">
+												<div>
+													<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{camera.name}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+										<TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+											<div className="flex items-center gap-3">
+												<div>
+													<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{camera.ip_address}
+													</span>
+													<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+														{camera.stream_url}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+										<TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+											<div className="flex items-center gap-3">
+												<div>
+													<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{camera.classroom_name}
+													</span>
+													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
+														{camera.role}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+										<TableCell className="px-5 py-4 sm:px-6 text-start">
+											<div className="flex items-center gap-3">
+												<div>
+													<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+														{camera.stream_type}
+													</span>
+												</div>
+											</div>
+										</TableCell><TableCell className="px-5 py-4 sm:px-6 text-start">
+											<div className="flex items-center gap-3">
+												<div>
+													<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+														{camera.is_active}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+										<TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<button
+												title="Edit Group"
+												className="text-green-500 hover:text-green-600 transition-colors"
+												onClick={() => console.log("Edit")}
+											>
+												<EyeIcon size={16} />
+											</button>
+										</TableCell>
+									</TableRow>
+								))
+							)}
 						</TableBody>
 					</Table>
 				</div>

@@ -8,7 +8,7 @@ export default function TimetableTopActions() {
 
     return (
         <>
-            <div className="grid grid-cols-12 gap-1 md:col-span-12">
+            <div className="grid grid-cols-12 gap-4 md:col-span-12">
                 <div ref={refDiv} className="col-span-12 xl:col-span-3">
                     <Actions/>
                 </div>

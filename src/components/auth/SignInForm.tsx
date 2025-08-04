@@ -63,7 +63,7 @@ export default function SignInForm() {
 			
 			// Redirect based on role
 			switch (user.role) {
-				case "Administrator":
+				case "Administrators":
 					navigate("/admin-dashboard");
 					break;
 				case "Students":

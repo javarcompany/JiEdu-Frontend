@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { setupInterceptors } from "./lib/axois";
 
 // Dashboard
-import Home from "./pages/Dashboard/Home";
+import Home from "./features/dashboard/Home";
 
 // Student
 import AnonymousRegistrationForm from "./features/students/applications/AnonymousRegistrationForm";
@@ -84,7 +84,7 @@ import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
-import PrivateRoute from "./components/PrivateComponent";
+
 import FaceEnroll from "./features/biometrics/FaceEnroll";
 import BackButton from "./components/ui/button/BackButton";
 import useAutoLogout from "./hooks/useAutoLogOut";
@@ -107,7 +107,7 @@ export default function App() {
 				{/* Dashboard Layout */}
 				<Route element={<AppLayout />}>
 
-					<Route index path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
+					<Route index path="/" element={<Home />} />
  
 					{/* Student App */}
 					<Route path="/student" element={<Student />}/>

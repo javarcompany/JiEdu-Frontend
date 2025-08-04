@@ -304,72 +304,80 @@ export default function TimetablePreview() {
 						<TableBody 
 							className="divide-y divide-gray-100 dark:divide-gray-800 transition-transform duration-1000 ease-in-out"
 						>
-							{lessons.map((lesson) => (
-								<TableRow key={lesson.id} className="">
-									<TableCell className="py-3">
-										<div className="flex items-center gap-3">
-											<div>
-												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{lesson.year}
-												</p>
-												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-													{lesson.intake}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										{lesson.course}
-										<div>
-											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-												{lesson.module}
-											</span>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										{lesson.class_name}
-										<div>
-											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-												{lesson.classroom_name}
-											</span>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										{lesson.day_name}
-										<div>
-											<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-												{lesson.lesson_name}
-											</span>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<div className="flex items-center gap-3">
-											<div>
-												<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{lesson.unit_uncode} ({lesson.unit_name})
-												</p>
-												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
-													{lesson.lecturer_fname} {lesson.lecturer_mname} {lesson.lecturer_sname} - {lesson.lecturer_regno}
-												</span>
-											</div>
-										</div>
-									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<button
-												title="Edit Timetable"
-												className="text-blue-500 hover:text-red-600 transition-colors  px-4"
-												onClick={() => handleEditTable(lesson)}
-											>
-											<FileEditIcon size={20} />
-										</button>
-									</TableCell>
+							{lessons.length === 0 ? (
+								<TableRow>
+                                    <TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+									    <div className="p-4 text-sm text-gray-500">No Timetable found.....</div>
+                                    </TableCell>
 								</TableRow>
-							))}
+							) : (
+								lessons.map((lesson) => (
+									<TableRow key={lesson.id} className="">
+										<TableCell className="py-3">
+											<div className="flex items-center gap-3">
+												<div>
+													<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{lesson.year}
+													</p>
+													<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+														{lesson.intake}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											{lesson.course}
+											<div>
+												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+													{lesson.module}
+												</span>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											{lesson.class_name}
+											<div>
+												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+													{lesson.classroom_name}
+												</span>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											{lesson.day_name}
+											<div>
+												<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+													{lesson.lesson_name}
+												</span>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<div className="flex items-center gap-3">
+												<div>
+													<p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{lesson.unit_uncode} ({lesson.unit_name})
+													</p>
+													<span className="text-gray-500 text-theme-xs dark:text-gray-400">
+														{lesson.lecturer_fname} {lesson.lecturer_mname} {lesson.lecturer_sname} - {lesson.lecturer_regno}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<button
+													title="Edit Timetable"
+													className="text-blue-500 hover:text-red-600 transition-colors  px-4"
+													onClick={() => handleEditTable(lesson)}
+												>
+												<FileEditIcon size={20} />
+											</button>
+										</TableCell>
+									</TableRow>
+								))
+							)}
 						</TableBody>
 					</Table>
 				</div>

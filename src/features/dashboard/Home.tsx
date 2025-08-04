@@ -1,5 +1,5 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
-import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
+import MonthlyTarget from "../../components/ecommerce/TimetableWorkloadComparison";
 import DemographicCard from "../../components/ecommerce/DemographicCard";
 import PageMeta from "../../components/common/PageMeta";
 import StudentPreview from "../../features/students/dashboard/StudentPreview";

@@ -114,64 +114,72 @@ export default function AdminGroups() {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                {groups.map((group) => (
-                    <TableRow key={group.id}>
-                        <TableCell className="px-5 py-4 sm:px-6 text-start">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 overflow-hidden rounded-full bg-transparent flex items-center justify-center shadow-sm">
-                                    {group.icon && iconMap[group.icon]}
-                                </div>
-                                <div>
-                                    <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                                        {group.group_name}
-                                    </span>
-                                </div>
-                            </div>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            <div className="flex items-center gap-3">
-                                <button
-                                    title="Manage Roles"
-                                    className="text-blue-500 hover:text-red-600 transition-colors"
-                                    onClick={() => handleManageRoles(group)}
-                                >
-                                    <Settings size={16} />
-                                </button>
-                            </div>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                            <div className="flex -space-x-2">
-                                <button
-                                    title="Manage Members"
-                                    className="text-warning-500 hover:text-blue-600 transition-colors"
-                                    onClick={() => handleManageMembers(group)}
-                                >
-                                    <LucideUsers2 size={26} />
-                                </button>
-                            </div>
-                        </TableCell>
-
-                        <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                            <button
-                                title="Edit Group"
-                                className="text-green-500 hover:text-green-600 transition-colors"
-                                onClick={() => console.log("Edit", group.group)}
-                            >
-                                <Pencil size={16} />
-                            </button>
-
-                            <button
-                                title="Delete Group"
-                                className="text-red-500 hover:text-red-600 transition-colors  px-4"
-                                onClick={() => console.log("Delete", group.group)}
-                            >
-                                <Trash2 size={16} />
-                            </button>
+                {groups.length === 0 ? (
+                    <TableRow>
+                        <TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+                            <div className="p-4 text-sm text-gray-500">No group found.....</div>
                         </TableCell>
                     </TableRow>
-                ))}
+                ) : (
+                    groups.map((group) => (
+                        <TableRow key={group.id}>
+                            <TableCell className="px-5 py-4 sm:px-6 text-start">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 overflow-hidden rounded-full bg-transparent flex items-center justify-center shadow-sm">
+                                        {group.icon && iconMap[group.icon]}
+                                    </div>
+                                    <div>
+                                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                                            {group.group_name}
+                                        </span>
+                                    </div>
+                                </div>
+                            </TableCell>
+
+                            <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                <div className="flex items-center gap-3">
+                                    <button
+                                        title="Manage Roles"
+                                        className="text-blue-500 hover:text-red-600 transition-colors"
+                                        onClick={() => handleManageRoles(group)}
+                                    >
+                                        <Settings size={16} />
+                                    </button>
+                                </div>
+                            </TableCell>
+
+                            <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                <div className="flex -space-x-2">
+                                    <button
+                                        title="Manage Members"
+                                        className="text-warning-500 hover:text-blue-600 transition-colors"
+                                        onClick={() => handleManageMembers(group)}
+                                    >
+                                        <LucideUsers2 size={26} />
+                                    </button>
+                                </div>
+                            </TableCell>
+
+                            <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                                <button
+                                    title="Edit Group"
+                                    className="text-green-500 hover:text-green-600 transition-colors"
+                                    onClick={() => console.log("Edit", group.group)}
+                                >
+                                    <Pencil size={16} />
+                                </button>
+
+                                <button
+                                    title="Delete Group"
+                                    className="text-red-500 hover:text-red-600 transition-colors  px-4"
+                                    onClick={() => console.log("Delete", group.group)}
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                )}
             </TableBody>
             </Table>
         </div>

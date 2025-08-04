@@ -2,22 +2,24 @@ import { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 
-type FeeTrendData = {
+type EnrollmentTrend = {
     year: string;
-    male: number;
-    female: number;
+    declined: number;
+    pending: number;
+    approved: number;
+    joined: number;
 };
 
 export default function StudentStatusTrendChart() {
     const token = localStorage.getItem("access");
-    const [data, setData] = useState<FeeTrendData[]>([]);
+    const [data, setData] = useState<EnrollmentTrend[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch("/api/student-gender-trend/",
+                const res = await fetch("/api/student-enrollment-status-trend/",
                     { headers: { Authorization: `Bearer ${token}` },});
                 if (!res.ok) throw new Error("Failed to fetch trend data.");
                 const result = await res.json();
@@ -33,8 +35,10 @@ export default function StudentStatusTrendChart() {
     }, []);
 
     const categories = data.map((item) => item.year);
-    const maleSeries = data.map((item) => item.male);
-    const femaleSeries = data.map((item) => item.female);
+    const declinedSeries = data.map((item) => item.declined);
+    const pendingSeries = data.map((item) => item.pending);
+    const approvedSeries = data.map((item) => item.approved);
+    const joinedSeries = data.map((item) => item.joined);
 
     const options: ApexOptions = {
         chart: {
@@ -86,10 +90,10 @@ export default function StudentStatusTrendChart() {
     };
 
     const series = [
-        { name: "Declined", data: maleSeries },
-        { name: "Pending", data: femaleSeries },
-        { name: "Approved", data: femaleSeries },
-        { name: "Joined", data: femaleSeries },
+        { name: "Declined", data: declinedSeries },
+        { name: "Pending", data: pendingSeries },
+        { name: "Approved", data: approvedSeries },
+        { name: "Joined", data: joinedSeries },
     ];
 
     if (loading) {

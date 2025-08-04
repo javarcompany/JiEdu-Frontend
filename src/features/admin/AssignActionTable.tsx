@@ -243,46 +243,54 @@ export default function AssignRolesTable({ models, toggleState, setToggleState }
 
 					{/* Table Body */}
 					<TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-						{models.map((model: any, idx: number) => (
-							<TableRow key={idx} >
-								<TableCell className="px-5 py-4 sm:px-6 text-start">
-									<div className="flex items-center gap-3">
-										<div>
-											<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-												{model}
-											</span>
-										</div>
-									</div>
+						{models.length === 0 ? (
+							<TableRow>
+								<TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
+									<div className="p-4 text-sm text-gray-500">No user found.....</div>
 								</TableCell>
-								{["view", "add", "change", "delete"].map((perm) => (
-									<TableCell
-										className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400"
-										key={perm}
-									>
+							</TableRow>
+						) : (
+							models.map((model: any, idx: number) => (
+								<TableRow key={idx} >
+									<TableCell className="px-5 py-4 sm:px-6 text-start">
 										<div className="flex items-center gap-3">
-											{/* <Switch
-												label=""
-												defaultChecked = {toggleState[model.toLocaleLowerCase()]?.[perm as keyof ModelPermission] || false } 
-												onChange={() => togglePermission(model, perm as keyof ModelPermission)}
-												color="green"
-											/> */}
-											{/* <input
-												className=""
-												type="checkbox" 
-												name="" 
-												id=""
-												checked = {toggleState[model.toLocaleLowerCase()]?.[perm as keyof ModelPermission] || false }
-												onChange={() => togglePermission(model, perm as keyof ModelPermission)}
-											/> */}
-											<Checkbox
-												checked = {toggleState[model.toLocaleLowerCase()]?.[perm as keyof ModelPermission] || false }
-												onChange={() => togglePermission(model, perm as keyof ModelPermission)}
-											/>
+											<div>
+												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+													{model}
+												</span>
+											</div>
 										</div>
 									</TableCell>
-								))}
-							</TableRow>
-						))}
+									{["view", "add", "change", "delete"].map((perm) => (
+										<TableCell
+											className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400"
+											key={perm}
+										>
+											<div className="flex items-center gap-3">
+												{/* <Switch
+													label=""
+													defaultChecked = {toggleState[model.toLocaleLowerCase()]?.[perm as keyof ModelPermission] || false } 
+													onChange={() => togglePermission(model, perm as keyof ModelPermission)}
+													color="green"
+												/> */}
+												{/* <input
+													className=""
+													type="checkbox" 
+													name="" 
+													id=""
+													checked = {toggleState[model.toLocaleLowerCase()]?.[perm as keyof ModelPermission] || false }
+													onChange={() => togglePermission(model, perm as keyof ModelPermission)}
+												/> */}
+												<Checkbox
+													checked = {toggleState[model.toLocaleLowerCase()]?.[perm as keyof ModelPermission] || false }
+													onChange={() => togglePermission(model, perm as keyof ModelPermission)}
+												/>
+											</div>
+										</TableCell>
+									))}
+								</TableRow>
+							))
+						)}
 					</TableBody>
 				</Table>
 			</div>

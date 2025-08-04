@@ -66,63 +66,66 @@ export default function EcommerceMetrics() {
 	}, []);
 
 	return (
-		<div className="grid grid-cols-3 gap-4 sm:grid-cols-3 md:gap-6">
-			{/* <!-- Metric Item Start --> */}
-			<div className="rounded-2xl shadow-lg border border-gray-200 bg-blue-900 p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-				<div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-					<GroupIcon className="text-gray-800 size-6 dark:text-white/90" />
-				</div>
-
-				<div className="flex items-end justify-between mt-5">
+		<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
+			{/* Staff Card */}
+			<div className="flex justify-between items-center rounded-2xl shadow-lg border border-gray-200 bg-blue-900 p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+				<div className="flex items-start gap-4">
+					<div className="flex items-center justify-center w-14 h-14 bg-gray-100 rounded-xl dark:bg-gray-800">
+						<GroupIcon className="text-gray-800 size-6 dark:text-white/90" />
+					</div>
 					<div>
-						<span className="text-sm text-white dark:text-gray-400">
-							Staffs
-						</span>
-						<h4 className="mt-2 font-bold text-white text-title-sm dark:text-white/90">
+						<span className="text-sm text-white dark:text-gray-400 block">Staffs</span>
+						<h4 className="mt-1 font-bold text-white text-title-sm dark:text-white/90">
 							{formatStudentCount(staffCount)}
 						</h4>
 					</div>
-					<div className="">
-					</div>
 				</div>
+				<img
+					src="/illustrations/male-professor.png"
+					alt="Staff Illustration"
+					className="w-20 h-20 object-contain hidden sm:block"
+				/>
 			</div>
-			{/* <!-- Metric Item End --> */}
 
-			{/* <!-- Metric Item Start --> */}
-			<div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-				<div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-					<BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />
-				</div>
-				<div className="flex items-end justify-between mt-5">
+			{/* Student Card */}
+			<div className="flex justify-between items-center rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+				<div className="flex items-start gap-4">
+					<div className="flex items-center justify-center w-14 h-14 bg-gray-100 rounded-xl dark:bg-gray-800">
+						<BoxIconLine className="text-gray-800 size-6 dark:text-white/90" />
+					</div>
 					<div>
-						<span className="text-sm text-gray-500 dark:text-gray-400">
-							Students
-						</span>
-						<h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+						<span className="text-sm text-gray-500 dark:text-gray-400 block">Students</span>
+						<h4 className="mt-1 font-bold text-gray-800 text-title-sm dark:text-white/90">
 							{formatStudentCount(studentCount)}
 						</h4>
 					</div>
 				</div>
+				<img
+					src="/illustrations/graduate-student.png"
+					alt="Student Illustration"
+					className="w-20 h-20 object-contain hidden sm:block"
+				/>
 			</div>
-			{/* <!-- Metric Item End --> */}
 
-			{/* <!-- Metric Item Start --> */}
-			<div className="rounded-2xl shadow-lg border border-gray-200 bg-blue-900 p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-				<div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-					<Users2Icon className="text-white-800 size-6 dark:text-white/90" />
-				</div>
-				<div className="flex items-end justify-between mt-5">
+			{/* Users Card */}
+			<div className="flex justify-between items-center rounded-2xl shadow-lg border border-gray-200 bg-blue-900 p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+				<div className="flex items-start gap-4">
+					<div className="flex items-center justify-center w-14 h-14 bg-gray-100 rounded-xl dark:bg-gray-800">
+						<Users2Icon className="text-gray-800 size-6 dark:text-white/90" />
+					</div>
 					<div>
-						<span className="text-sm text-white dark:text-gray-400">
-							Users
-						</span>
-						<h4 className="mt-2 font-bold text-white text-title-sm dark:text-white/90">
+						<span className="text-sm text-white dark:text-gray-400 block">Users</span>
+						<h4 className="mt-1 font-bold text-white text-title-sm dark:text-white/90">
 							{formatStudentCount(usersCount)}
 						</h4>
 					</div>
 				</div>
+				<img
+					src="/illustrations/users.png"
+					alt="Users Illustration"
+					className="w-20 h-20 object-contain hidden sm:block"
+				/>
 			</div>
-			{/* <!-- Metric Item End --> */}
 		</div>
 	);
 }
