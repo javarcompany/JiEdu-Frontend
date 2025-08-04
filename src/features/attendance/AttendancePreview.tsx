@@ -56,7 +56,7 @@ export default function AttendancePreview() {
             );
             setPage(response.data.page);
             setRegisters(response.data.results);
-        setTotalPages(response.data.total_pages || response.data.num_pages || 1);
+            setTotalPages(response.data.total_pages || response.data.num_pages || 1);
         } catch (error) {
             console.error("Failed to fetch registers", error);
         }
