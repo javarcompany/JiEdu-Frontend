@@ -196,7 +196,9 @@ export default function StudentPreview() {
 											color={
 											student.student_state === "Active"
 												? "success"
-												: student.state === "Suspended"
+												: student.student_state === "Cleared"
+												? "primary"
+												: student.student_state === "Suspended"
 												? "warning"
 												: "error"
 											}

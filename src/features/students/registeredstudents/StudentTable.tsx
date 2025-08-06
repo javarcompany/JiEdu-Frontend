@@ -244,6 +244,9 @@ export default function StudentTable(
 													student.state === "Active"
 													? "success"
 
+													: student.state === "Cleared"
+													? "primary"
+
 													: student.state === "Suspended"
 													? "warning"
 													
