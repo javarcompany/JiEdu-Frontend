@@ -1,9 +1,9 @@
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
+	Table,
+	TableBody,
+	TableCell,
+	TableHeader,
+	TableRow,
 } from "../../components/ui/table";
 
 import debounce from "lodash.debounce";

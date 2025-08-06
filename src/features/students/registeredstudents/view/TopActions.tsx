@@ -74,6 +74,33 @@ export default function StudentTopActions() {
 		}
 	};
 
+	const handlePromotion = async () => {
+		try {
+			Swal.fire({
+				title: "Promoting Student...",
+				text: "Please wait while promoting the student...",
+				allowOutsideClick: false,
+				didOpen: () => Swal.showLoading(),
+			});
+
+			const res = await axios.post(
+				`/api/promote/promote-batch/`,
+				{ student_ids: [student?.id] },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
+
+			setMessage(res.data.messages || "Student promoted successfully");
+			Swal.close();
+			Swal.fire("Success", message, "success"); 
+			navigate("/");
+		} catch (err: any) {
+			setMessage(err.response.data.detail)
+		} finally {
+			setLoading(false);
+			setMessage("");
+		}
+	};
+
 	const handleEnrollFace = () => {
 		if (student?.regno) {
 			navigate(`/enroll-face/${encodeURIComponent(student.regno)}/student`);
@@ -87,6 +114,7 @@ export default function StudentTopActions() {
 			<Button
 				size="sm"
 				variant="primary"
+                onClick={handlePromotion}
 				startIcon={<UploadCloudIcon className="size-5" />}
 				className="bg-success-800 hover:bg-yellow-600 flex-1 min-w-[40px] sm:min-w-[120px]"
 			>
