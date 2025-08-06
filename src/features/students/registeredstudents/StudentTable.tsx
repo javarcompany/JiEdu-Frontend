@@ -14,6 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import debounce from 'lodash.debounce';
 import Pagination from "../../../components/ui/pagination";
+import Checkbox from "../../../components/form/input/Checkbox";
 
 export interface Student {
 	id: number;
@@ -34,7 +35,17 @@ export interface Student {
 	state: string;
 }
 
-export default function StudentTable({ searchTerm }: { searchTerm: string }) {
+export default function StudentTable(
+	{ searchTerm, 
+		selectedStudentIds, 
+		setSelectedStudentIds, 
+		promotionMode,
+		reloadFlag
+	}: { searchTerm: string, 
+		selectedStudentIds: number[], 
+		setSelectedStudentIds: (ids: number[]) => void, 
+		promotionMode: boolean, 
+		reloadFlag: number }) {
 
 	const token = localStorage.getItem("access");
 	const [students, setStudents] = useState<Student[]>([]);
@@ -67,12 +78,20 @@ export default function StudentTable({ searchTerm }: { searchTerm: string }) {
 		if (!token) {return;}
 		
 		fetchStudents(searchTerm, page);
-	},[token, searchTerm, page]);
+	},[token, searchTerm, page, reloadFlag]);
 
 	const handleViewStudent = (student: Student) => {
 		const app = student.id
 		navigate(`/view-student/${encodeURIComponent(app)}`);
 	}
+
+	const toggleStudentSelection = (id: number) => {
+		if (selectedStudentIds.includes(id)) {
+			setSelectedStudentIds(selectedStudentIds.filter(sid => sid !== id));
+		} else {
+			setSelectedStudentIds([...selectedStudentIds, id]);
+		}
+	};
 
 	if (loading) {
 		return <div className="p-4 text-sm text-gray-500">Loading students...</div>;
@@ -81,11 +100,38 @@ export default function StudentTable({ searchTerm }: { searchTerm: string }) {
 	return (
 		<>
 			<div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+				
 				<div className="max-w-full overflow-x-auto">
 					<Table>
 						{/* Table Header */}
 						<TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
 							<TableRow>
+								{promotionMode && (
+									<TableCell
+										isHeader
+										className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+									>
+										<Checkbox
+											className="w-5 h-5 rounded-md border border-gray-300 dark:border-gray-700 cursor-pointer appearance-none checked:bg-brand-500"
+											checked={
+												students.length > 0 &&
+												students
+													.filter((student) => student.state !== "Active") // only consider inactive students
+													.every((student) => selectedStudentIds.includes(student.id))
+											}
+											onChange={(e) => {
+												if (e) {
+													const inactiveIds = students
+														.filter((student) => student.state !== "Active")
+														.map((student) => student.id);
+													setSelectedStudentIds(inactiveIds);
+												} else {
+													setSelectedStudentIds([]);
+												}
+											}}
+										/>
+									</TableCell>
+								)}
 								<TableCell
 									isHeader
 									className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -134,6 +180,16 @@ export default function StudentTable({ searchTerm }: { searchTerm: string }) {
 							) : (
 								students.map((student) => (
 									<TableRow key={student.id}>
+										{promotionMode && (
+											<TableCell className="px-5 py-4 text-start">
+												<Checkbox
+													disabled={student.state === "Active"} // disable checkbox if already promoted
+													checked={selectedStudentIds.includes(student.id)}
+													onChange={() => toggleStudentSelection(student.id)}
+												/>
+											</TableCell>
+										)}
+
 										<TableCell className="px-5 py-4 sm:px-6 text-start">
 											<div className="flex items-center gap-3">
 												<div className="w-10 h-10 overflow-hidden rounded-full">

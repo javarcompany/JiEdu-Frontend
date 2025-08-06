@@ -3,6 +3,7 @@ interface Props {
 }
 
 export function SearchButton({ onSearch }: Props) {
+    
     return (
         <div className="relative">
             <button className="absolute -translate-y-1/2 left-4 top-1/2">
@@ -26,7 +27,9 @@ export function SearchButton({ onSearch }: Props) {
             <input
                 type="text"
                 placeholder="Search or type filters..."
-                onChange={(e) => onSearch(e.target.value)}
+                onChange={(e) => {
+                    onSearch(e.target.value);
+                }}
                 className="dark:bg-dark-900 h-11 w-full 
                             rounded-lg border border-gray-200 
                             bg-transparent py-2.5 pl-12 pr-14

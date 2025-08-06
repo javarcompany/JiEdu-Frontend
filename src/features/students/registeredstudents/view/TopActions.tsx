@@ -89,15 +89,31 @@ export default function StudentTopActions() {
 				{ headers: { Authorization: `Bearer ${token}` } }
 			);
 
-			setMessage(res.data.messages || "Student promoted successfully");
+			const responseData = res.data;
+
+			let feedbackMessage = "Student promoted successfully";
+			if (Array.isArray(responseData) && responseData.length > 0) {
+				if (responseData[0].message) {
+					feedbackMessage = responseData[0].message;
+				} else if (responseData[0].error) {
+					throw new Error(responseData[0].error);
+				}
+			}
+
 			Swal.close();
-			Swal.fire("Success", message, "success"); 
+			Swal.fire("Success", feedbackMessage, "success");
 			navigate("/");
 		} catch (err: any) {
-			setMessage(err.response.data.detail)
+			let errorMessage = "Something went wrong";
+			if (err.response?.data?.detail) {
+				errorMessage = err.response.data.detail;
+			} else if (err.message) {
+				errorMessage = err.message;
+			}
+			Swal.close();
+			Swal.fire("Error", errorMessage, "error");
 		} finally {
 			setLoading(false);
-			setMessage("");
 		}
 	};
 
@@ -111,15 +127,17 @@ export default function StudentTopActions() {
 	
 	return (
 		<div className="flex flex-wrap justify-between gap-3 w-full">
-			<Button
-				size="sm"
-				variant="primary"
-                onClick={handlePromotion}
-				startIcon={<UploadCloudIcon className="size-5" />}
-				className="bg-success-800 hover:bg-yellow-600 flex-1 min-w-[40px] sm:min-w-[120px]"
-			>
-				<span className="hidden sm:inline">Promote</span>
-			</Button>
+
+			{student?.state !== "Active" && (
+				<Button
+					size="sm"
+					variant="primary"
+					onClick={handlePromotion}
+					startIcon={<UploadCloudIcon className="size-5" />}
+					className="bg-success-800 hover:bg-yellow-600 flex-1 min-w-[40px] sm:min-w-[120px]">
+					<span className="hidden sm:inline">Promote</span>
+				</Button>
+			)}
 
 			<Button
 				size="sm"

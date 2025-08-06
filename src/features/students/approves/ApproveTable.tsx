@@ -39,8 +39,8 @@ export default function ApproveTable({ searchTerm, selectedIds, setSelectedIds }
 
 	const isAllSelected = selectedIds.length === applicants.length && applicants.length > 0;
 
-	const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.checked) {
+	const handleSelectAll = (e: boolean) => {
+        if (e) {
             setSelectedIds(applicants.map((item) => item.id));
         } else {
             setSelectedIds([]);
@@ -102,11 +102,10 @@ export default function ApproveTable({ searchTerm, selectedIds, setSelectedIds }
 							isHeader
 							className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 						>
-							<input
-							type="checkbox"
-							className="w-5 h-5 appearance-none cursor-pointer dark:border-gray-700 border border-gray-300 checked:border-transparent rounded-md checked:bg-brand-500"
-							checked={isAllSelected}
-							onChange={handleSelectAll}
+							<Checkbox
+								className="w-5 h-5 appearance-none cursor-pointer dark:border-gray-700 border border-gray-300 checked:border-transparent rounded-md checked:bg-brand-500"
+								checked={isAllSelected}
+								onChange={(e) => {handleSelectAll(e)}}
 							/>
 							</TableCell>
 						<TableCell
