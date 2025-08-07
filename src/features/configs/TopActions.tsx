@@ -11,10 +11,19 @@ import Select from "../../components/form/Select";
 import { Modal } from "../../components/ui/modal";
 
 import { FormDataState } from "./InstitutionCard";
+import { toast } from "react-toastify";
 
 type TopActionsProps = {
     onPromoteSuccess: () => void;
 };
+
+function showToastsInSequence(messages: any[], delay = 1500) {
+    messages.forEach((msg, index) => {
+        setTimeout(() => {
+            toast.error(msg); // You can use toast.success/info/warning depending on context
+        }, delay * index);
+    });
+}
 
 export default function TopActions({ onPromoteSuccess }: TopActionsProps) {
     const { isOpen, openModal, closeModal } = useModal();
@@ -179,8 +188,9 @@ export default function TopActions({ onPromoteSuccess }: TopActionsProps) {
         setSubmitting(true);
   
         try {
-            const response = await fetch('api/promote-system/', {
-                method: 'POST',
+            const response = await axios.post('api/promote-system/',
+                {},
+            {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -188,15 +198,27 @@ export default function TopActions({ onPromoteSuccess }: TopActionsProps) {
 
             Swal.close()
 
-            if (!response.ok) throw new Error('Failed to promote system');
+            console.log("Promotion response:", response.data);   
 
-            Swal.fire("Success", 'Institution promoted successfully', "success");
+            if (response.status !== 200) throw new Error('Failed to promote system');
+
+            Swal.fire("Success", response.data.message || 'Institution promoted successfully', "success");
     
             closeModal();
             if (onPromoteSuccess) onPromoteSuccess();
-        } catch (err) {
-            console.error(err);
-            Swal.fire("Failure",'Promotion failed!', "error");
+        } catch (error: any) {
+            Swal.close()
+
+            // Log the error to the console for debugging
+            console.error("Promotion failed:", error.response?.data || error.message);
+            let errorMsgs = ["Promotion failed!"];
+            if (error.response?.data?.error) {
+                errorMsgs = Array.isArray(error.response.data.error)
+                    ? error.response.data.error
+                    : [error.response.data.error];
+            }
+
+            showToastsInSequence(errorMsgs);
         } finally {
             setSubmitting(false);
         }

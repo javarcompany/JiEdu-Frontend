@@ -11,6 +11,7 @@ import axios from "axios";
 import {  Pencil, Trash2 } from "lucide-react";
 import debounce from "lodash.debounce";
 import Pagination from "../../components/ui/pagination";
+import Badge from "../../components/ui/badge/Badge";
   
 export interface Class {
 	id: number;
@@ -25,6 +26,7 @@ export interface Class {
 	course_name: string;
 	module: string;
 	module_name: string;
+	state: string;
 	dor: string;
 }
   
@@ -73,34 +75,34 @@ export default function ClassTable({ searchTerm }: { searchTerm: string }) {
 						<TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
 							<TableRow>
 								<TableCell
-								isHeader
-								className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+									isHeader
+									className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 								>
-								Course
+									Course
 								</TableCell>
 								<TableCell
-								isHeader
-								className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+									isHeader
+									className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 								>
-								Name
+									Name
 								</TableCell>
 								<TableCell
-								isHeader
-								className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+									isHeader
+									className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 								>
-								Module
+									Module
 								</TableCell>
 								<TableCell
-								isHeader
-								className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+									isHeader
+									className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 								>
-								Year/ Intake
+									Year/ Intake
 								</TableCell>
 								<TableCell
-								isHeader
-								className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+									isHeader
+									className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
 								>
-								Date Registered
+									Status
 								</TableCell>
 								<TableCell
 								isHeader
@@ -167,13 +169,23 @@ export default function ClassTable({ searchTerm }: { searchTerm: string }) {
 											</div>
 										</TableCell>
 										<TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-											<div className="flex items-center gap-3">
-												<div>
-													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-														{class_.dor}
-													</span>
-												</div>
-											</div>
+											<Badge
+												size="sm"
+												color={
+													class_.state === "Active"
+													? "success"
+
+													: class_.state === "Cleared"
+													? "primary"
+
+													: class_.state === "Suspended"
+													? "warning"
+													
+													: "error"
+												}
+											>
+												{class_.state}
+											</Badge>
 										</TableCell>
 										<TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
 											<button
