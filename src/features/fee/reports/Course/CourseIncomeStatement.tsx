@@ -3,6 +3,8 @@ import axios from "axios";
 import { Modal } from "../../../../components/ui/modal";
 import Input from "../../../../components/form/input/InputField";
 
+import { formatCurrencyShort } from "../../../../utils/format";
+
 interface Props {
   courseId: string;
   termId: string;
@@ -130,8 +132,8 @@ export default function CourseIncomeStatement({ courseId, termId }: Props) {
                                 className="cursor-pointer hover:bg-blue-200 dark:hover:bg-gray-700 text-gray-800 dark:text-white"
                             >
                                 <td className="px-4 py-3">{cls.class_name}</td>
-                                <td className="px-4 py-3 text-right">KES {cls.total_invoiced.toLocaleString()}</td>
-                                <td className="px-4 py-3 text-right">KES {cls.total_paid.toLocaleString()}</td>
+                                <td className="px-4 py-3 text-right">KES {formatCurrencyShort(cls.total_invoiced)}</td>
+                                <td className="px-4 py-3 text-right">KES {formatCurrencyShort(cls.total_paid)}</td>
                                 <td
                                 className={`px-4 py-3 text-right ${
                                     cls.total_balance > 0 ? "text-red-600" :
@@ -139,7 +141,7 @@ export default function CourseIncomeStatement({ courseId, termId }: Props) {
                                     "text-gray-700 dark:text-white"
                                 }`}
                                 >
-                                KES {cls.total_balance.toLocaleString()}
+                                KES {formatCurrencyShort(cls.total_balance)}
                                 </td>
                             </tr>
                             ))}

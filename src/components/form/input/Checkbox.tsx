@@ -6,6 +6,7 @@ interface CheckboxProps {
   className?: string;
   id?: string;
   onChange: (checked: boolean) => void;
+  onClick?: () => void;
   disabled?: boolean;
 }
 
@@ -16,12 +17,14 @@ const Checkbox: React.FC<CheckboxProps> = ({
   onChange,
   className = "",
   disabled = false,
+  onClick
 }) => {
   return (
     <label
       className={`flex items-center space-x-3 group cursor-pointer ${
         disabled ? "cursor-not-allowed opacity-60" : ""
       }`}
+      onClick={onClick}
     >
       <div className="relative w-5 h-5">
         <input
@@ -32,6 +35,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
           disabled={disabled}
+          onClick={(e) => e.stopPropagation()}
         />
         {checked && (
           <svg

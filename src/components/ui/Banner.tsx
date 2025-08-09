@@ -1,4 +1,4 @@
-import { FanIcon } from "lucide-react";
+import { FanIcon, FileIcon } from "lucide-react";
 import React, { ReactNode, useEffect, useState } from "react";
                                                    
 interface ImageBannerBoxProps {
@@ -7,10 +7,13 @@ interface ImageBannerBoxProps {
 	backgroundImageUrl?: string;
 	title?: string;
 	subtitle?: string;
-	actionLabel?: string;
-	onActionClick?: () => void;
+	action1Label?: string;
+	action2Label?: string;
+	onAction1Click?: () => void;
+	onAction2Click?: () => void;
 	className?: string;
-	startIcon?: ReactNode;
+	startIcon1?: ReactNode;
+	startIcon2?: ReactNode;
 }
 
 const ImageBannerBox: React.FC<ImageBannerBoxProps> = ({
@@ -19,12 +22,16 @@ const ImageBannerBox: React.FC<ImageBannerBoxProps> = ({
 	backgroundImageUrl = "/images/banners/fallback-banner.jpg",
 	title = "Default Banner Title",
 	subtitle = "This is a customizable banner component.",
-	actionLabel = "Click Here",
-	onActionClick,
+	action1Label = "Click Here",
+	action2Label = "Learn More",
+	onAction1Click,
+	onAction2Click,
 	className = "",
-	startIcon = <FanIcon />
+	startIcon1 = <FanIcon />,
+	startIcon2 = <FileIcon />
 }) => {
 	const [isVisible, setIsVisible] = useState(false);
+	
 
 	useEffect(() => {
 		// Trigger animation on mount
@@ -50,13 +57,23 @@ const ImageBannerBox: React.FC<ImageBannerBoxProps> = ({
 			<h2 className="text-base md:text-xl font-semibold text-white">{title}</h2>
 			<p className="text-xs md:text-sm text-gray-200 mt-1">{subtitle}</p>
 
-			{onActionClick && (
+			{onAction1Click && (
 				<button
-				onClick={onActionClick} 
+				onClick={onAction1Click} 
 				className="mt-3 inline-flex  items-center justify-center gap-3 px-4 py-1.5 text-xs md:text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
 				>
-					{startIcon && <span className="flex items-center">{startIcon}</span>}
-					{actionLabel}
+					{startIcon1 && <span className="flex items-center">{startIcon1}</span>}
+					{action1Label}
+				</button>
+			)}
+			
+			{onAction2Click && (
+				<button
+					onClick={onAction2Click}
+					className="mt-3 inline-flex  items-center justify-center gap-3 px-4 ml-2 py-1.5 text-xs md:text-sm font-medium bg-orange-600 hover:bg-orange-700 text-white rounded-lg"
+				>
+					{startIcon2 && <span className="flex items-center">{startIcon2}</span>}
+					{action2Label}
 				</button>
 			)}
 			</div>

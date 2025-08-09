@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { formatCurrencyShort } from "../../utils/format";
 
 export default function KPI() {
     const [data, setData] = useState([
@@ -23,10 +24,10 @@ export default function KPI() {
                 const result = res.data;
 
                 setData([
-                    { title: "Total Collected", value: result.total_collected, color: "bg-green-100", icon: "💰" },
-                    { title: "Pending Dues", value: result.pending_dues, color: "bg-red-100", icon: "📉" },
-                    { title: "Total Students", value: result.total_students, color: "bg-blue-100", icon: "🎓" },
-                    { title: "Term's Txns", value: result.term_txns, color: "bg-yellow-100", icon: "📆" },
+                    { title: "Total Collected", value: `KES. ${formatCurrencyShort(result.total_collected)}`, color: "bg-green-100", icon: "💰" },
+                    { title: "Pending Dues", value: `KES. ${formatCurrencyShort(result.pending_dues)}`, color: "bg-red-100", icon: "📉" },
+                    { title: "Total Students", value: `${formatCurrencyShort(result.total_students)}`, color: "bg-blue-100", icon: "🎓" },
+                    { title: "Term's Txns", value: `KES. ${formatCurrencyShort(result.term_txns)}`, color: "bg-yellow-100", icon: "📆" },
                 ]);
             } catch (err) {
                 console.error("Failed to load KPIs", err);

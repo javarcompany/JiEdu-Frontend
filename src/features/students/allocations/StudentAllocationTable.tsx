@@ -25,12 +25,14 @@ export interface StudentAllocation {
 	mname: string;
 	sname: string;
 	regno: string;
+	course: string;
 	Class: string;
 	class_name: string;
 	state: string;
 	branch: string
 	branch_name: string;
 	level: string;
+	module: string;
 	module_name: string;
 	phone: string;
 	passport: string;

@@ -3,15 +3,18 @@ export function formatCurrencyShort(value: number | string): string {
 
     if (isNaN(num)) return "0";
 
+    const format = (n: number, suffix: string) =>
+        n.toFixed(2).replace(/\.00$/, "") + suffix;
+
     if (num >= 1_000_000_000) {
-        return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "B";
+        return format(num / 1_000_000_000, "B");
     } else if (num >= 1_000_000) {
-        return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
-    } else if (num > 1_000) {
-        return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "K";
+        return format(num / 1_000_000, "M");
+    } else if (num >= 1_000) {
+        return format(num / 1_000, "K");
     }
 
-    return num.toLocaleString(); // e.g., "745"
+    return num.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
 }
 
 export const formatDateTime = (isoString: string) => {

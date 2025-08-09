@@ -15,7 +15,7 @@ import axios from "axios";
 import Pagination from "../../components/ui/pagination";
 
 export interface Course {
-	id: string;
+	id: number;
 	name: string;
 	abbr: string;
 	code: string;
@@ -25,6 +25,18 @@ export interface Course {
 		module_abbr: string;
 		duration: number;
 	}[];
+}
+
+export interface CourseDuration {
+	id: number;
+	course_abbr: string;
+	course_code: string;
+	course_name: string;
+	module_name: string;
+	module_abbr: string;
+	duration: string;
+	course_department_name: string;
+	course_department_abbr: string;
 }
 
 export default function CoursesTable({ searchTerm }: { searchTerm: string }) {

@@ -112,6 +112,13 @@ export default function TimetableDepartment() {
                     {/* Table Body */}
 
                     <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+                        {currentItems.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={2} className="py-3 text-center text-gray-400">
+                                    No lessons found.
+                                </TableCell>
+                            </TableRow>
+                        )} 
                         <AnimatePresence mode="wait">
                             {currentItems.map((lesson, index) => (
                                 <motion.tr

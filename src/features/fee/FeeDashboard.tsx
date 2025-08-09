@@ -1,4 +1,4 @@
-import { GaugeCircleIcon } from "lucide-react";
+import { FileUpIcon, GaugeCircleIcon } from "lucide-react";
 import PageMeta from "../../components/common/PageMeta";
 import ImageBannerBox from "../../components/ui/Banner";
 import Transactions from "./Transactions";
@@ -6,9 +6,12 @@ import KPI from "./KPI";
 import WalletCarousel from "./WalletCarousel";
 import FeeReport from "./ReportAction";
 import { useNavigate } from "react-router";
+import { useState } from "react";
+import { CreateInvoiceModal } from "./CreateInvoiceModal";
 
 export default function FeeDashboard() {
     const navigate = useNavigate();
+    const [openInvoiceModal, setOpenInvoiceModal] = useState(false);
     
     return (
         <>
@@ -29,9 +32,13 @@ export default function FeeDashboard() {
                         height={150}
                         title="Fee Dashboard"
                         subtitle="Welcome to the 2025 Fee Management Portal"
-                        actionLabel="Setup"
-                        startIcon={<GaugeCircleIcon />}
-                        onActionClick={() => navigate("/fee-setup/")}
+                        action1Label="Setup"
+                        startIcon1={<GaugeCircleIcon />}
+                        onAction1Click={() => navigate("/fee-setup/")}
+
+                        action2Label="Add Invoice"
+                        startIcon2={<FileUpIcon />}
+                        onAction2Click={() => setOpenInvoiceModal(true)}
                     />
                     
                     <div className="grid grid-cols-12 gap-4">
@@ -47,6 +54,11 @@ export default function FeeDashboard() {
                     </div>
                 </div>
             </div>
+
+            <CreateInvoiceModal
+                open={openInvoiceModal}
+                onClose={() => setOpenInvoiceModal(false)}
+            />
         </>
     );
 }

@@ -13,7 +13,6 @@ import { CameraIcon, UsersRoundIcon } from "lucide-react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-
 import Button from "../../components/ui/button/Button";
 import AdminGroups from "./AdminGroups"
 import { useModal } from "../../hooks/useModal";
@@ -40,6 +39,7 @@ export default function AdminDashboard(){
     
     const [usersCount, setUsersCount] = useState(0);
     const [branchCount, setBranchCount] = useState(0);
+    const [camerasCount, setCamerasCount] = useState(0);
 
     const { isOpen, openModal, closeModal } = useModal();
 
@@ -94,6 +94,20 @@ export default function AdminDashboard(){
                 console.error("Failed to fetch users count:", error);
             }
         };
+
+        const fetchCamerasCount = async () => {
+            try {
+                const response = await axios.get("/api/camera_count/",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                setCamerasCount(response.data.count);
+            } catch (error) {
+                console.error("Failed to fetch cameras count:", error);
+            }
+        };
+
         const fetchBranchCount = async () => {
             try {
                 const response = await axios.get("/api/branch_count/",
@@ -106,6 +120,8 @@ export default function AdminDashboard(){
                 console.error("Failed to fetch branches count:", error);
             }
         };
+
+        fetchCamerasCount();    
         fetchBranchCount();
 
         fetchUserCount();
@@ -158,7 +174,7 @@ export default function AdminDashboard(){
                     <div className="col-span-12 xl:col-span-12 py-2">
                         <ClickableStatCard
                             title="Cameras"
-                            value={formatStudentCount(usersCount)}
+                            value={formatStudentCount(camerasCount)}
                             percentageChange="Active"
                             contextText="Cameras"
                             classvalue="bg-green-900 dark:text-white-900 text-white"

@@ -256,7 +256,6 @@ export default function FeeParticulars () {
           ...prev, account: selected,
         }));
     };
-
     
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault(); // 👈 prevent URL update and refresh
