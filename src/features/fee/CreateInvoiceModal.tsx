@@ -32,7 +32,8 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
     const [selectedStudentsIDs, setSelectedStudentsIds] = useState<number[]>([]);
 
     const [classes, setClasses] = useState<Class[]>([]);
-    const [selectedClass, setSelectedClass] = useState<number[]>([]);
+    const [selectedClass, setSelectedClass] = useState<Class[]>([]);
+    const [selectedClassIDs, setSelectedClassIds] = useState<number[]>([]);
 
     const [courses, setCourses] = useState<CourseDuration[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
@@ -154,7 +155,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
 
     const isAllStudentsSelected = selectedStudentsIDs.length === students.length && students.length > 0;
 
-    const isAllClassesSelected = selectedClass.length === classes.length && classes.length > 0;
+    const isAllClassesSelected = selectedClassIDs.length === classes.length && classes.length > 0;
 
     // Select All handler
     const handleSelectAllStudents = (e: boolean) => {
@@ -172,9 +173,11 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
     const handleSelectAllClasses = (e: boolean) => {
         if (e) {
             // Select all classes IDs
-            setSelectedClass(classes.map((cls) => cls.id));
+            setSelectedClassIds(classes.map((cls) => cls.id));
+            setSelectedClass(classes.map((cls) => cls));
         } else {
             // Deselect all
+            setSelectedClassIds([]);
             setSelectedClass([]);
         }
     };
@@ -184,7 +187,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
     }
 
     const handleSelectOneClass = (id: number) =>{
-        setSelectedClass((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+        setSelectedClassIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
     }
 
     const handleSelectOneCourse = (id: number) => {
@@ -226,6 +229,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
 
             // 3️⃣ If target is student, check student selection
             if (targetType === "student") {
+
                 if (!selectedStudentsIDs || selectedStudentsIDs.length === 0) {
                     Swal.fire("Info", "Please select at least one student", "info");
                     return;
@@ -240,36 +244,45 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                         },
                     }
                 );
-
-                console.log(response)
-
-            } else {
-                // 7️⃣ If not student tab (class/course), proceed with original prompt
-                const result = await Swal.fire({
-                    title: "Fee structure exists",
-                    text: "Apply course structure or create custom invoice?",
-                    icon: "question",
-                    showDenyButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: "Apply Course Structure",
-                    denyButtonText: "Create Custom Invoice",
-                });
-
-                if (result.isConfirmed) {
-                    await axios.post("/api/apply-structure-as-invoice/", {
-                        target_type: targetType,
-                    });
-                } else if (result.isDenied) {
-                    await axios.post("/api/create-invoice/", {
-                        target_type: targetType,
-                        voteheads: selectedVoteheads,
-                        apply_as_structure: false,
-                    });
+                if (response.data.error){
+                    Swal.fire("Error", response.data.message, "error");
+                    return;
                 }
+                if (response.data.success){
+                    Swal.fire("Success", response.data.message, "success")
+                    handleCloseModal();
+                }
+                                
+            }
+            
+            if (targetType === "class") {
+                if (!selectedClassIDs || selectedClassIDs.length === 0) {
+                    Swal.fire("Info", "Please select at least one class", "info");
+                    return;
+                }
+
+                const class_response = await axios.post(
+                    "/api/create-invoice-classes/", 
+                    {class_ids: selectedClass.map(cls => cls.id), voteheads: selectedVoteheads},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                if (class_response.data.error){
+                    Swal.fire("Error", class_response.data.message, "error");
+                    return;
+                }
+                if (class_response.data.success){
+                    Swal.fire("Success", class_response.data.message, "success")
+                    handleCloseModal();
+                }
+
             }
 
-            Swal.fire("Success", "Invoice process completed", "success");
-            onClose();
+            handleCloseModal();
             
         } catch (error) {
             console.error(error);
@@ -277,6 +290,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
         }
     };
     console.log("Selected Student: ", selectedStudents)
+    console.log("Target Type: ", targetType)
     return (
         <>
             <div className="relative">
@@ -298,6 +312,8 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                                             setSelectedStudents([]);
                                             setSelectedStudentsIds([]);
                                             setSelectedCourse(null);
+                                            setSelectedClassIds([]);
+                                            console.log("Type: ", type)
                                         }
                                     }}
                                     className={`px-3 py-1 rounded text-sm font-medium border ${
@@ -551,7 +567,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                                                 classes.map((class_) => (
                                                     <TableRow key={class_.id}
                                                         className={`cursor-pointer ${
-                                                            selectedClass.includes(class_.id)
+                                                            selectedClassIDs.includes(class_.id)
                                                                 ? "bg-blue-100 dark:bg-blue-900"
                                                                 : ""
                                                         }`}
@@ -559,7 +575,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                                                     >
                                                         <TableCell className="py-3 px-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                                             <Checkbox
-                                                                checked={selectedClass.includes(class_.id)}
+                                                                checked={selectedClassIDs.includes(class_.id)}
                                                                 onChange={() => handleSelectOneClass(class_.id)}
                                                             />
                                                         </TableCell>
