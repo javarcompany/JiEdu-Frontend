@@ -70,7 +70,7 @@ const ImageBannerBox: React.FC<ImageBannerBoxProps> = ({
 			{onAction2Click && (
 				<button
 					onClick={onAction2Click}
-					className="mt-3 inline-flex  items-center justify-center gap-3 px-4 ml-2 py-1.5 text-xs md:text-sm font-medium bg-orange-600 hover:bg-orange-700 text-white rounded-lg"
+					className="mt-3 inline-flex  items-center justify-center gap-3 px-4 ml-2 py-1.5 text-xs md:text-sm font-medium bg-yellow-500 hover:bg-yellow-300 text-white rounded-lg"
 				>
 					{startIcon2 && <span className="flex items-center">{startIcon2}</span>}
 					{action2Label}

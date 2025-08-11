@@ -13,7 +13,7 @@ import Button from "../../components/ui/button/Button";
 import Swal from "sweetalert2";
 
 interface Priorities{
-	id: string;
+	id: number;
 	name: string;
 	rank: string;
 }
@@ -276,8 +276,12 @@ export default function PriorityLevels () {
 							{isEditing ? (
 								<button
 									type="button"
-									onClick={() => handleDeletePriority(editingPriority.id, editingPriority.name)}
-									className="p-5 border border-gray-500 rounded-lg items-center gap-2 bg-red-900 px-4 py-2.5 text-theme-md font-medium text-white shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-gray-800 dark:border-gray-700 dark:bg-red-800 dark:text-white dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+									onClick={() => {
+										if (editingPriority){
+											handleDeletePriority(editingPriority.id, editingPriority.name)
+										}
+									}}
+									className="p-5 border border-red-500 rounded-lg items-center gap-2 bg-red-600 px-4 py-2.5 text-theme-md font-medium text-white shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-red-600 dark:border-gray-700 dark:bg-red-800 dark:text-white dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
 								>
 									Delete Method
 								</button>

@@ -1,5 +1,5 @@
 # Auto detect text files and normalize
-* text=auto
+* text=auto 
 
 # Enforce LF endings for TypeScript
 *.ts text eol=lf
@@ -13,3 +13,5 @@
 *.html text eol=lf
 *.json text eol=lf
 *.md  text eol=lf
+
+* text=auto eol=lf

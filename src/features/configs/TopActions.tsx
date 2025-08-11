@@ -17,7 +17,7 @@ type TopActionsProps = {
     onPromoteSuccess: () => void;
 };
  
-function showToastsInSequence(messages: any[], delay = 1500) {
+export function showToastsInSequence(messages: any[], delay = 1500) {
     messages.forEach((msg, index) => {
         setTimeout(() => {
             toast.error(msg); // You can use toast.success/info/warning depending on context

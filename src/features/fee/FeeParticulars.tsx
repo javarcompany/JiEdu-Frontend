@@ -496,7 +496,7 @@ export default function FeeParticulars () {
                                 <button
                                     type="button"
                                     onClick={() => handleDeleteParticular(editingParticular.id, editingParticular.name)}
-                                    className="rounded-lg border border-gray-500 bg-red-900 px-4 py-2.5 text-white font-medium hover:bg-gray-100 hover:text-gray-800 dark:bg-red-800 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+                                    className="rounded-lg border border-red-500 bg-red-600 px-4 py-2.5 text-white font-medium hover:bg-gray-100 hover:text-red-700 dark:bg-red-800 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
                                 >
                                     Delete Particular
                                 </button>

@@ -13,10 +13,20 @@ import { Class } from "../classes/ClassesTable";
 import { CourseDuration } from "../courses/CoursesTable";
 
 import debounce from "lodash.debounce";
+import { showToastsInSequence } from "../configs/TopActions";
+import { toast } from "react-toastify";
 
 interface Props {
     open: boolean;
     onClose: () => void;
+}
+
+function showSuccessToastsInSequence(messages: any[], delay = 1500) {
+    messages.forEach((msg, index) => {
+        setTimeout(() => {
+            toast.success(msg); // You can use toast.success/info/warning depending on context
+        }, delay * index);
+    });
 }
 
 export function CreateInvoiceModal({ open, onClose }: Props) {
@@ -32,7 +42,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
     const [selectedStudentsIDs, setSelectedStudentsIds] = useState<number[]>([]);
 
     const [classes, setClasses] = useState<Class[]>([]);
-    const [selectedClass, setSelectedClass] = useState<Class[]>([]);
+    const [selectedClasses, setSelectedClasses] = useState<Class[]>([]);
     const [selectedClassIDs, setSelectedClassIds] = useState<number[]>([]);
 
     const [courses, setCourses] = useState<CourseDuration[]>([]);
@@ -174,11 +184,11 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
         if (e) {
             // Select all classes IDs
             setSelectedClassIds(classes.map((cls) => cls.id));
-            setSelectedClass(classes.map((cls) => cls));
+            setSelectedClasses(classes.map((cls) => cls));
         } else {
             // Deselect all
             setSelectedClassIds([]);
-            setSelectedClass([]);
+            setSelectedClasses([]);
         }
     };
 
@@ -197,7 +207,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
     const handleCloseModal = () => {
         
         setSelectedVoteheads([]);
-        setSelectedClass([]);
+        setSelectedClasses([]);
         setSelectedCourse(null);
         setSelectedStudents([]);
         setSelectedStudentsIds([]);
@@ -226,7 +236,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                 Swal.fire("Error", "Please enter amount for all voteheads", "error");
                 return;
             }
-
+        
             // 3️⃣ If target is student, check student selection
             if (targetType === "student") {
 
@@ -261,36 +271,168 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                     return;
                 }
 
-                const class_response = await axios.post(
-                    "/api/create-invoice-classes/", 
-                    {class_ids: selectedClass.map(cls => cls.id), voteheads: selectedVoteheads},
+                const response = await axios.post(
+                    "/api/create-invoices-classes/", 
+                    {class_ids: selectedClasses.map(cls => cls.id), voteheads: selectedVoteheads},
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     }
                 );
-
-                if (class_response.data.error){
-                    Swal.fire("Error", class_response.data.message, "error");
-                    return;
+                if (response?.data?.error) {
+                    let successMsgs = ["Invoice(s) created successfully!"];
+                    if (response?.data?.success){
+                        successMsgs = Array.isArray(response.data.successMessage)
+                            ? response.data.successMessage
+                            : [response.data.successMessage];
+                        showSuccessToastsInSequence(successMsgs);
+                    }
+                    let errorMsgs = ["Invoice(s) failed to create!"];
+                    if (response?.data?.error) {
+                        errorMsgs = Array.isArray(response.data.errMessage)
+                            ? response.data.errMessage
+                            : [response.data.errMessage];
+                        showToastsInSequence(errorMsgs);
+                    }
+                }else{
+                    Swal.fire("Success", response.data.message, "success")
                 }
-                if (class_response.data.success){
-                    Swal.fire("Success", class_response.data.message, "success")
-                    handleCloseModal();
-                }
-
+                handleCloseModal();
             }
 
-            handleCloseModal();
+            if (targetType === "course") {
+                if (!selectedCourse) {
+                    Swal.fire("Info", "Please select at least one course", "info");
+                    return;
+                }
+
+                // 4️⃣ Ask backend if fee structure exists for course/module
+                const response = await axios.post(
+                    "/api/check-fee-structure/", 
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        params: {course_id: selectedCourse},
+                    }
+                );
+                
+                if (response?.data?.feeCheckSuccess) {
+                    // 6️⃣ Ask user if they want to override
+                    const result = await Swal.fire({
+                        title: "Fee structure exists",
+                        text: "Would you like to override entered data with the existing fee structure?",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Append",
+                        cancelButtonText: "Override",
+                    });
+                    if (result.isConfirmed) {
+                        const response = await axios.post(
+                            "/api/create-invoices-course-append/", 
+                            {course_id: selectedCourse, voteheads: selectedVoteheads},
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        
+                        if (response?.data?.error) {
+                            let successMsgs = ["Fee Structure appended successfully!"];
+                            if (response?.data?.success){
+                                successMsgs = Array.isArray(response.data.successMessage)
+                                    ? response.data.successMessage
+                                    : [response.data.successMessage];
+                                showSuccessToastsInSequence(successMsgs);
+                            }
+                            let errorMsgs = ["Fee structure failed to append!"];
+                            if (response?.data?.error) {
+                                errorMsgs = Array.isArray(response.data.errMessage)
+                                    ? response.data.errMessage
+                                    : [response.data.errMessage];
+                                showToastsInSequence(errorMsgs);
+                            }
+                        }else{
+                            Swal.fire("Success", response.data.message, "success")
+                        }
+
+
+                    }else {
+                        const response = await axios.post(
+                            "/api/create-invoices-course-overide/", 
+                            {course_id: selectedCourse, voteheads: selectedVoteheads},
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        
+                        if (response?.data?.error) {
+                            let successMsgs = ["Fee Structure overiden successfully!"];
+                            if (response?.data?.success){
+                                successMsgs = Array.isArray(response.data.successMessage)
+                                    ? response.data.successMessage
+                                    : [response.data.successMessage];
+                                showSuccessToastsInSequence(successMsgs);
+                            }
+                            let errorMsgs = ["Fee Structure failed to overide!"];
+                            if (response?.data?.error) {
+                                errorMsgs = Array.isArray(response.data.errMessage)
+                                    ? response.data.errMessage
+                                    : [response.data.errMessage];
+                                showToastsInSequence(errorMsgs);
+                            }
+                        }else{
+                            Swal.fire("Success", response.data.message, "success")
+                        }
+
+                    }
+                }
+                
+                if (response?.data?.feeCheckError){
+                    const response = await axios.post(
+                        "/api/create-invoices-course-new/", 
+                        {course_id: selectedCourse, voteheads: selectedVoteheads},
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+
+                    if (response?.data?.error) {
+                        let successMsgs = ["Fee Structure created successfully!"];
+                        if (response?.data?.success){
+                            successMsgs = Array.isArray(response.data.successMessage)
+                                ? response.data.successMessage
+                                : [response.data.successMessage];
+                            showSuccessToastsInSequence(successMsgs);
+                        }
+                        let errorMsgs = ["Fee structure failed to create!"];
+                        if (response?.data?.error) {
+                            errorMsgs = Array.isArray(response.data.errMessage)
+                                ? response.data.errMessage
+                                : [response.data.errMessage];
+                            showToastsInSequence(errorMsgs);
+                        }
+                    }else{
+                        Swal.fire("Success", response.data.message, "success")
+                    }
+                }        
+                
+                handleCloseModal();
+            }
             
         } catch (error) {
             console.error(error);
             Swal.fire("Error", "Something went wrong while processing invoice", "error");
         }
     };
-    console.log("Selected Student: ", selectedStudents)
-    console.log("Target Type: ", targetType)
+    
     return (
         <>
             <div className="relative">
@@ -308,7 +450,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                                         setTrayVisible(true);
                                         if (targetType !== type) { // Only run if different button clicked
                                             setTargetType(type as any);
-                                            setSelectedClass([]);
+                                            setSelectedClasses([]);
                                             setSelectedStudents([]);
                                             setSelectedStudentsIds([]);
                                             setSelectedCourse(null);
@@ -571,12 +713,18 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
                                                                 ? "bg-blue-100 dark:bg-blue-900"
                                                                 : ""
                                                         }`}
-                                                        onClick={() => handleSelectOneClass(class_.id)}
+                                                        onClick={() => {
+                                                            handleSelectOneClass(class_.id);
+                                                            setSelectedClasses((prev) => (prev.includes(class_) ? prev.filter((i) => i !== class_) : [...prev, class_]));
+                                                        }}
                                                     >
                                                         <TableCell className="py-3 px-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                                             <Checkbox
                                                                 checked={selectedClassIDs.includes(class_.id)}
-                                                                onChange={() => handleSelectOneClass(class_.id)}
+                                                                onChange={() => {
+                                                                    handleSelectOneClass(class_.id);
+                                                                    setSelectedClasses((prev) => (prev.includes(class_) ? prev.filter((i) => i !== class_) : [...prev, class_]));
+                                                                }}
                                                             />
                                                         </TableCell>
 
