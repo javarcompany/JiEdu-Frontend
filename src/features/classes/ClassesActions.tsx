@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { fetchDropdownData } from "../../utils/apiFetch";
 
-export default function ClassesActions({ onSearch }: { onSearch: (value: string) => void }) {
+export default function ClassesActions({onSave, onSearch }: {onSave:(value: boolean)=>void, onSearch: (value: string) => void }) {
     const { isOpen, openModal, closeModal } = useModal();
 	const token = localStorage.getItem("access");
 
@@ -79,6 +79,9 @@ export default function ClassesActions({ onSearch }: { onSearch: (value: string)
             );
             Swal.fire("Success", "Class created successfully!", "success");
             setFormData({ name: "", course: "", intake: "", branch: "", module: "" });
+            
+            onSave(!true);
+
             closeModal();
         } catch (err) {
             console.error(err);

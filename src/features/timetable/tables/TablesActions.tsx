@@ -149,8 +149,8 @@ export default function TableActions({ filters, setFilters, selectedIds, setSele
             return;
         }
 
-        if (selectedIds.length === 0) {
-            Swal.fire("No selection", "Please assign workload to any lesson !", "warning");
+        if (selectedIds.filter(item => item.lesson && item.workload && item.classroom).length === 0) {
+            Swal.fire("No selection", "Please assign workload to any lesson!", "warning");
             return;
         }
  
@@ -169,6 +169,7 @@ export default function TableActions({ filters, setFilters, selectedIds, setSele
                     Swal.fire("Incomplete selection", "Each lesson must have a workload and classroom assigned.", "warning");
                     return;
                 }
+
                 try {
                     await axios.post(
                         `/api/allocate-timetable/${filters.class_}/${filters.day}/`,

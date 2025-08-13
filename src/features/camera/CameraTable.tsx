@@ -25,7 +25,7 @@ export interface Camera {
 	classroom_name: string;
 }
   
-export default function CameraTable({ searchTerm }: { searchTerm: string }) {
+export default function CameraTable({saveValue, searchTerm }: {saveValue:boolean,  searchTerm: string }) {
 	const token = localStorage.getItem("access");
   	const [cameras, setCameras] = useState<Camera[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -55,7 +55,7 @@ export default function CameraTable({ searchTerm }: { searchTerm: string }) {
 		if (!token) {return;}
 		
 		fetchCameras(searchTerm, page);
-	}, [token, searchTerm, page]);
+	}, [token, searchTerm, page, saveValue]);
 
 	if (loading) {
 		return <div className="p-4 text-sm text-gray-500">Loading camera...</div>;

@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { fetchDropdownData } from "../../utils/apiFetch";
 
-export default function CameraActions({ onSearch }: { onSearch: (value: string) => void }) {
+export default function CameraActions({onSave, onSearch }: {onSave:(value: boolean)=>void, onSearch: (value: string) => void }) {
     const { isOpen, openModal, closeModal } = useModal();
 	const token = localStorage.getItem("access");
 
@@ -40,10 +40,21 @@ export default function CameraActions({ onSearch }: { onSearch: (value: string) 
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
+
+    const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
     
+    console.log("Form Data: ", formData);
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault(); // 👈 prevent URL update and refresh
-    
+        if (!formData.name || !formData.classroom) {
+            Swal.fire("Error", "Please fill all required fields", "error");
+            return;
+        }
+
         try {
             await axios.post("/api/cameras/", 
                 formData,
@@ -53,9 +64,11 @@ export default function CameraActions({ onSearch }: { onSearch: (value: string) 
 					},
 				}
             );
+
             Swal.fire("Success", "Camera created successfully!", "success");
             setFormData({ name: "", ip_address: "", stream_url: "", stream_type: "mjpeg", role: "front", classroom: "", });
             closeModal();
+            onSave(!true);
         } catch (err) {
             console.error(err);
             Swal.fire("Error", "Failed to create camera", "error");
@@ -115,7 +128,7 @@ export default function CameraActions({ onSearch }: { onSearch: (value: string) 
                                 <select
                                     name="stream_type"
                                     value={formData.stream_type}
-                                    onChange={handleChange}
+                                    onChange={(e) => handleChangeSelect(e)}
                                     className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm 
                                                 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  
                                                 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/50 z-999
@@ -134,7 +147,7 @@ export default function CameraActions({ onSearch }: { onSearch: (value: string) 
                                 <select
                                     name="role"
                                     value={formData.role}
-                                    onChange={handleChange}
+                                    onChange={(e) => handleChangeSelect(e)}
                                     className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm 
                                                 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  
                                                 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/50 z-999

@@ -28,6 +28,8 @@ export default function DaysPreview() {
 	const [days, setDays] = useState<Day[]>([]);
 	const { isOpen, openModal, closeModal } = useModal();
 
+	const [save, setSave] = useState<boolean>(false);
+
 	const [page, setPage] = useState<number>(1);
 	const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -79,7 +81,7 @@ export default function DaysPreview() {
 
 		fetchDaysOptions();
 		fetchDays(page);
-	}, [page]);
+	}, [page, save]);
 
 	const handleSelectChange = (option: any, field: string) => {
         console.log(field, ":", option )
@@ -103,6 +105,7 @@ export default function DaysPreview() {
             Swal.fire("Success", "Day added successfully!", "success");
             setFormData({ name: ""});
             closeModal();
+			setSave(!save);
         } catch (err: any) {
 			const errorMsg = err?.response?.data?.name || "An unexpected error occurred";
 			Swal.fire("Error", `${errorMsg}`, "error");

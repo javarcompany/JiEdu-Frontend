@@ -47,7 +47,7 @@ export default function StaffPreview() {
 	useEffect(() => {
 		const fetchStaffs = async () => {
 			try {
-				const response = await axios.get("/api/staffs/",
+				const response = await axios.get("/api/staffs/?all=true",
 					{
                         headers: {
                             Authorization: `Bearer ${token}`,

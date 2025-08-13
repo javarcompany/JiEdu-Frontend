@@ -5,6 +5,7 @@ import {
     TableHeader,
     TableRow,
 } from "../../components/ui/table";
+import { formatDateTime } from "../../utils/format";
 
 import {  Pencil, Trash2 } from "lucide-react";
   
@@ -54,7 +55,6 @@ export default function UnitsTable({saveValue, searchTerm }: {saveValue:boolean,
 
 	useEffect(() => {
 		if (!token) {return;}
-		console.log("Save: ", saveValue);
 		fetchUnits(searchTerm, page);
 	},[token, searchTerm, page, saveValue]);
 
@@ -156,7 +156,7 @@ export default function UnitsTable({saveValue, searchTerm }: {saveValue:boolean,
 											<div className="flex items-center gap-3">
 												<div>
 													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-														{unit.dor}
+														{formatDateTime(unit.dor)}
 													</span>
 												</div>
 											</div>

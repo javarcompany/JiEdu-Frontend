@@ -1,37 +1,58 @@
 // useAutoLogout.js
 import { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode"; // ✅ Use default import
 
-const useAutoLogout = (timeout = 8 * 60 * 1000) => {
-  const navigate = useNavigate();
-  const timerId = useRef<ReturnType<typeof setTimeout> | null>(null);
+export default function useAutoLogout({ token, onLogout }: {token: any, onLogout: ()=> void}) {
+    const logoutCalled = useRef(false); // Prevent multiple logouts
+    const timeoutIdRef = useRef(null); // ✅ Store timeout ID
 
-  const logout = () => {
-    // Clear tokens
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    // Optionally call backend logout endpoint
-    // Redirect
-    navigate("/signin");
-  };
+    useEffect(() => {
+        if (!token) return; // No token, nothing to check
+ 
+        // Clear any previous timer
+        if (timeoutIdRef.current) {
+            clearTimeout(timeoutIdRef.current);
+        }
 
-  const resetTimer = () => {
-    if (timerId.current) clearTimeout(timerId.current);
-    timerId.current = setTimeout(logout, timeout);
-  };
+        try {
+            const decoded = jwtDecode(token);
+            if (!decoded.exp) return; // No expiry in token
 
-  useEffect(() => {
-    const events = ["mousemove", "keydown", "scroll", "click"];
-    events.forEach(event => window.addEventListener(event, resetTimer));
+            const expiryTime = decoded.exp * 1000; // exp is in seconds
+            const now = Date.now();
+            const delay = expiryTime - now;
 
-    resetTimer(); // Initial call
-    console.log(timerId.current)
+            if (delay <= 0) {
+                // Already expired
+                console.log("Delay: ", delay)
+                if (!logoutCalled.current) {
+                    logoutCalled.current = true;
+                    onLogout();
+                }
+                return;
+            }
 
-    return () => {
-      events.forEach(event => window.removeEventListener(event, resetTimer));
-      if (timerId.current) clearTimeout(timerId.current);
-    };
-  }, []);
-};
+            timeoutIdRef.current = setTimeout(() => {
+                if (!logoutCalled.current) {
+                    logoutCalled.current = true;
+                    onLogout();
+                }
+            }, delay);
 
-export default useAutoLogout;
+        } catch (err) {
+            console.error("Invalid token", err);
+            if (!logoutCalled.current) {
+                logoutCalled.current = true;
+                onLogout();
+            }
+        }
+
+        // Cleanup timer on unmount or token change
+        return () => {
+            if (timeoutIdRef.current) {
+                clearTimeout(timeoutIdRef.current);
+            }
+        };
+
+    }, [token, onLogout]);
+}

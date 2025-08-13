@@ -12,6 +12,7 @@ import { Modal } from "../../components/ui/modal";
 
 import { FormDataState } from "./InstitutionCard";
 import { toast } from "react-toastify";
+import DownloadTemplateButton from "./DownloadTemplate";
 
 type TopActionsProps = {
     onPromoteSuccess: () => void;
@@ -240,7 +241,7 @@ export default function TopActions({ onPromoteSuccess }: TopActionsProps) {
                 </div>
 
                 <div className="col-span-3">
-                    
+                    <DownloadTemplateButton />
                 </div>
 
                 <div className="col-span-3">

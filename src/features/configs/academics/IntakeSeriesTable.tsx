@@ -21,6 +21,8 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
 import { fetchDropdownData } from "../../../utils/apiFetch";
+import debounce from "lodash.debounce";
+import { formatDateTime } from "../../../utils/format";
 
 interface Term {
 	id: number;
@@ -42,6 +44,8 @@ export default function IntakeSeriesTable() {
 	const [years, setYear] = useState<{ value: string; label: string; }[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	
+	const [saved, setSaved] = useState<boolean>(false);
+
 	const [formData, setFormData] = useState({
 		name: "",
 		abbr: "",
@@ -55,36 +59,32 @@ export default function IntakeSeriesTable() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+ 	const fetchTerms = debounce(async () => {
+		try {
+			const response = await axios.get(`/api/terms/?all=true`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			setTerms(response.data.results);
+			setLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch Terms", error);
+			setLoading(false);
+		}
+	}, 100);
+
     useEffect(() => {
         const loadDropdowns = async () => {
-          setIntakes(await fetchDropdownData("/api/intakes/"));
+          setIntakes(await fetchDropdownData("/api/intakes/?all=true"));
           setYear(await fetchDropdownData("/api/academic-year/")); 
         };
 
-		const fetchTerms = async () => {
-			try {
-				const response = await axios.get("/api/terms/",
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					}
-				);
-				setTerms(response.data.results);
-				setLoading(false);
-			} catch (error) {
-				console.error("Failed to fetch Intakes", error);
-				setLoading(false);
-			}
-		};
-    
         loadDropdowns();
 		fetchTerms();
-
-		const interval = setInterval(fetchTerms, 2000);
-		return () => clearInterval(interval);
-
-    }, []);
+    }, [saved]);
 
 	const handleIntakeSelect = (selected: string) => {
         setFormData((prev) => ({
@@ -119,6 +119,7 @@ export default function IntakeSeriesTable() {
             Swal.fire("Success", "Intake created successfully!", "success");
             setFormData({ name: "", abbr: "", openingDate: "", closingDate: "", year: ""});
             closeModal();
+			setSaved(!saved);
         } catch (err) {
             console.error(err);
             Swal.fire("Error", "Failed to create intake", "error");
@@ -235,7 +236,7 @@ export default function IntakeSeriesTable() {
 											<div className="flex items-center gap-3">
 												<div>
 													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-														{intake.openingDate}
+														{formatDateTime(intake.openingDate)}
 													</span>
 												</div>
 											</div>
@@ -245,7 +246,7 @@ export default function IntakeSeriesTable() {
 											<div className="flex items-center gap-3">
 												<div>
 													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-														{intake.closingDate}
+														{formatDateTime(intake.closingDate)}
 													</span>
 												</div>
 											</div>
@@ -265,7 +266,7 @@ export default function IntakeSeriesTable() {
 											<div className="flex items-center gap-3">
 												<div>
 													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-														{intake.dor}
+														{formatDateTime(intake.dor)}
 													</span>
 												</div>
 											</div>

@@ -30,7 +30,7 @@ export interface Class {
 	dor: string;
 }
   
-export default function ClassTable({ searchTerm }: { searchTerm: string }) {
+export default function ClassTable({saveValue, searchTerm }: {saveValue:boolean, searchTerm: string }) {
 	const token = localStorage.getItem("access");
   	const [classes, setClasses] = useState<Class[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -60,7 +60,7 @@ export default function ClassTable({ searchTerm }: { searchTerm: string }) {
 		if (!token) {return;}
 		
 		fetchClasses(searchTerm, page);
-	}, [token, searchTerm, page]);
+	}, [token, searchTerm, page, saveValue]);
 
 	if (loading) {
 		return <div className="p-4 text-sm text-gray-500">Loading classes...</div>;

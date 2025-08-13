@@ -28,6 +28,8 @@ export default function UnitsActions({onSave, onSearch }: {onSave:(value: boolea
         label: string;
     }[]>([]);
 
+    let save = true;
+
     const [formData, setFormData] = useState({
         uncode: "",
         name: "",
@@ -119,7 +121,7 @@ export default function UnitsActions({onSave, onSearch }: {onSave:(value: boolea
             Swal.fire("Success", "Unit created successfully!", "success");
             setFormData({ name: "", uncode: "", abbr: "", course: "", module: "", weekly_hours: "" });
 
-            onSave(!true);
+            onSave(!save);
 
             closeModal();
         } catch (err: any) {

@@ -1,4 +1,4 @@
-import { useState, useEffect  } from "react";
+import { useState  } from "react";
 import { Link } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
@@ -11,9 +11,7 @@ import Swal from "sweetalert2";
 
 import axios from "axios";
 
-
 export default function SignInForm() {
-
 	const navigate = useNavigate();
 
 	const [showPassword, setShowPassword] = useState(false);
@@ -21,12 +19,6 @@ export default function SignInForm() {
 
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-
-	useEffect(() => {
-		if (localStorage.getItem("authToken")) {
-		  navigate("/");
-		}
-	}, []);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -75,7 +67,7 @@ export default function SignInForm() {
 				default:
 					navigate("/"); // fallback
 			}
-	  
+	
 		}catch (error: any) {
 			let errorMessage = "Invalid credentials.";
 
@@ -108,10 +100,8 @@ export default function SignInForm() {
 		setUsername('');
 		setPassword('');
 		setIsChecked(false); // optional: reset "Keep me logged in" checkbox
+	};
 
-	  };
-
-	  
 	return (
 		<div className="flex flex-col flex-1">
 			<div className="w-full max-w-md pt-10 mx-auto">

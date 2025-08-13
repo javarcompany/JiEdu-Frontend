@@ -49,7 +49,7 @@ export default function TablesPreview() {
 	const [formData, setFormData] = useState({
         name: "",
 		start: "",
-		duration: "",
+		duration: "00:30:00",
 		code: ""
     });
 
@@ -119,7 +119,7 @@ export default function TablesPreview() {
 				Swal.fire("Success", "Lesson added successfully!", "success");
 			}
 
-			setFormData({ name: "", start: "", duration: "", code: "" });
+			setFormData({ name: "", start: "", duration: "00:30:00", code: "" });
 			setEditingLesson(null);
 			closeModal();
 			fetchLessons(searchTerm, page);
@@ -171,7 +171,7 @@ export default function TablesPreview() {
 
 	const handleClose = () => {
 		setEditingLesson(null);
-		setFormData({ name: "", start: "", duration: "", code: "" });
+		setFormData({ name: "", start: "", duration: "00:30:00", code: "" });
 		closeModal();
 	};
 

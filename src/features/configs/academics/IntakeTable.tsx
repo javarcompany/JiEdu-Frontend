@@ -5,6 +5,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "../../../components/ui/table";
+import { formatDateTime } from "../../../utils/format";
 
 import { Modal } from "../../../components/ui/modal";
 
@@ -195,7 +196,7 @@ export default function IntakeTable() {
 											<div className="flex items-center gap-3">
 												<div>
 													<span className="block text-gray-500 font-medium text-theme-xs dark:text-gray-400">
-														{intake.dor}
+														{formatDateTime(intake.dor)}
 													</span>
 												</div>
 											</div>

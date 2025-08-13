@@ -35,7 +35,8 @@ const useLogout = () => {
 
             // Delay redirect slightly so user sees toast
             setTimeout(() => {
-                navigate("/signin");
+                navigate("/signin", { replace: true });
+                localStorage.clear();
             }, 100);
         }
     };

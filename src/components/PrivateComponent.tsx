@@ -1,7 +1,7 @@
 // src/components/PrivateRoute.tsx
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from "react-router-dom";
 
-export default function PrivateRoute({ children }: { children: JSX.Element }) {
-    const token = localStorage.getItem("authToken");
-    return token ? children : <Navigate to="/signin" />;
+export default function PrivateRoute() {
+    const token = localStorage.getItem("access");
+    return token ? <Outlet /> : <Navigate to="/signin" replace />;
 }

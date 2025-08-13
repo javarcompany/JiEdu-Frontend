@@ -100,17 +100,34 @@ export default function InstitutionCard({data}: {data:number;}) {
         });
 
         try {
-            const response = await fetch('api/institution/1/', {
-                method: 'PUT', // or 'PUT'
+            const firstTimeRes  = await fetch('/api/institution/', {
+                method :'GET',
                 headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                body: form,
+                        Authorization: `Bearer ${token}`,
+                    },
             });
+            
 
-            Swal.close()
-
-            if (!response.ok) throw new Error('Failed to update institution');
+            if (firstTimeRes.status === 404){
+                const response = await fetch('api/institution/', {
+                    method: 'POST', // or 'PUT'
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: form,
+                });
+                if (!response.ok) throw new Error('Failed to update institution');
+            }else{
+                const response = await fetch('api/institution/1/', {
+                    method: 'PUT', // or 'PUT'
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: form,
+                });
+                if (!response.ok) throw new Error('Failed to update institution');
+            }
+            Swal.close()       
 
             Swal.fire("Success", 'Institution updated successfully', "success");
             setFormData({
@@ -124,9 +141,11 @@ export default function InstitutionCard({data}: {data:number;}) {
             setSaving(true);
             closeModal();
         } catch (err) {
+            Swal.close()  
             console.error(err);
             Swal.fire("Failure",'Update failed!', "error");
         } finally {
+            Swal.close()  
             setSubmitting(false);
         }
     };
