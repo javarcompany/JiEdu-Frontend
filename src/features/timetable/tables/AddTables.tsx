@@ -29,8 +29,8 @@ export type SelectedIds = {
     [key: string]: number | undefined;
 };
 
-export default function AddTable({filters, setFilters, selectedIds, setSelectedIds }: { filters: { branch: string; course: string; module: string; term: string; class_: string; day: string; }; setFilters: React.Dispatch<React.SetStateAction<{ branch: string, course: string, module: string, term: string, class_: string, day: string }>>; selectedIds: SelectedIds[]; setSelectedIds: React.Dispatch<React.SetStateAction<SelectedIds[]>>; }) {
-    const { class_ } = filters;
+export default function AddTable({filters, setFilters, setSelectedIds }: { filters: { branch: string; course: string; module: string; term: string; class_: string; day: string; }; setFilters: React.Dispatch<React.SetStateAction<{ branch: string, course: string, module: string, term: string, class_: string, day: string }>>; setSelectedIds: React.Dispatch<React.SetStateAction<SelectedIds[]>>; }) {
+    const { class_, branch } = filters;
     const token = localStorage.getItem("access");
     const [workloads, setWorkloads] = useState<SelectOption[]>([]);
 
@@ -97,9 +97,10 @@ export default function AddTable({filters, setFilters, selectedIds, setSelectedI
                 const response = await axios.get(`/api/classrooms/?all=true`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const formatted = response.data.results.map((lesson: any) => ({
-                    value: lesson.id.toString(),
-                    label: lesson.name,
+                const formatted = response.data.results.map((classroom: any) => ({
+                    value: classroom.id.toString(),
+                    label: classroom.name,
+                    branch: classroom.branch
                 }));
                 setClassrooms(formatted);
             } catch (error) {
@@ -121,8 +122,6 @@ export default function AddTable({filters, setFilters, selectedIds, setSelectedI
 
         setSelectedIds(updatedSelections);
     }, [lessonSelections]);
-
-    console.log("Updated Selection List: ", selectedIds)
 
     useEffect(() => {
         if (filters.class_ && filters.day) {
@@ -153,6 +152,11 @@ export default function AddTable({filters, setFilters, selectedIds, setSelectedI
         return matchesClass;
     });
 
+    const filteredClassroom = classrooms.filter((classroom) => {
+        const matchesBranch = !branch || classroom.branch.toString() === branch;
+        return matchesBranch;
+    });
+ 
     if (loading) {
         return <div className="p-4 text-sm text-gray-500">Loading timetable data...</div>;
     }
@@ -261,7 +265,7 @@ export default function AddTable({filters, setFilters, selectedIds, setSelectedI
                                         <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                             <div className="px-3">
                                                 <DictSearchableSelect
-                                                    items={classrooms}
+                                                    items={filteredClassroom}
                                                     resetTrigger={resetKey} 
                                                     placeholder={isSelectionDisabled ? "Select Class and Day to enable." : "Select Classroom..."}
                                                     disabled={isSelectionDisabled}

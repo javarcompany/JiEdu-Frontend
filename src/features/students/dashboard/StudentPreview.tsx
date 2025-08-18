@@ -45,7 +45,7 @@ export default function StudentPreview() {
 	useEffect(() => {
 		const fetchStudents = async () => {
 			try {
-				const response = await axios.get(`/api/students-allocations/`,
+				const response = await axios.get(`/api/students-allocations/?all=true`,
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,

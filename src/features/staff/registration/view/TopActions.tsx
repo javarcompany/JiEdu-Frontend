@@ -44,7 +44,7 @@ export default function StaffTopActions() {
 	const handleReset = async () => {
 		try {
 			setLoading(true);
-			const res = await axios.post(`/api/reset-password/${staff?.regno}/`,
+			const res = await axios.post(`/api/reset-password/${staff?.id}/`,
 				{},
 				{
 					headers: { Authorization: `Bearer ${token}` },

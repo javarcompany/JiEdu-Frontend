@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export default function ClassTutorDashboard() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [save, onSave] = useState<boolean>(true);
     return (
         <>
             <PageMeta
@@ -15,11 +16,11 @@ export default function ClassTutorDashboard() {
             <div className="grid grid-cols-12 gap-4">
                 
                 <div className="col-span-12 xl:col-span-9">
-                    <ClassTutorTable searchTerm={searchTerm}/>
+                    <ClassTutorTable save={save} searchTerm={searchTerm}/>
                 </div>
 
                 <div className="col-span-12 xl:col-span-3">
-                    <ClassTutorActions onSearch={setSearchTerm} />
+                    <ClassTutorActions save={save} setSave={onSave} onSearch={setSearchTerm} />
                 </div>
 
                 <div className="col-span-12 xl:col-span-12">

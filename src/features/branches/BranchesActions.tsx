@@ -11,7 +11,7 @@ import { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-export default function BranchesActions({ onSearch }: { onSearch: (value: string) => void }) {
+export default function BranchesActions({onSave, onSearch }: {onSave:(value: boolean)=>void, onSearch: (value: string) => void }) {
     const { isOpen, openModal, closeModal } = useModal();
     const token = localStorage.getItem("access");
 
@@ -67,6 +67,7 @@ export default function BranchesActions({ onSearch }: { onSearch: (value: string
             Swal.fire("Success", "Branch created successfully!", "success");
             setFormData({ name: "", code: "", paddr: "", tel_a: "", tel_b: "", email: "" });
             closeModal();
+            onSave(!true);
         } catch (err) {
             console.error(err);
             Swal.fire("Error", "Failed to create branch", "error");

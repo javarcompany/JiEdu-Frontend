@@ -72,28 +72,28 @@ interface ExamsSummaryProp {
 }
 
 type StudentAgeDetail = {
-  regno: string;
-  profile_picture?: string;
-  student_name: string;
-  age: string;
-  status: string;
+    regno: string;
+    profile_picture?: string;
+    student_name: string;
+    age: string;
+    status: string;
 };
 
 type StudentGenderDetail = {
-  regno: string;
-  profile_picture?: string;
-  student_name: string;
-  gender: string;
-  status: string;
+    regno: string;
+    profile_picture?: string;
+    student_name: string;
+    gender: string;
+    status: string;
 };
 
 type StudentExamsDetail = {
-  regno: string;
-  profile_picture?: string;
-  student_name: string;
-  exams: string;
-  grade: string;
-  status: string;
+    regno: string;
+    profile_picture?: string;
+    student_name: string;
+    exams: string;
+    grade: string;
+    status: string;
 };
 
 export default function StudentReportDashboard() {
@@ -318,43 +318,99 @@ export default function StudentReportDashboard() {
             console.error("Failed to fetch students:", err);
         }
     };
-
+        
     const filteredStudents = () => {
+        const queryWords = searchQuery.toLowerCase().trim().split(/\s+/);
+        const statusFilter = studentFilter.toLowerCase();
+
         return students.filter((s) => {
             const matchesStatus =
-            studentFilter === "All" || s.status === studentFilter;
-            const matchesQuery =
-            s.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.regno.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.gender.toLowerCase().startsWith(searchQuery.toLowerCase()) ||
-            s.status.toLowerCase().includes(searchQuery.toLowerCase());
+                statusFilter === "all" || (s.status || "").toLowerCase() === statusFilter;
+
+            const studentFields = [
+                (s.student_name || "").toLowerCase(),
+                (s.regno || "").toLowerCase(),
+                (s.gender || "").toLowerCase(),
+                (s.status || "").toLowerCase()
+            ];
+
+            const matchesQuery = queryWords.every(word =>
+                studentFields.some(field => field.includes(word))
+            );
+
             return matchesStatus && matchesQuery;
         });
     };
 
     const filteredStudentsAge = () => {
+        const queryWords = searchQuery?.toLowerCase().trim().split(/\s+/) || [];
+        const statusFilter = (studentFilter || "").toLowerCase();
+
+        let ageFilters = [];
+        let textFilters = [];
+
+        // Separate age filters from text filters
+        for (const word of queryWords) {
+            const match = word.match(/^(>=|<=|>|<|=|==)\s*(\d+)$/);
+            if (match) {
+                const operator = match[1].replace("==", "=");
+                const number = parseInt(match[2], 10);
+                ageFilters.push({ operator, number });
+            } else {
+                textFilters.push(word);
+            }
+        }
+
         return studentsAge.filter((s) => {
             const matchesStatus =
-            studentFilter === "All" || s.status === studentFilter;
-            const matchesQuery =
-            s.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.regno.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.age.toString().includes(searchQuery) ||
-            s.status.toLowerCase().includes(searchQuery.toLowerCase());
-            return matchesStatus && matchesQuery;
+                statusFilter === "all" || (s.status || "").toLowerCase() === statusFilter;
+
+            const studentFields = [
+                (s.student_name || "").toLowerCase(),
+                (s.regno || "").toLowerCase(),
+                (s.status || "").toLowerCase()
+            ];
+
+            const matchesText = textFilters.every(word =>
+                studentFields.some(field => field.includes(word))
+            );
+
+            const matchesAge = ageFilters.every(({ operator, number }) => {
+                const age = Number(s.age) || 0;
+                switch (operator) {
+                    case ">": return age > number;
+                    case "<": return age < number;
+                    case ">=": return age >= number;
+                    case "<=": return age <= number;
+                    case "=": return age === number;
+                    default: return true;
+                }
+            });
+
+            return matchesStatus && matchesText && matchesAge;
         });
     };
 
     const filteredStudentsExams = () => {
+        const queryWords = searchQuery.toLowerCase().trim().split(/\s+/);
+        const statusFilter = studentFilter.toLowerCase();
+
         return studentsExams.filter((s) => {
             const matchesStatus =
-            studentFilter === "All" || s.status === studentFilter;
-            const matchesQuery =
-            s.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.regno.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.exams.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.grade.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            s.status.toLowerCase().includes(searchQuery.toLowerCase());
+                statusFilter === "all" || (s.status || "").toLowerCase() === statusFilter;
+
+            const studentFields = [
+                (s.student_name || "").toLowerCase(),
+                (s.regno || "").toLowerCase(),
+                (s.exams || "").toLowerCase(),
+                (s.grade || "").toLowerCase(),
+                (s.status || "").toLowerCase()
+            ];
+
+            const matchesQuery = queryWords.every(word =>
+                studentFields.some(field => field.includes(word))
+            );
+
             return matchesStatus && matchesQuery;
         });
     };

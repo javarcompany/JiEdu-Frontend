@@ -13,7 +13,7 @@ export default function UserInfoCard({user}: {user:Users | null}) {
 	const handleReset = async () => {
 		try {
 			setLoading(true);
-			const res = await axios.post(`/api/reset-password/${user?.username}/`,
+			const res = await axios.post(`/api/reset-password/${user?.id}/`,
 				{},
 				{
 					headers: { Authorization: `Bearer ${token}` },

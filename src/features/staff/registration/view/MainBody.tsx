@@ -91,7 +91,7 @@ export default function StaffMainBody() {
 
             <div className="px-6 py-4 gap-1 md:gap-1 sm:gap-1 rounded-lg dark:border dark:border-gray-800 border border-brand-300 border-blur">
                 <div className="flex items-center gap-4">
-                    <div className="grid grid-cols-4 gap-4 lg:grid-cols-4 lg:gap-7 2xl:gap-x-32">
+                    <div className="grid grid-cols-5 justify-between gap-4 lg:grid-cols-5 lg:gap-7 2xl:gap-x-32">
                         <div>
                             <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                                 GENDER
@@ -125,6 +125,15 @@ export default function StaffMainBody() {
                             </p>
                             <p className="text-sm font-medium text-gray-800 dark:text-white/90">
                                 {staff?.used_hours} / {staff?.weekly_hours} Hours
+                            </p>
+                        </div>
+
+                        <div>
+                            <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+                                BRANCH
+                            </p>
+                            <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                                {staff?.branch_name} Campus
                             </p>
                         </div>
                     </div>

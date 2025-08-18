@@ -24,7 +24,10 @@ export default function StudentActions(
 	const token = localStorage.getItem("access");
         
 	const handleBatchPromotion = async () => {
-		if (selectedStudentIds.length === 0) return;
+		if (selectedStudentIds.length === 0) {
+            Swal.fire("No selection", "Please select student(s) to promote.", "info");
+            return;
+        }
 
 		try {
 			Swal.fire({

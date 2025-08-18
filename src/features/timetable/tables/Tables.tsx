@@ -35,7 +35,6 @@ export default function Tables() {
                     <AddTable
                         filters={filters}
                         setFilters={setFilters}
-                        selectedIds={selectedIds}
                         setSelectedIds={setSelectedIds}
                     />
                 </div> 

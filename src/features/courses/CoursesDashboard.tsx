@@ -6,6 +6,7 @@ import { useState } from "react";
 
 export default function CoursesDashboard() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [save, setSave] = useState<boolean>(true);
     return (
         <>
             <PageMeta
@@ -16,11 +17,11 @@ export default function CoursesDashboard() {
             <div className="grid grid-cols-12 gap-4">
                 
                 <div className="col-span-12 xl:col-span-9">
-                    <CoursesTable searchTerm={searchTerm} />
+                    <CoursesTable saveValue = {save} searchTerm={searchTerm} />
                 </div>
                 
                 <div className="col-span-12 xl:col-span-3">
-                    <CoursesActions onSearch={setSearchTerm} />
+                    <CoursesActions onSave={setSave} onSearch={setSearchTerm} />
                 </div>
 
                 <div className="col-span-12 xl:col-span-12">

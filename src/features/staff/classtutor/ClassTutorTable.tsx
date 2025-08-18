@@ -31,7 +31,7 @@ interface ClassTutor {
 	state: string;
 }
 
-export default function ClassTutorTable({ searchTerm }: { searchTerm: string }) {
+export default function ClassTutorTable({ save, searchTerm }: { save:boolean; searchTerm: string }) {
 	const token = localStorage.getItem("access");
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -76,7 +76,7 @@ export default function ClassTutorTable({ searchTerm }: { searchTerm: string }) 
 			fetchClassTutors(searchTerm, page);
 		}
 
-	},[token, searchTerm, page]);
+	},[token, searchTerm, page, save]);
 
 	// Fetch classes based on selected lecturer's module
 	const fetchLecturersForClass = async (klass: ClassTutor) => {

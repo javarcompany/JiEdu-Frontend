@@ -9,6 +9,8 @@ export default function AssignWorkload() {
         module: "",
         term: "",
         class_: "",
+        branch: "",
+        department: "",
         lecturer: ""
     });
     const [selectedIds, setSelectedIds] = useState<string[]>([]); 

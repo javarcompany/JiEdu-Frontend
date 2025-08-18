@@ -13,6 +13,7 @@ interface Props {
 type ClassSummary = {
   class_id: string;
   class_name: string;
+  branch: string;
   total_invoiced: number;
   total_paid: number;
   total_balance: number;
@@ -119,6 +120,7 @@ export default function CourseIncomeStatement({ courseId, termId }: Props) {
                         <thead className="bg-blue-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
                             <tr>
                                 <th className="px-4 py-3 font-semibold text-left">Class</th>
+                                <th className="px-4 py-3 font-semibold text-left">Branch</th>
                                 <th className="px-4 py-3 font-semibold text-right">Invoiced</th>
                                 <th className="px-4 py-3 font-semibold text-right">Paid</th>
                                 <th className="px-4 py-3 font-semibold text-right">Balance</th>
@@ -132,6 +134,7 @@ export default function CourseIncomeStatement({ courseId, termId }: Props) {
                                 className="cursor-pointer hover:bg-blue-200 dark:hover:bg-gray-700 text-gray-800 dark:text-white"
                             >
                                 <td className="px-4 py-3">{cls.class_name}</td>
+                                <td className="px-2 py-3">{cls.branch}</td>
                                 <td className="px-4 py-3 text-right">KES {formatCurrencyShort(cls.total_invoiced)}</td>
                                 <td className="px-4 py-3 text-right">KES {formatCurrencyShort(cls.total_paid)}</td>
                                 <td

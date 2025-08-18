@@ -10,8 +10,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: {currentPage: num
         if (currentPage < totalPages) onPageChange(currentPage + 1);
     };
     
-    console.log("Current Page:", currentPage, "Total Pages: ", totalPages)
-
     return (
         <div className="flex justify-between mt-3 mb-4">
             <Button

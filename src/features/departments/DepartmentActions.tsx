@@ -13,7 +13,7 @@ import Button from "../../components/ui/button/Button";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 
-export default function DepartmentActions({ onSearch }: { onSearch: (value: string) => void }) {
+export default function DepartmentActions({onSave, onSearch }: {onSave:(value: boolean)=>void, onSearch: (value: string) => void }) {
     const { isOpen, openModal, closeModal } = useModal();
 	const token = localStorage.getItem("access");
 
@@ -42,6 +42,7 @@ export default function DepartmentActions({ onSearch }: { onSearch: (value: stri
             Swal.fire("Success", "Department created successfully!", "success");
             setFormData({ name: "", abbr: "" });
             closeModal();
+            onSave(!true);
         } catch (err) {
             console.error(err);
             Swal.fire("Error", "Failed to create department", "error");

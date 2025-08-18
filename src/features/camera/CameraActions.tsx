@@ -45,8 +45,6 @@ export default function CameraActions({onSave, onSearch }: {onSave:(value: boole
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
-    
-    console.log("Form Data: ", formData);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault(); // 👈 prevent URL update and refresh

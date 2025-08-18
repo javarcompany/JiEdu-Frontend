@@ -14,7 +14,7 @@ import debounce from "lodash.debounce";
 
 // Define the TypeScript interface for the table rows
 export interface Applicant {
-	id: string;
+	id: number;
 	fname: string;
 	mname: string;
 	sname: string;
@@ -30,7 +30,7 @@ export interface Applicant {
 	state: string;
 }
 
-export default function ApproveTable({ searchTerm, selectedIds, setSelectedIds }: { searchTerm: string; selectedIds: string[]; setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;  }) {
+export default function ApproveTable({ searchTerm, selectedIds, setSelectedIds }: { searchTerm: string; selectedIds: number[]; setSelectedIds: React.Dispatch<React.SetStateAction<number[]>>;  }) {
 	const token = localStorage.getItem("access");
 	const [applicants, setApplicants] = useState<Applicant[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
@@ -47,7 +47,7 @@ export default function ApproveTable({ searchTerm, selectedIds, setSelectedIds }
         }
     };
 
-	const handleSelectOne = (id: string) => {
+	const handleSelectOne = (id: number) => {
         setSelectedIds((prev) =>
             prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
         );
@@ -165,7 +165,7 @@ export default function ApproveTable({ searchTerm, selectedIds, setSelectedIds }
 										<img
 											src={applicant.passport}
 											className="h-[50px] w-[50px]"
-											alt={applicant.id}
+											alt={applicant.id.toLocaleString()}
 										/>
 										</div>
 										<div>

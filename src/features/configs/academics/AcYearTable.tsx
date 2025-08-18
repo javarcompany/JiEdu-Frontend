@@ -13,7 +13,7 @@ import Button from "../../../components/ui/button/Button";
 import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 
-import {  Pencil, Trash2, CalendarPlusIcon } from "lucide-react";
+import { CalendarPlusIcon, EyeIcon } from "lucide-react";
 import PageMeta from "../../../components/common/PageMeta";
 import { useModal } from "../../../hooks/useModal";
 
@@ -21,6 +21,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 import { useEffect, useState } from "react";
+import debounce from "lodash.debounce";
+import Pagination from "../../../components/ui/pagination";
+import { SearchButton } from "../../../components/dashboard/SearchButton";
 
 interface AcYears {
 	id: number;
@@ -32,37 +35,42 @@ export default function AcYearTable() {
     const token = localStorage.getItem("access");
     const { isOpen, openModal, closeModal } = useModal();
 	const [loading, setLoading] = useState<boolean>(true);
+	const [searchTerm, setSearchTerm] = useState<string>("");
+
+	const [page, setPage] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(1);
 
 	const [years, setYears] = useState<AcYears[]>([]);
 	const [formData, setFormData] = useState({
 		name: "",
 	});
+	const [editingAcyear, setEditingAcyear] = useState<AcYears | null>(null);
+	const isEditing = Boolean(editingAcyear);
+	const [saved, onSave] = useState<boolean>(false);
+
+	const fetchYears = debounce( async (searchTerm, page=1) => {
+		try {
+			const response = await axios.get(`/api/academic-year/?search=${searchTerm}&page=${page}`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+            setPage(response.data.page);
+			setYears(response.data.results);
+            setTotalPages(response.data.total_pages || response.data.num_pages || 1);
+			setLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch Intakes", error);
+			setLoading(false);
+		}
+	}, 100);
 
 	useEffect(() => {
+		fetchYears(searchTerm, page);
 
-		const fetchYears = async () => {
-			try {
-				const response = await axios.get("/api/academic-year/",
-					{
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-				);
-				setYears(response.data.results);
-				setLoading(false);
-			} catch (error) {
-				console.error("Failed to fetch Intakes", error);
-				setLoading(false);
-			}
-		};
-	
-		fetchYears();
-
-		const interval = setInterval(fetchYears, 2000);
-		return () => clearInterval(interval);
-
-	}, []);
+	}, [searchTerm, page, saved]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -73,38 +81,83 @@ export default function AcYearTable() {
 		e.preventDefault(); // 👈 prevent URL update and refresh
 	
 		try {
-			const resp = await axios.post(`/api/academic-year/`, 
-				formData,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
+			if (isEditing && editingAcyear) {
+				await axios.put(`/api/academic-year/${editingAcyear.id}/`, formData, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				Swal.fire("Success", "Academic Year updated successfully!", "success");
+			} else {
+				const resp = await axios.post(`/api/academic-year/`, 
+					formData,
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						}
 					}
+				);
+				if (resp.status == 201){
+					Swal.fire("Success", "Year created successfully!", "success");
+				} else{
+					const errorData = resp.data;
+					Swal.fire("Error", errorData || "Submission Failed!", "error");
 				}
-			);
-
-			console.log(resp)
-
-			if (resp.status == 201){
-				closeModal();
-				Swal.fire("Success", "Year created successfully!", "success");
-				setFormData({ name: ""});
-			} else{
-				closeModal();
-				const errorData = resp.data;
-				console.log("Here: ",errorData)
-				Swal.fire("Error", errorData || "Submission Failed!", "error");
 			}
+			setFormData({ name: ""});
+			onSave(!saved);
+
 		} catch (err) {
-			closeModal();
-			console.error(err);
 			Swal.fire("Error", "Failed to create year", "error");
 			setFormData({ name: ""});
+		} finally{
+			handleClose();
 		}
 	};
 
 	if (loading) {
 		return <div className="p-4 text-sm text-gray-500">Loading academic years...</div>;
 	}
+
+	const handleEditAcYear = async (acyear: AcYears) => {
+		setEditingAcyear(acyear);
+		setFormData({
+			name: acyear.name,
+		});
+		openModal();
+	}
+	
+	const handleDeleteAcyear = async (acyearID: number, acyearName: string) => {
+		
+		const result = await Swal.fire({
+			title: "Are you sure?",
+			text: `Do you want to delete the Academic Year "${acyearName}"? This action cannot be undone.`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#3085d6",
+			confirmButtonText: "Yes, delete it!",
+			cancelButtonText: "Cancel",
+		});
+
+		if (result.isConfirmed) {
+			handleClose();
+			try {
+				await axios.delete(`/api/academic-year/${acyearID}/`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				Swal.fire("Deleted!", `"${acyearName}" has been deleted.`, "success");
+				fetchYears(searchTerm, page); // Refresh list
+			} catch (error) {
+				console.error("Failed to delete academic year.", error);
+				Swal.fire("Error", "Something went wrong. Could not delete the term.", "error");
+			}
+		}
+	};
+
+	const handleClose = () => {
+		setEditingAcyear(null);
+		setFormData({ name: "" });
+		closeModal();
+	};
 
 	return (
 		<>
@@ -122,6 +175,7 @@ export default function AcYearTable() {
 					</div>
 			
 					<div className="flex items-center gap-3">
+						<SearchButton onSearch={setSearchTerm} />
 						<Button
 							onClick={openModal}
 							size="md"
@@ -195,21 +249,13 @@ export default function AcYearTable() {
 											</div>
 										</TableCell>
 
-										<TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										<TableCell>
 											<button
-												title="Edit Group"
-												className="text-green-500 hover:text-green-600 transition-colors"
-												onClick={() => console.log("Edit")}
+												title="Edit Academic Year "
+												className="text-blue-500 hover:text-yellow-600 transition-colors  px-4"
+												onClick={() => handleEditAcYear(acyear)}
 											>
-												<Pencil size={16} />
-											</button>
-
-											<button
-												title="Delete Group"
-												className="text-red-500 hover:text-red-600 transition-colors  px-4"
-												onClick={() => console.log("Delete")}
-											>
-												<Trash2 size={16} />
+												<EyeIcon size={20} />
 											</button>
 										</TableCell>
 									</TableRow>
@@ -220,14 +266,16 @@ export default function AcYearTable() {
 				</div>
 			</div>
 
-			<Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+			<Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+
+			<Modal isOpen={isOpen} onClose={handleClose} className="max-w-[700px] m-4">
                 <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
                     <div className="px-2 pr-14">
                         <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Add Academic Year
+                            {isEditing ? "Edit Academic Year" : "Add Academic Year"}
                         </h4>
                         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                            Exapnd the functionality and services offered in the institution
+                            Expand the functionality and services offered in the institution
                         </p>
                     </div>
 
@@ -244,16 +292,30 @@ export default function AcYearTable() {
                         </div>
 
                         <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                            <Button size="sm" variant="outline" onClick={closeModal}>
-                                Close
-                            </Button>
-                            <button
-                                type="submit"
-                                className="p-5 border border-gray-500 rounded-lg items-center gap-2 bg-blue px-4 py-2.5 text-theme-md font-medium text-gray-700 shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-                            >
-                                Add Academic Year
-                            </button>
-                        </div>
+							{ isEditing ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (editingAcyear) {
+                                            handleDeleteAcyear(editingAcyear.id, editingAcyear?.name)
+                                        }
+                                    }}
+                                    className="p-5 border border-red-500 rounded-lg items-center gap-2 bg-red-600 px-4 py-2.5 text-theme-md font-medium text-white shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-red-600 dark:border-gray-700 dark:bg-red-800 dark:text-white dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+                                >
+                                    Delete Academic Year
+                                </button>
+                            ) : (
+                                <Button size="sm" variant="outline" onClick={handleClose}>
+                                    Close
+                                </Button>
+                            )}
+							<button
+								type="submit"
+								className="p-5 border border-gray-500 rounded-lg items-center gap-2 bg-blue px-4 py-2.5 text-theme-md font-medium text-gray-700 shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+							>
+								Save Academic Year
+							</button>
+						</div>
                     </form>
                 </div>
             </Modal>

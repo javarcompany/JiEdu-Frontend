@@ -17,12 +17,12 @@ interface Classes {
     name: string;
 }
 
-export default function ClassTutorSummary() {
+export default function ClassTutorSummary({ save }: { save:boolean; }) {
     const token = localStorage.getItem("access");
     
     const [counts, setCount] = useState<Classes[]>([]);
     const [page, setPage] = useState(0);
-
+ 
     useEffect(() => {
         const fetchClasses = async () => {
             try {
@@ -39,7 +39,7 @@ export default function ClassTutorSummary() {
         
         
         fetchClasses();
-    }, []);
+    }, [save]);
 
     useEffect(() => {
         const interval = setInterval(() => {

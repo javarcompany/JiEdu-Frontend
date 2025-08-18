@@ -13,7 +13,7 @@ import Button from "../../../components/ui/button/Button";
 import Label from "../../../components/form/Label";
 import Input from "../../../components/form/input/InputField";
 
-import {  Pencil, Trash2, CalendarPlusIcon } from "lucide-react";
+import { CalendarPlusIcon, EyeIcon } from "lucide-react";
 import PageMeta from "../../../components/common/PageMeta";
 import { useModal } from "../../../hooks/useModal";
 
@@ -21,6 +21,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 
 import { useEffect, useState } from "react";
+import { SearchButton } from "../../../components/dashboard/SearchButton";
+import debounce from "lodash.debounce";
+import Pagination from "../../../components/ui/pagination";
 
 interface Intake {
 	id: number;
@@ -33,9 +36,18 @@ export default function IntakeTable() {
     const { isOpen, openModal, closeModal } = useModal();
     const token = localStorage.getItem("access");
 
+	const [searchTerm, setSearchTerm] = useState<string>("");
+
 	const [intakes, setIntakes] = useState<Intake[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	
+	const [page, setPage] = useState<number>(1);
+	const [totalPages, setTotalPages] = useState<number>(1);
+
+	const [editingIntake, setEditingIntake] = useState<Intake | null>(null);
+	const isEditing = Boolean(editingIntake);
+	const [saved, onSave] = useState<boolean>(false);
+
 	const [formData, setFormData] = useState({
 		openingMonth: "",
 		closingMonth: ""
@@ -46,55 +58,104 @@ export default function IntakeTable() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+	const fetchIntakes = debounce(async (searchTerm, page) => {
+		try {
+			const response = await axios.get(`/api/intakes/?search=${searchTerm}&page=${page}`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+            setPage(response.data.page);
+			setIntakes(response.data.results);
+            setTotalPages(response.data.total_pages || response.data.num_pages || 1);
+			setLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch Intakes", error);
+			setLoading(false);
+		}
+	}, 100);
+
 	useEffect(() => {
-		const fetchIntakes = async () => {
-			try {
-				const response = await axios.get("/api/intakes/",
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					}
-				);
-				setIntakes(response.data.results);
-				setLoading(false);
-			} catch (error) {
-				console.error("Failed to fetch Intakes", error);
-				setLoading(false);
-			}
-		};
-		
-		fetchIntakes();
-			const interval = setInterval(fetchIntakes, 2000);
-			return () => clearInterval(interval);
-	}, []);
+		fetchIntakes(searchTerm, page);
+	}, [searchTerm, page, saved]);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault(); // 👈 prevent URL update and refresh
       
         try {
-            await axios.post("/api/intakes/", 
-				formData,
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					}
-			);
-            Swal.fire("Success", "Intake created successfully!", "success");
-            setFormData({ openingMonth: "", closingMonth: ""});
-            closeModal();
+			if (isEditing && editingIntake) {
+				await axios.put(`/api/intakes/${editingIntake.id}/`, formData, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				Swal.fire("Success", "Intake updated successfully!", "success");
+			} else {
+				await axios.post("/api/intakes/", 
+					formData,
+						{
+							headers: {
+								Authorization: `Bearer ${token}`,
+							},
+						}
+				);
+				Swal.fire("Success", "Intake created successfully!", "success");
+			}
+			onSave(!saved);
         } catch (err) {
             console.error(err);
             Swal.fire("Error", "Failed to create intake", "error");
-            setFormData({ openingMonth: "", closingMonth: ""});
-            closeModal();
-        }
+        } finally{
+			handleClose();
+		}
     };
 
 	if (loading) {
 		return <div className="p-4 text-sm text-gray-500">Loading intakes...</div>;
 	}
+
+	const handleEditIntake = async (intake: Intake) => {
+		setEditingIntake(intake);
+		setFormData({
+			openingMonth: intake.openingMonth,
+			closingMonth: intake.closingMonth
+		});
+		openModal();
+	}
+
+	const handleDeleteIntake = async (intakeID: number, intakeName: string) => {
+		
+		const result = await Swal.fire({
+			title: "Are you sure?",
+			text: `Do you want to delete "${intakeName}" Intake? This action cannot be undone.`,
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#d33",
+			cancelButtonColor: "#3085d6",
+			confirmButtonText: "Yes, delete it!",
+			cancelButtonText: "Cancel",
+		});
+
+		if (result.isConfirmed) {
+			handleClose();
+			try {
+				await axios.delete(`/api/intakes/${intakeID}/`, {
+					headers: { Authorization: `Bearer ${token}` },
+				});
+				Swal.fire("Deleted!", `"${intakeName}" has been deleted.`, "success");
+				fetchIntakes(searchTerm, page); // Refresh list
+			} catch (error) {
+				console.error("Failed to delete intake.", error);
+				Swal.fire("Error", "Something went wrong. Could not delete the intake.", "error");
+			}
+		}
+	};
+
+	const handleClose = () => {
+		setEditingIntake(null);
+		setFormData({ openingMonth: "", closingMonth: ""});
+		closeModal();
+	};
 
 	return (
 		<>
@@ -112,6 +173,7 @@ export default function IntakeTable() {
 					</div>
 			
 					<div className="flex items-center gap-3">
+						<SearchButton onSearch={setSearchTerm} />
 						<Button
 							onClick={openModal}
 							size="md"
@@ -202,21 +264,13 @@ export default function IntakeTable() {
 											</div>
 										</TableCell>
 
-										<TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+										<TableCell>
 											<button
-												title="Edit Group"
-												className="text-green-500 hover:text-green-600 transition-colors"
-												onClick={() => console.log("Edit")}
+												title="Edit Intake "
+												className="text-blue-500 hover:text-yellow-600 transition-colors  px-4"
+												onClick={() => handleEditIntake(intake)}
 											>
-												<Pencil size={16} />
-											</button>
-
-											<button
-												title="Delete Group"
-												className="text-red-500 hover:text-red-600 transition-colors  px-4"
-												onClick={() => console.log("Delete")}
-											>
-												<Trash2 size={16} />
+												<EyeIcon size={20} />
 											</button>
 										</TableCell>
 									</TableRow>
@@ -227,14 +281,16 @@ export default function IntakeTable() {
 				</div>
 			</div>
 
+			<Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} />
+
 			<Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
                 <div className="relative w-full p-4 overflow-y-auto bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
                     <div className="px-2 pr-14">
                         <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-                            Add Intake
+                            {isEditing ? "Edit Intake" : "Add Intake"}
                         </h4>
                         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                            Exapnd the functionality and services offered in the institution
+                            Expand the functionality and services offered in the institution
                         </p>
                     </div>
 
@@ -256,16 +312,30 @@ export default function IntakeTable() {
                         </div>
 
                         <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-                            <Button size="sm" variant="outline" onClick={closeModal}>
-                                Close
-                            </Button>
+							{ isEditing ? (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (editingIntake) {
+                                            handleDeleteIntake(editingIntake.id, editingIntake?.openingMonth)
+                                        }
+                                    }}
+                                    className="p-5 border border-red-500 rounded-lg items-center gap-2 bg-red-600 px-4 py-2.5 text-theme-md font-medium text-white shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-red-600 dark:border-gray-700 dark:bg-red-800 dark:text-white dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+                                >
+                                    Delete Intake
+                                </button>
+                            ) : (
+                                <Button size="sm" variant="outline" onClick={handleClose}>
+                                    Close
+                                </Button>
+                            )}
 							<button
-                                type="submit"
-                                className="p-5 border border-gray-500 rounded-lg items-center gap-2 bg-blue px-4 py-2.5 text-theme-md font-medium text-gray-700 shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-                            >
-                                Save Intake
-                            </button>
-                        </div>
+								type="submit"
+								className="p-5 border border-gray-500 rounded-lg items-center gap-2 bg-blue px-4 py-2.5 text-theme-md font-medium text-gray-700 shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+							>
+								Save Intake
+							</button>
+						</div>
                     </form>
                 </div>
             </Modal>

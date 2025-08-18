@@ -13,29 +13,27 @@ import { Units } from "../../units/UnitsTable";
 import Pagination from "../../../components/ui/pagination";
 import debounce from "lodash.debounce";
 
-export default function AssignTutorTable({filters, selectedIds, setSelectedIds, }: { filters: { course: string; term: string; module: string; class_: string; lecturer: string; }; selectedIds: string[]; setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; }) {
+export default function AssignTutorTable({filters, selectedIds, setSelectedIds, }: { filters: { course: string; term: string; module: string; class_: string; lecturer: string; branch: string; department: string; }; selectedIds: string[]; setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; }) {
 	
-	const { course, module } = filters;
-
 	const token = localStorage.getItem("access");
 	const [units, setUnits] = useState<Units[]>([]);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [page, setPage] = useState<number>(1);
 	const [totalPages, setTotalPages] = useState<number>(1);
 
-	const fetchUnits = debounce(async (page=1) => {
+	const fetchUnits = debounce(async (page=1, pagin) => {
 		try {
-			const response = await axios.get(`/api/units/?page=${page}`,
+			const response = await axios.get(`/api/units/?page=${page}&no_pagination=${pagin}`,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
 					},
 				}
 			);
-			setUnits(response.data.results);
+			setUnits(response.data.results || response.data);
 			setLoading(false);
 			setPage(response.data.page || 1);
-			setTotalPages(response.data.total_pages || response.data.num_pages || 2);
+			setTotalPages(response.data.total_pages || response.data.num_pages || 1);
 		} catch (error) {
 			console.error("Failed to fetch Units", error);
 			setLoading(false);
@@ -44,13 +42,15 @@ export default function AssignTutorTable({filters, selectedIds, setSelectedIds, 
 
 	useEffect(() => {
 		if (!token) {return;}
-				
-		fetchUnits(page);
-	},[token, page]);
+
+		const paginValue = filters.class_ ? "true" : "false";
+		
+		fetchUnits(page, paginValue);
+	},[token, page, filters.class_]);
 	
 	const filteredData = units.filter((unit) => {
-        const matchesCourse = !course || unit.course.toString() === course;
-        const matchesModule = !module || unit.module.toString() === module;
+        const matchesCourse = !filters.course.toString() || unit.course.toString() === filters.course.toString();
+        const matchesModule = !filters.module.toString() || unit.module.toString() === filters.module.toString();
 		return matchesCourse && matchesModule;
 	});
 	

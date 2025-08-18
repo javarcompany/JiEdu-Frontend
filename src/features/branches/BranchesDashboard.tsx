@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export default function BranchDashboard() {
     const [searchTerm, setSearchTerm] = useState("");
+    const [save, setSave] = useState<boolean>(true);
     return (
         <>
             <PageMeta
@@ -15,11 +16,11 @@ export default function BranchDashboard() {
             <div className="grid grid-cols-12 gap-4">
                 
                 <div className="col-span-12 xl:col-span-9">
-                    <BranchesTable  searchTerm={searchTerm} />
+                    <BranchesTable saveValue = {save} searchTerm={searchTerm} />
                 </div>
 
                 <div className="col-span-12 xl:col-span-3">
-                    <BranchesActions onSearch={setSearchTerm} />
+                    <BranchesActions onSave={setSave} onSearch={setSearchTerm} />
                 </div>
 
                 <div className="col-span-12 xl:col-span-12">

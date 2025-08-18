@@ -106,7 +106,7 @@ export function CreateInvoiceModal({ open, onClose }: Props) {
 
     const fetchCourses = debounce(async (query) => {
 		try {
-			const response = await axios.get(`/api/course-durations/?search=${query}&active=true`,
+			const response = await axios.get(`/api/course-durations/?search=${query}&active=true&all=true`,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,

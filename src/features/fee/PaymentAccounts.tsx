@@ -334,7 +334,7 @@ export default function PaymentAccounts () {
                                     }}
                                     className="p-5 border border-red-500 rounded-lg items-center gap-2 bg-red-600 px-4 py-2.5 text-theme-md font-medium text-white shadow-theme-xs hover:bg-gray-100 hover:shadow-lg hover:text-red-600 dark:border-gray-700 dark:bg-red-800 dark:text-white dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
                                 >
-                                    Delete Method
+                                    Delete Votehead
                                 </button>
                             ) : (
                                 <Button size="sm" variant="outline" onClick={closeModal}>

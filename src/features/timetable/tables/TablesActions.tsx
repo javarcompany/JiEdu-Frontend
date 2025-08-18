@@ -59,7 +59,6 @@ export default function TableActions({ filters, setFilters, selectedIds, setSele
 
     useEffect(() => {
         fetchClasses();
-
     }, [filters.term]);
 
     useEffect(() => {
@@ -239,7 +238,7 @@ export default function TableActions({ filters, setFilters, selectedIds, setSele
                     items={courses}
                     placeholder="Select Course..."
                     onSelect={(val) =>
-                    setFilters({ ...filters, course: val, class_: "", module: "" })
+                        setFilters({ ...filters, course: val, class_: "", module: "" })
                     }
                 />
             </div>

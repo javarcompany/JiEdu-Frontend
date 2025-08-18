@@ -16,13 +16,17 @@ type SelectOption = {
     value: string;
     label: string;
     class?: string;
+    branch: string;
+    department: string;
     lecturer?: string;
     term?: string;
 };
 
-export default function ClassTutorActions({ onSearch }: { onSearch: (value: string) => void }) {
+export default function ClassTutorActions({save, setSave, onSearch }: {save:boolean; setSave: (value: boolean)=> void; onSearch: (value: string) => void }) {
     const { isOpen, openModal, closeModal } = useModal();
+    const [allLecturers, setAllLecturers] = useState<SelectOption[]>([]);
     const [lecturers, setLecturers] = useState<SelectOption[]>([]);
+    const [allClasses, setAllClasses] = useState<SelectOption[]>([]);
     const [classes, setClasses] = useState<SelectOption[]>([]);
     const token = localStorage.getItem("access");
 
@@ -40,11 +44,13 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
                 const formatted = response.data.results.map((lecturer: any) => ({
                     value: lecturer.id.toString(),
                     label: lecturer.fullname,
+                    branch: lecturer.branch.toString(),
+                    department: lecturer.department.toString()
                 }));
+                setAllLecturers(formatted);
                 setLecturers(formatted);
-                console.log("Lecturers: ", formatted)
             } catch (error) {
-            console.error("Failed to load lecturers", error);
+                console.error("Failed to load lecturers", error);
             }
         };
 
@@ -55,10 +61,12 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
                 });
                 const formatted = response.data.results.map((cls: any) => ({
                     value: cls.id.toString(),
-                    label: cls.name.toString()
+                    label: cls.name.toString(),
+                    branch: cls.branch.toString(),
+                    department: cls.department.toString(),
                 }));
+                setAllClasses(formatted);
                 setClasses(formatted);
-                console.log("Classes: ", formatted)
             } catch (error) {
                 console.error("Failed to load classes", error);
             }
@@ -67,7 +75,47 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
         fetchLecturers();
         fetchClasses();
     }, []);
-    
+
+    // When lecturer is selected → filter classes
+    const handleLecturerSelect = (lecturerVal?: string) => {
+        setLecturerID(lecturerVal || undefined);
+
+        if (!lecturerVal) {
+            // If cleared → restore all
+            setClasses(allClasses);
+            setLecturers(allLecturers);
+            return;
+        }
+
+        const selectedLecturer = allLecturers.find(l => l.value === lecturerVal);
+        if (selectedLecturer) {
+            const filteredClasses = allClasses.filter(c =>
+                c.branch === selectedLecturer.branch && c.department === selectedLecturer.department
+            );
+            setClasses(filteredClasses);
+        }
+    };
+
+    // When class is selected → filter lecturers
+    const handleClassSelect = (classVal?: string) => {
+        setClassID(classVal || undefined);
+
+        if (!classVal) {
+            // If cleared → restore all
+            setClasses(allClasses);
+            setLecturers(allLecturers);
+            return;
+        }
+
+        const selectedClass = allClasses.find(c => c.value === classVal);
+        if (selectedClass) {
+            const filteredLecturers = allLecturers.filter(l =>
+                l.branch === selectedClass.branch && l.department === selectedClass.department
+            );
+            setLecturers(filteredLecturers);
+        }
+    };
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault(); // 👈 prevent URL update and refresh
 
@@ -96,8 +144,6 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
             );
 
             Swal.close();
-            
-            console.log(response.data)
 
             if (response.data.error) {
                 Swal.fire("Errors", response.data.error, "error");
@@ -107,6 +153,7 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
                 Swal.fire("Success", response.data.message, "success");
             }
             closeModal();
+            setSave(!save);
             
         } catch (err) {
             console.error(`Error:`, err);
@@ -131,7 +178,7 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
                     </Button>
                 </div>
                 <div className="col-span-12">
-                    <ClassTutorSummary />
+                    <ClassTutorSummary save={save} />
                 </div>
             </div>
 
@@ -153,7 +200,7 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
                                     <Label>Lecturer</Label>
                                     <DictSearchableSelect 
                                         items={lecturers}
-                                        onSelect={(val) => setLecturerID(val)} 
+                                        onSelect={handleLecturerSelect}
                                     />
                                 </div>
 
@@ -161,7 +208,7 @@ export default function ClassTutorActions({ onSearch }: { onSearch: (value: stri
                                     <Label>Class</Label>
                                     <DictSearchableSelect 
                                         items={classes}
-                                        onSelect={(val) => setClassID(val)}
+                                        onSelect={handleClassSelect}
                                     />
                                 </div>
                             </div>

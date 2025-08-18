@@ -72,8 +72,6 @@ export default function AllocateTable({filters, selectedIds, setSelectedIds, }: 
 		fetchStudents(page);
 	},[token, page]);
 
-    console.log("Branch: ", branch, "Course",course, "Module: ", module, "Term:", term)
-
     const filteredData = students.filter((student) => {
         const matchesBranch = !branch || student.branch.toString() === branch;
         const matchesCourse = !course || student.course.toString() === course;

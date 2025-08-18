@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 
 import { useEffect, useState } from "react";
 
-export default function CoursesActions({ onSearch }: { onSearch: (value: string) => void }) {
+export default function CoursesActions({onSave, onSearch }: {onSave:(value: boolean)=>void, onSearch: (value: string) => void }) {
     const { isOpen, openModal, closeModal } = useModal();
 	const token = localStorage.getItem("access");
 
@@ -28,7 +28,7 @@ export default function CoursesActions({ onSearch }: { onSearch: (value: string)
         name: "",
         abbr: "",
         department: "",
-        modules: 1,
+        module_duration: 1,
     });
 
     const [moduleTerms, setModuleTerms] = useState<number[]>([]);
@@ -82,7 +82,7 @@ export default function CoursesActions({ onSearch }: { onSearch: (value: string)
     const handleInitialSave = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const numModules = formData.modules  || 1;
+        const numModules = formData.module_duration  || 1;
         setModuleTerms(Array(numModules).fill(1)); // default 1 term/module
         setStep("terms");
     };
@@ -97,10 +97,9 @@ export default function CoursesActions({ onSearch }: { onSearch: (value: string)
                 code: formData.code,
                 abbr: formData.abbr,
                 department: formData.department,
-                module_durations: moduleTerms, // <- list like [2, 3]
+                module_durations: formData.module_duration,
+                durations: moduleTerms, // <- list like [2, 3]
             };
-
-            console.log("Payload: ", payload)
 
             await axios.post("/api/courses/", payload, {
                 headers: {
@@ -109,15 +108,16 @@ export default function CoursesActions({ onSearch }: { onSearch: (value: string)
             });
 
             Swal.fire("Success", "Course created successfully!", "success");
-            setFormData({ name: "", code: "", abbr: "", department: "", modules: 1 });
+            setFormData({ name: "", code: "", abbr: "", department: "", module_duration: 1 });
             setModuleTerms([]); // Reset term durations state
             closeModal();
             setStep("course");
             setIsSubmitting(false);
+            onSave(!true);
         } catch (err) {
             console.error(err);
             Swal.fire("Error", "Failed to create course", "error");
-            setFormData({ name: "", code: "", abbr: "", department: "", modules: 1 });
+            setFormData({ name: "", code: "", abbr: "", department: "", module_duration: 1 });
             setModuleTerms([]);
             closeModal();
             setStep("course");
@@ -177,7 +177,7 @@ export default function CoursesActions({ onSearch }: { onSearch: (value: string)
 
                                         <div className="">
                                             <Label>Modules</Label>
-                                            <Input type="number"   name="modules" value={formData.modules} min="1" onChange={handleChange} />  
+                                            <Input type="number"   name="modules" value={formData.module_duration} min="1" onChange={handleChange} />  
                                         </div>
 
                                     </div>

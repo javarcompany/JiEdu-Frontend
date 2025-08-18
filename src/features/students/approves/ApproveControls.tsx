@@ -5,11 +5,18 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-export default function ApproveActions({ onSearch, selectedIds, setSelectedIds, }: { onSearch: (value: string) => void; selectedIds: string[]; setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; }) {
+export default function ApproveActions({ onSearch, selectedIds, setSelectedIds, }: { onSearch: (value: string) => void; selectedIds: number[]; setSelectedIds: React.Dispatch<React.SetStateAction<number[]>>; }) {
     const navigate = useNavigate();
+    const token = localStorage.getItem("access");
 
     const handleBatchApprove = async () => {
+        if (!token) {
+            Swal.fire("Error", "Authentication token is missing. Please log in again.", "error");
+            return;
+        }
+
         if (selectedIds.length === 0) {
             Swal.fire("No selection", "Please select applications to approve.", "info");
             return;
@@ -23,27 +30,30 @@ export default function ApproveActions({ onSearch, selectedIds, setSelectedIds, 
                 didOpen: () => Swal.showLoading(),
             });
 
-            const token = localStorage.getItem("access");
-            
-            for (const id of selectedIds) {
-                try {
-                    const res = await axios.post(
-                        `/api/approve-application/${id}/`,
-                        {},
-                        { headers: { Authorization: `Bearer ${token}` } }
-                    );
-                    console.log(res.data);
-                } catch (err) {
-                    console.error(`Error approving ID ${id}:`, err);
-                }
-            }
+            const res = await axios.post(
+				`/api/application/approve-batch-applications/`,
+				{ application_ids: selectedIds },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
+
+            const responseData = res.data;
+            responseData.forEach((msg: any, index: number) => {
+                setTimeout(() => {
+                    if (msg.message) {
+                        toast.success(msg.message, { autoClose: 2000 });
+                    } else if (msg.error) {
+                        toast.error(msg.error, { autoClose: 2000 });
+                    }
+                }, index * 2100); // stagger each toast by 2.1 seconds
+            });
 
             Swal.close();
-            Swal.fire("Success", "Selected applications have been approved.", "success");
+
+            // Swal.fire("Success", "Selected applications have been approved.", "success");
 
             setSelectedIds([]); // Clear selection
             // Optionally, you can emit a refresh signal here if needed
-            navigate("/")
+            navigate(-1)
         } catch (error) {
             Swal.close();
             Swal.fire("Error", "Approval failed. Please try again.", "error");
@@ -52,6 +62,11 @@ export default function ApproveActions({ onSearch, selectedIds, setSelectedIds, 
     };
 
     const handleBatchDecline = async () => {
+        if (!token) {
+            Swal.fire("Error", "Authentication token is missing. Please log in again.", "error");
+            return;
+        }
+
         if (selectedIds.length === 0) {
             Swal.fire("No selection", "Please select applications to decline.", "info");
             return;
@@ -65,27 +80,29 @@ export default function ApproveActions({ onSearch, selectedIds, setSelectedIds, 
                 didOpen: () => Swal.showLoading(),
             });
 
-            const token = localStorage.getItem("access");
-            
-            for (const id of selectedIds) {
-                try {
-                    const res = await axios.post(
-                        `/api/decline-application/${id}/`,
-                        {},
-                        { headers: { Authorization: `Bearer ${token}` } }
-                    );
-                    console.log(res.data);
-                } catch (err) {
-                    console.error(`Error declining ID ${id}:`, err);
-                }
-            }
+            const res = await axios.post(
+				`/api/application/decline-batch-applications/`,
+				{ application_ids: selectedIds },
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
+
+            const responseData = res.data;
+            responseData.forEach((msg: any, index: number) => {
+                setTimeout(() => {
+                    if (msg.message) {
+                        toast.success(msg.message, { autoClose: 2000 });
+                    } else if (msg.error) {
+                        toast.error(msg.error, { autoClose: 2000 });
+                    }
+                }, index * 2100); // stagger each toast by 2.1 seconds
+            });
 
             Swal.close();
-            Swal.fire("Success", "Selected applications have been declined.", "success");
+            // Swal.fire("Success", "Selected applications have been declined.", "success");
 
             setSelectedIds([]); // Clear selection
             // Optionally, you can emit a refresh signal here if needed
-            navigate("/")
+            navigate(-1)
         } catch (error) {
             Swal.close();
             Swal.fire("Error", "Declining failed. Please try again.", "error");

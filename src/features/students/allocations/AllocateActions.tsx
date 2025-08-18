@@ -35,6 +35,9 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
     const [terms, setTerms] = useState<SelectOption[]>([]);
     const [classes, setClasses] = useState<SelectOption[]>([]);
     const [resetKey, setResetKey] = useState(0);
+    const [resetModuleKey, setResetModuleKey] = useState(0);
+    const [resetCourseKey, setResetCourseKey] = useState(0);
+    const [resetTermKey, setResetTermKey] = useState(0);
 
     const fetchClasses = debounce( async () => {
         try {
@@ -64,7 +67,7 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
     useEffect(() => {
         const fetchBranches = async () => {
             try {
-                const response = await axios.get("/api/branches/", {
+                const response = await axios.get("/api/branches/?all=true", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const formatted = response.data.results.map((branch: any) => ({
@@ -79,7 +82,7 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
 
         const fetchCourses = async () => {
             try {
-                const response = await axios.get("/api/courses/", {
+                const response = await axios.get("/api/courses/?all=true", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const formatted = response.data.results.map((course: any) => ({
@@ -94,7 +97,7 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
 
         const fetchModules = async () => {
             try {
-                const response = await axios.get("/api/modules/", {
+                const response = await axios.get("/api/modules/?all=true", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const formatted = response.data.results.map((module: any) => ({
@@ -186,7 +189,7 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
             setFilters({branch: "", course:"", module: "", class_: "", term:""})
             setSelectedIds([]); // Clear selection
             // Optionally, you can emit a refresh signal here if needed
-            navigate("/")
+            navigate(-1)
         } catch (error) {
             Swal.close();
             Swal.fire("Error", "Allocation failed. Please try again.", "error");
@@ -212,15 +215,20 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
                 <DictSearchableSelect
                     items={branches}
                     placeholder="Select Branch.."
-                    onSelect={(val) =>
+                    onSelect={(val) =>{
                         setFilters({ ...filters, branch: val, course: "", class_: "", module: "" })
-                    }
+                        setResetCourseKey(prev => prev + 1);
+                        setResetModuleKey(prev => prev + 1);
+                        setResetTermKey(prev => prev + 1);
+                        setResetKey(prev => prev + 1);
+                    }}
                 />
             </div>
 
             <div className="col-span-12">
                 <DictSearchableSelect
                     items={courses}
+                    resetTrigger={resetCourseKey}
                     placeholder="Select Course..."
                     onSelect={(val) =>
                     setFilters({ ...filters, course: val, class_: "", module: "" })
@@ -231,6 +239,7 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
             <div className="col-span-12">
                 <DictSearchableSelect
                     items={modules}
+                    resetTrigger={resetModuleKey}
                     placeholder="Select Module.."
                     onSelect={(val) => setFilters({ ...filters, module: val })}
                 />
@@ -239,6 +248,7 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
             <div className="col-span-12">
                 <DictSearchableSelect
                     items={terms}
+                    resetTrigger={resetTermKey}
                     placeholder="Select Term.."
                     onSelect={(val) => {
                         setFilters({ ...filters, term: val })
