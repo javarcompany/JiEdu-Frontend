@@ -127,6 +127,7 @@ export default function StudentReportDashboard() {
         };
 
 		fetchStudents();
+		handleChangeStudent("0");
     }, []);
 
     const handleChangeStudent = async (selected_id: string) => {

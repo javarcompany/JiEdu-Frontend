@@ -73,9 +73,9 @@ export default function AttendanceSummary() {
 
                         {/* Table Body */}
                         <TableBody 
-                            className="divide-y-8 divide-transparent transition-transform duration-1000 ease-in-out"
+                            className="divide-y-8 divide-transparent overflow-hidden transition-transform duration-1000 ease-in-out"
                         >
-                            <AnimatePresence mode="wait">
+                            <AnimatePresence>
                                 {currentRegisters.map((register, index) => (
                                     <motion.tr
                                         key={register.student_regno || index}
@@ -86,7 +86,7 @@ export default function AttendanceSummary() {
                                         className="transition-all gap-4 overflow-hidden"
                                     >
                                         <TableCell>
-                                            <div className="flex items-center gap-3 py-2 dark:bg-gray-800 rounded-lg bg-blue-600 duration-300 ">
+                                            <div className="flex items-center gap-3 pl-2 py-2 dark:bg-gray-800 rounded-lg bg-blue-600 duration-300 ">
                                                 <div className="w-10 h-10 overflow-hidden rounded-full">
                                                     <img
                                                         src={register.student_passport  || "/default-avatar.png"}

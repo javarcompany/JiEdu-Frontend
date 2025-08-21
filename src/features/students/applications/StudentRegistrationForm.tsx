@@ -94,7 +94,7 @@ export default function RegistrationForm() {
 
     useEffect(() => {
         const fetchGenders = async () => {
-            axios.get('/api/genders/',
+            axios.get('/api/genders/?all=true',
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -110,7 +110,7 @@ export default function RegistrationForm() {
         };
 
         const fetchRelationships = async () => {
-            axios.get('/api/relationship-choices/',
+            axios.get('/api/relationship-choices/?all=true',
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -126,7 +126,7 @@ export default function RegistrationForm() {
         };
 
         const fetchExamTypes = async () => {
-            axios.get('/api/exam-choices/',
+            axios.get('/api/exam-choices/?all=true',
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -143,7 +143,7 @@ export default function RegistrationForm() {
 
         const fetchCourses = async () => {
             try {
-                const response = await axios.get("/api/courses/",
+                const response = await axios.get("/api/courses/?all=true",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -166,7 +166,7 @@ export default function RegistrationForm() {
 
         const fetchBranches = async () => {
             try {
-                const response = await axios.get("/api/branches/",
+                const response = await axios.get("/api/branches/?all=true",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -188,7 +188,7 @@ export default function RegistrationForm() {
 
         const fetchYears = async () => {
             try {
-                const response = await axios.get("/api/academic-year/",
+                const response = await axios.get("/api/academic-year/?all=true",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -210,7 +210,7 @@ export default function RegistrationForm() {
 
         const fetchIntakes = async () => {
             try {
-                const response = await axios.get("/api/intakes/",
+                const response = await axios.get("/api/intakes/?all=true",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -232,7 +232,7 @@ export default function RegistrationForm() {
 
         const fetchSponsors = async () => {
             try {
-                const response = await axios.get("/api/sponsors/",
+                const response = await axios.get("/api/sponsors/?all=true",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

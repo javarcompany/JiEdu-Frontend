@@ -10,7 +10,6 @@ import { Link, useNavigate } from "react-router";
 import PageMeta from "../../../components/common/PageMeta";
 import React from "react";
 import ThemeTogglerTwo from "../../../components/common/ThemeTogglerTwo";
-import GridShape from "../../../components/common/GridShape";
 
 interface FormDataState {
     regno: string;

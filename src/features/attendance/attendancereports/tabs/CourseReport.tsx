@@ -107,6 +107,8 @@ export default function CourseReportDashboard() {
 		
         fetchCourses();
         fetchTerms();
+
+		handleSelectCourse("0");
     }, []);
 
 	const handleChangeTerm = async (selected_id: string) => {

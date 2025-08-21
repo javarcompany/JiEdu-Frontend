@@ -1,9 +1,9 @@
 import {
-Table,
-TableBody,
-TableCell,
-TableHeader,
-TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHeader,
+    TableRow,
 } from "../../../components/ui/table";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -92,7 +92,7 @@ export default function ClassTimetable() {
 							<TableRow>
 								<TableCell
 									isHeader
-									className="px-2 py-3 font-medium text-white text-center text-theme-sm dark:text-gray-400"
+									className="px-6 py-3 font-medium text-white text-start text-theme-sm dark:text-gray-400"
 								>
 									Day
 								</TableCell>

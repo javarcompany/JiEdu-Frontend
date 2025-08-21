@@ -36,6 +36,14 @@ export const SCROLL_INTERVAL = 3000;
 const ROW_HEIGHT = 80; // px per row height
 export const VISIBLE_ROWS = 3;
 
+interface ApiResponse {
+  count: number; // total students
+  next: string | null;
+  previous: string | null;
+  total_pages: number;
+  results: Staff[];
+}
+
 export default function StaffPreview() {
     const token = localStorage.getItem("access");
 	const [staffs, setStaffs] = useState<Staff[]>([]);
@@ -43,37 +51,51 @@ export default function StaffPreview() {
 	const navigate = useNavigate();
 	const [offset, setOffset] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
+  	const [hasMore, setHasMore] = useState(true);
+
+	const fetchStaffs = async (page: number) => {
+		try {
+			const response = await axios.get<ApiResponse>(`/api/staffs/?page=${page}`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			setStaffs(response.data.results);
+			setHasMore(currentPage < response.data.total_pages);
+			setOffset(0);
+		} catch (error) {
+			console.error("Failed to fetch Staffs", error);
+		}
+	};
 
 	useEffect(() => {
-		const fetchStaffs = async () => {
-			try {
-				const response = await axios.get("/api/staffs/?all=true",
-					{
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-				);
-				setCurrentPage(response.data.page);
-				setStaffs(response.data.results);
-			} catch (error) {
-				console.error("Failed to fetch Staffs", error);
-			}
-		};
-
-		fetchStaffs();
+		fetchStaffs(currentPage);
 	}, [currentPage]);
 	
 	useEffect(() => {
 		const interval = setInterval(() => {
 			setOffset((prevOffset) => {
 				const maxOffset = staffs.length - VISIBLE_ROWS;
-				return prevOffset >= maxOffset ? 0 : prevOffset + 1;
+
+				if (maxOffset <= 0) return 0; // no scroll needed
+
+				if (prevOffset >= maxOffset) {
+					// when we reach end of loaded staffs
+					if (hasMore) {
+						setCurrentPage((p) => p + 1);
+					}else {
+						setCurrentPage(1); // loop back to start
+					}
+					return 0; // restart scrolling
+				}
+				return prevOffset + 1;
 			});
 		}, SCROLL_INTERVAL);
 			
 		return () => clearInterval(interval);
-	});
+	}, [staffs, hasMore]);
 
     return (
 		<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">

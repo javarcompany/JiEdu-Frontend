@@ -64,7 +64,7 @@ export default function StaffDepartment() {
                 </div>
             </div>
 
-            <div className="max-w-full overflow-x-auto">
+            <div className="max-w-full overflow-x-auto relative overflow-hidden">
                 <Table>  
                     {/* Table Header */}
                     <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
@@ -85,8 +85,8 @@ export default function StaffDepartment() {
                     </TableHeader>
                     {/* Table Body */}
 
-                    <TableBody className="overflow-hidden scrollbar-hide divide-y divide-gray-100 dark:divide-gray-800">
-                        <AnimatePresence mode="wait">
+                    <TableBody className="overflow-hidden scrollbar-hide divide-y divide-gray-100 dark:divide-gray-800  transition-transform duration-1000 ease-in-out">
+                        <AnimatePresence>
                             {currentItems.map((department, index) => (
                                 <motion.tr
                                     key={department.department_name || `Unassigned-${index}`}

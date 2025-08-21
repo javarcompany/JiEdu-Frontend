@@ -165,7 +165,6 @@ export default function CameraActions({onSave, onSearch }: {onSave:(value: boole
                             </div>
                         </div>
 
-
                         <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
                             <Button size="sm" variant="outline" onClick={closeModal}>
                                 Close

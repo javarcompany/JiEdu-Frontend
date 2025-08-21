@@ -944,3 +944,13 @@ span.flatpickr-weekday,
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@keyframes spin-dots {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+.animate-spin-dot {
+  animation: spin-dots 1.2s infinite ease-in-out;
+}

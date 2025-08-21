@@ -61,7 +61,6 @@ export default function AllocateActions({ filters, setFilters, selectedIds, setS
 
     useEffect(() => {
         fetchClasses();
-
     }, [filters.term]);
 
     useEffect(() => {

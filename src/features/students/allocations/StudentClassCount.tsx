@@ -63,7 +63,7 @@ export default function StudentClassCount() {
                 </div>
             </div>
 
-            <div className="max-w-full overflow-x-auto">
+            <div className="max-w-full overflow-x-auto relative overflow-hidden">
                 <Table>  
                     {/* Table Header */}
                     <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
@@ -84,7 +84,7 @@ export default function StudentClassCount() {
                     </TableHeader>
                     {/* Table Body */}
 
-                    <TableBody className="overflow-hidden scrollbar-hide divide-y divide-gray-100 dark:divide-gray-800">
+                    <TableBody className="overflow-hidden scrollbar-hide divide-y divide-gray-100 dark:divide-gray-800 transition-transform duration-1000 ease-in-out">
                         <AnimatePresence mode="wait">
                             {currentItems.map((class_, index) => (
                                 <motion.tr
@@ -92,8 +92,8 @@ export default function StudentClassCount() {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="transition-all duration-300 overflow-hidden"
+                                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                                    className="transition-all gap-4 overflow-hidden"
                                 >
                                         <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
                                             {class_.class_name || "Unassigned"}

@@ -101,6 +101,8 @@ export default function ClassReportDashboard() {
             }
         };
 
+		handleSelectClass("0");
+
         fetchClasses();
         fetchTerms();
     }, []);

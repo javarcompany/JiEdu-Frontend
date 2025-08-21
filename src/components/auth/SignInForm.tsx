@@ -19,9 +19,12 @@ export default function SignInForm() {
 
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
+		if (isLoading) return; // prevent double clicks
+		setIsLoading(true);
 		try {
 			const response = await axios.post("/api/auth/login/", {
 				username: username,
@@ -34,10 +37,21 @@ export default function SignInForm() {
 			localStorage.setItem("access", access);
 			localStorage.setItem("refresh", refresh);
 			localStorage.setItem("role", user.role);
-			localStorage.setItem("user", JSON.stringify(user));
 
 			// Redirect or show success message
-			
+			const roleRoutes: Record<string, string> = {
+				admin: "/",
+				Students: "/home",
+				lecturer: "/lecturer",
+				"class-tutor": "/class-tutor",
+				hod: "/hod",
+				principle: "/principle",
+				user: "/",
+			};
+
+			const redirectPath = roleRoutes[user.role] || "/signin";
+			navigate(redirectPath);
+
 			Swal.fire({
 				toast: true,
 				position: 'top-end', // top-right
@@ -52,21 +66,6 @@ export default function SignInForm() {
 					title: 'text-green-600 dark:text-green-400 font-semibold',
 				}
 			});
-			
-			// Redirect based on role
-			switch (user.role) {
-				case "Administrators":
-					navigate("/admin-dashboard");
-					break;
-				case "Students":
-					navigate("/student-dashboard");
-					break;
-				case "Teachers":
-					navigate("/teacher-dashboard");
-					break;
-				default:
-					navigate("/"); // fallback
-			}
 	
 		}catch (error: any) {
 			let errorMessage = "Invalid credentials.";
@@ -95,6 +94,8 @@ export default function SignInForm() {
 					title: 'text-red-600 dark:text-red-400 font-semibold',
 				}
 			});
+		}finally {
+			setIsLoading(false); // reset after login attempt
 		}
 		// Reset form fields
 		setUsername('');
@@ -116,6 +117,25 @@ export default function SignInForm() {
 
 			<div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
 				<div>
+					{isLoading && (
+						<div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm z-50">
+							<div className="relative w-16 h-16">
+							{Array.from({ length: 8 }).map((_, i) => (
+								<div
+								key={i}
+								className="absolute w-3 h-3 bg-brand-500 rounded-full animate-spin-dot"
+								style={{
+									top: "50%",
+									left: "50%",
+									transform: `rotate(${i * 45}deg) translate(30px)`,
+									transformOrigin: "center",
+									animationDelay: `${i * 0.1}s`,
+								}}
+								></div>
+							))}
+							</div>
+						</div>
+					)}
 					<div className="mb-5 sm:mb-8">
 						<h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
 							Sign In
@@ -242,8 +262,16 @@ export default function SignInForm() {
 								</div>
 
 								<div>
-									<button type="submit" className="w-full gap-3 py-3 bg-brand-500 text-white transition-colors rounded-lg px-7 hover:bg-brand-200 hover:text-gray-800 dark:bg-brand-500 dark:text-white/90 dark:hover:bg-white/10">
-										Sign in
+									<button
+										type="submit"
+										disabled={isLoading}
+										className={`w-full gap-3 py-3 rounded-lg px-7 transition-colors ${
+											isLoading
+												? "bg-gray-400 cursor-not-allowed"
+												: "bg-brand-500 hover:bg-brand-200 hover:text-gray-800 text-white"
+										}`}
+									>
+										{isLoading ? "Signing in..." : "Sign in"}
 									</button>
 								</div>
 							</div>

@@ -180,7 +180,7 @@ export default function KlassTimetable() {
                             <TableRow>
                                 <TableCell
                                     isHeader
-                                    className="px-5 py-3 font-medium text-white text-start text-theme-sm dark:text-gray-400"
+                                    className="px-6 py-3 font-medium text-white text-start text-theme-sm dark:text-gray-400"
                                 >
                                     Day
                                 </TableCell>

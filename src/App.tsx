@@ -1,21 +1,26 @@
 import { Routes, Route } from "react-router";
-import NotFound from "./pages/OtherPage/NotFound";
-import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import { ToastContainer } from 'react-toastify';
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { setupInterceptors } from "./lib/axois";
 
+// Authentication
+import SignIn from "./pages/AuthPages/SignIn";
+import SignUp from "./pages/AuthPages/SignUp";
+
+// Layout
+
+// ================================ADMINISTRATOR ROUTES=================================//
 // Dashboard
 import Home from "./features/dashboard/Home";
 
 // Student
 import AnonymousRegistrationForm from "./features/students/applications/AnonymousRegistrationForm";
+import StudentRegistration from "./features/students/applications/StudentRegistration";
 import Student from "./features/students/dashboard/StudentsDashboard";
 import StudentList from "./features/students/registeredstudents/StudentList";
 import StudentEnrollments from "./features/students/applications/StudentEnrollments";
-import StudentRegistration from "./features/students/applications/StudentRegistration";
 import ApproveDashboard from "./features/students/approves/ApproveDashboard";
 import StudentAllocations from "./features/students/allocations/StudentAllocations";
 import AllocateDashboard from "./features/students/allocations/Allocate";
@@ -60,6 +65,7 @@ import AttendanceDashboard from "./features/attendance/AttendanceDashboard";
 import MarkAttendance from "./features/attendance/markattendance/MarkAttendance";
 import AttendanceReportDashboard from "./features/attendance/attendancereports/AttendanceReportDashboard";
 import CameraDashboard from "./features/camera/CameraDashboard";
+import FaceEnroll from "./features/biometrics/FaceEnroll";
 
 // Fee Management
 import FeeDashboard from "./features/fee/FeeDashboard";
@@ -67,11 +73,13 @@ import FeeSetup from "./features/fee/FeeSetup";
 import FeeReportDashboard from "./features/fee/reports/FeeReportDashboard";
 import WalletViewer from "./features/fee/WalletViewer";
 
-// Authentication
-import SignIn from "./pages/AuthPages/SignIn";
-import SignUp from "./pages/AuthPages/SignUp";
-
 // TOOLS
+import BackButton from "./components/ui/button/BackButton";
+import PrivateRoute from "./components/PrivateComponent";
+import useAutoLogout from "./hooks/useAutoLogOut";
+import NotFound from "./pages/OtherPage/NotFound";
+
+// AUXILLIARY
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
 import Images from "./pages/UiElements/Images";
@@ -83,11 +91,10 @@ import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
-
-import FaceEnroll from "./features/biometrics/FaceEnroll";
-import BackButton from "./components/ui/button/BackButton";
-import PrivateRoute from "./components/PrivateComponent";
-import useAutoLogout from "./hooks/useAutoLogOut";
+import AdminLayout from "./layout/AdminLayout";
+import StudentLayout from "./layout/StudentLayout";
+import PublicRoute from "./components/PublicRoute";
+import StudentHome from "./features/studentui/home/StudentDashboard";
 
 export default function App() {
 	const navigate = useNavigate();
@@ -111,9 +118,15 @@ export default function App() {
 			<ScrollToTop />
 			<BackButton />
 			<Routes>
-				{/* Dashboard Layout */}
-        		<Route element={<PrivateRoute />}>
-					<Route element={<AppLayout />}>
+				{/* Authentication */}
+				<Route element={<PublicRoute />}>
+					<Route path="/signin" element={<SignIn />} />
+				</Route>
+				<Route path="/signup" element={<SignUp />} />
+
+				{/* Admin Routes */}
+        		<Route element={<PrivateRoute allowedRoles={['admin', "user"]}/>}>
+					<Route element={<AdminLayout />}>
 
 						<Route index path="/" element={<Home />} />
 	
@@ -197,9 +210,14 @@ export default function App() {
 					</Route>
 				</Route>
 
-				{/* Authentication */}
-				<Route path="/signin" element={<SignIn/>} />
-				<Route path="/signup" element={<SignUp/>} />
+				{/* Student Routes */}
+        		<Route element={<PrivateRoute allowedRoles={['Students']}/>}>
+					<Route element={<StudentLayout />}>
+
+						<Route index path="/home" element={<StudentHome />} />
+	
+					</Route>
+				</Route>
 
 				{/* Anonymous Registration Form */}
 				<Route path="/register-student" element={<AnonymousRegistrationForm/>} />

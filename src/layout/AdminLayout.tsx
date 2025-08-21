@@ -2,7 +2,7 @@ import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import { Outlet } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
-import AppSidebar from "./AppSidebar";
+import AdminSidebar from "./AdminSidebar";
 
 const LayoutContent: React.FC = () => {
 	const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -10,7 +10,7 @@ const LayoutContent: React.FC = () => {
 	return (
 		<div className="min-h-screen xl:flex">
 			<div>
-				<AppSidebar />
+				<AdminSidebar />
 				<Backdrop />
 			</div>
 
@@ -24,7 +24,7 @@ const LayoutContent: React.FC = () => {
 	);
 };
 
-const AppLayout: React.FC = () => {
+const AdminLayout: React.FC = () => {
 	return (
 		<SidebarProvider>
 			<LayoutContent />
@@ -32,4 +32,4 @@ const AppLayout: React.FC = () => {
 	);
 };
 
-export default AppLayout;
+export default AdminLayout;
