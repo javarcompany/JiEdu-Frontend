@@ -3,8 +3,10 @@ import StudentTopActions from "./TopActions";
 import StudentRightActions from "./RightActions";
 import StudentMainBody from "./MainBody";
 import ClassTimetable from "../../../timetable/report/ClassTimetable";
+import { useParams } from "react-router";
 
 export default function StudentData() {
+    const { id } = useParams<{ id: string }>();
     return (
         <>
             <PageMeta
@@ -19,7 +21,7 @@ export default function StudentData() {
 
                 <div className="col-span-12 space-y-6 xl:col-span-8">
                     <StudentMainBody />
-                    <ClassTimetable />
+                    <ClassTimetable student_id={id}/>
                 </div>
 
                 <div className="col-span-12 space-y-6 xl:col-span-4">

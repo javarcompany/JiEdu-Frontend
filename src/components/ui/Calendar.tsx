@@ -163,7 +163,7 @@ export default function CalendarWithToggle() {
                                             </span>
 
                                             {/* Large devices: blinking dot only */}
-                                            <span className="inline-block w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
+                                            <span className="inline w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
                                         </>
                                     )}
                                 </div>

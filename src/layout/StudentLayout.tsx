@@ -3,9 +3,32 @@ import { Outlet } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import StudentSidebar from "./StudentSidebar";
+import { useEffect } from "react";
+import axios from "axios";
 
 const LayoutContent: React.FC = () => {
     const { isExpanded, isHovered, isMobileOpen } = useSidebar();
+    const token = localStorage.getItem("access");
+
+    useEffect(() => {
+		const fetchStudent = async () => {
+            try {
+                const response = await axios.get("/api/search-student-primary/",
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+			    localStorage.setItem("student_id", response.data.student_id);
+			    localStorage.setItem("user_id", response.data.user_id);
+
+            } catch (error) {
+                console.error("Failed to fetch student:", error);
+            }
+        };
+
+		fetchStudent();
+    }, []);
 
     return (
         <div className="min-h-screen xl:flex">

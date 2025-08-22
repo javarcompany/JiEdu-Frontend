@@ -7,11 +7,11 @@ import { useNavigate } from "react-router";
 
 // Random images (unit passport placeholders)
 const UNIT_IMAGES = [
-  "https://source.unsplash.com/80x80/?book",
-  "https://source.unsplash.com/80x80/?education",
-  "https://source.unsplash.com/80x80/?classroom",
-  "https://source.unsplash.com/80x80/?study",
-  "https://source.unsplash.com/80x80/?university",
+  "https://picsum.photos/seed/book/80/80",
+  "https://picsum.photos/seed/education/80/80",
+  "https://picsum.photos/seed/classroom/80/80",
+  "https://picsum.photos/seed/study/80/80",
+  "https://picsum.photos/seed/university/80/80",
 ];
 
 type Units = {
@@ -169,7 +169,7 @@ export default function CourseTrack({ student_regno }: { student_regno: string |
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <button onClick={() => navigate("/my-units")} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                        <button onClick={() => navigate("/course")} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
                             <svg
                                 className="stroke-current fill-white dark:fill-gray-800"
                                 width="20"
@@ -230,7 +230,8 @@ export default function CourseTrack({ student_regno }: { student_regno: string |
                                             <div className="flex items-center gap-3">
                                                 <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
                                                     <img
-                                                        src={UNIT_IMAGES[idx % UNIT_IMAGES.length]}
+                                                        src={`${UNIT_IMAGES[idx % UNIT_IMAGES.length]}`}
+                                                        // onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/80"; }}
                                                         className="h-[50px] w-[50px] object-cover"
                                                         alt={unit.name[0]}
                                                     />

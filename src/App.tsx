@@ -95,6 +95,9 @@ import AdminLayout from "./layout/AdminLayout";
 import StudentLayout from "./layout/StudentLayout";
 import PublicRoute from "./components/PublicRoute";
 import StudentHome from "./features/studentui/home/StudentDashboard";
+import StudentCourseDashboard from "./features/studentui/course/CourseDashboard";
+import StudentFeeDashboard from "./features/studentui/money/MoneyDashboard";
+import StudentEventDashboard from "./features/studentui/events/StudentEventDashboard";
 
 export default function App() {
 	const navigate = useNavigate();
@@ -215,7 +218,10 @@ export default function App() {
 					<Route element={<StudentLayout />}>
 
 						<Route index path="/home" element={<StudentHome />} />
-	
+						<Route index path="/course" element={<StudentCourseDashboard />} />
+						<Route index path="/money" element={<StudentFeeDashboard />} />
+						<Route index path="/events" element={<StudentEventDashboard />} />
+
 					</Route>
 				</Route>
 

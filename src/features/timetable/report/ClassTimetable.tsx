@@ -12,9 +12,7 @@ import { TimeTable } from "../dashboard/TablesPreview";
 import { Day } from "../setup/Days";
 import { Lesson } from "../setup/SetupPreview";
 
-import { useParams } from "react-router";
-
-export default function ClassTimetable() {
+export default function ClassTimetable({student_id}: {student_id: string | undefined}) {
     const token = localStorage.getItem("access");
 
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -23,13 +21,12 @@ export default function ClassTimetable() {
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState("");
-
-    const { id } = useParams<{ id: string }>();
+    const [expanded, setExpanded] = useState<boolean>(false);
 
     useEffect(() => {
 		const fetchTimetables = async () => {
 			try {
-				const response = await axios.get(`/api/timetable/student/${id}`,
+				const response = await axios.get(`/api/timetable/student/${student_id}`,
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -49,7 +46,7 @@ export default function ClassTimetable() {
 
         fetchTimetables();
 
-	}, [id]);
+	}, [student_id]);
 
     if (loading) {
 		return <div className="p-4 text-sm text-gray-500">Loading timetable...</div>;
@@ -84,8 +81,15 @@ export default function ClassTimetable() {
 
     return(
         <>
-            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-				<div className="w-full">
+            <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+				{/* Toggle button */}
+                <button
+                    onClick={() => setExpanded(!expanded)}
+                    className="absolute top-2 right-0 z-10 px-3 py-1 text-xs font-medium rounded-md bg-red-600 hover:bg-red-800 dark:bg-blue-600 text-white dark:hover:bg-blue-700 shadow-md transition"
+                >
+                    {expanded ? "Collapse" : "Expand"}
+                </button>
+                <div className="w-full">
 					<Table  className="w-full table-fixed text-[10px]">
 						{/* Table Header */}
 						<TableHeader className="border-b border-gray-100 bg-blue-800 dark:border-white/[0.05] dark:bg-gray-900">
@@ -110,24 +114,26 @@ export default function ClassTimetable() {
 						</TableHeader>
 
 						{/* Table Body */}
-						<TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-							{days.map(day => (
-                            
-								<TableRow key={day.id}>
-                                    <TableCell className="px-2 py-1 sm:px-6 text-start">
-                                        <p className="lg:font-medium text-theme-sm text-gray-800 dark:text-white/90 break-words whitespace-normal">
-                                            {day.name}
-                                        </p>
-									</TableCell>
-                                    
-                                    {lessons.map(lesson => (
-                                        <TableCell className="px-2 py-1 text-center" key={lesson.id}>
-                                            {getCell(day.name, lesson.name)}
+                        {expanded && (
+                            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                                {days.map(day => (
+                                
+                                    <TableRow key={day.id}>
+                                        <TableCell className="px-2 py-1 sm:px-6 text-start">
+                                            <p className="lg:font-medium text-theme-sm text-gray-800 dark:text-white/90 break-words whitespace-normal">
+                                                {day.name}
+                                            </p>
                                         </TableCell>
-                                    ))}
-								</TableRow>
-							))}
-						</TableBody>
+                                        
+                                        {lessons.map(lesson => (
+                                            <TableCell className="px-2 py-1 text-center" key={lesson.id}>
+                                                {getCell(day.name, lesson.name)}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        )}
 					</Table>
 				</div>
 				

@@ -1,29 +1,26 @@
-import LeftComponents from "./LeftComponents";
-import RightComponents from "./RightComponents";
 import PageMeta from "../../../components/common/PageMeta";
-// import BottomComponents from "./BottomComponents";
 
-export default function StudentHome() {
+export default function StudentFeeDashboard() {
     
     return (
         <>
             <PageMeta
-                title="JiEdu Students | Home Page"
-                description="Home Page for JiEdu Application showing student's summary"
+                title="JiEdu Students | Fee Page"
+                description="Fee Page for JiEdu Application showing student's fee summary"
             />
 
             <div className="grid grid-cols-12 gap-4">
 
                 <div className="col-span-12 xl:col-span-9">
-                    <LeftComponents />
+                    
                 </div>
 
                 <div className="col-span-12 xl:col-span-3">
-                    <RightComponents />
+                    
                 </div>
 
                 <div className="col-span-12">
-                    {/* <BottomComponents /> */}
+                    
                 </div>
             </div>           
 

@@ -24,7 +24,6 @@ export default function useAutoLogout({ token, onLogout }: {token: any, onLogout
 
             if (delay <= 0) {
                 // Already expired
-                console.log("Delay: ", delay)
                 if (!logoutCalled.current) {
                     logoutCalled.current = true;
                     onLogout();

@@ -3,12 +3,13 @@ import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
+	BankIcon,
     ChevronDownIcon,
     HorizontaLDots
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { HomeIcon } from "lucide-react";
+import { BookOpenCheckIcon, CalendarFoldIcon, HomeIcon,} from "lucide-react";
 
 
 type NavItem = {
@@ -19,19 +20,29 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  {
-        icon: <HomeIcon />,
-        name: "Home",
-        path: "/home",
-    },
+	{
+		icon: <HomeIcon />,
+		name: "Home",
+		path: "/home",
+	},
+	{
+		icon: <BookOpenCheckIcon />,
+		name: "Course",
+		path: "/course",
+	},
+	{
+		icon: <BankIcon />,
+		name: "Fee Management",
+		path: "/money",
+	},
 ];
 
 const othersItems: NavItem[] = [
-    // {
-    //     icon: <AdminIcon />,
-    //     name: "Admin",
-    //     path: "/admin",
-    // },
+    {
+        icon: <CalendarFoldIcon />,
+        name: "Events",
+        path: "/events",
+    },
 ];
 
 const StudentSidebar: React.FC = () => {

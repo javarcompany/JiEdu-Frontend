@@ -47,7 +47,7 @@ export default function LeftComponents() {
 
                         action2Label="Timetable"
                         startIcon2={<CalendarRangeIcon />}
-                        onAction2Click={() => navigate("/timetable-report/")}
+                        onAction2Click={() => navigate("/course")}
                     />
                 </div>
                 <div className="col-span-12">

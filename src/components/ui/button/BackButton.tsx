@@ -9,6 +9,7 @@ export default function BackButton() {
 	const [hovered, setHovered] = useState(false);
 
 	if (location.pathname === "/") return null; // Hide on dashboard
+	if (location.pathname === "/home") return null; // Hide on dashboard
 	if (location.pathname === "/signin") return null; // Hide on signin
 	if (location.pathname === "/register-student") return null; // Hide on register student
 

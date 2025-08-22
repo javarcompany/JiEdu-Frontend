@@ -19,7 +19,7 @@ export default function MultiLineShadedChart({
 	const visiblePoints = 10;
 	const startIndex = Math.max(categories.length - visiblePoints, 0);
 	const initialMin = startIndex;
-	const initialMax = categories.length - 1;
+	const initialMax = categories.length;
 
 	const options: ApexOptions = {
 		chart: {
