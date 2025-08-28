@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useUser } from "../../../context/AuthContext";
 
 type ClassDetails = {
     classname: string,
@@ -7,8 +8,9 @@ type ClassDetails = {
     level: string,
 }
 
-export default function ClassDetails({student_id}: {student_id?: string}) {
+export default function ClassDetails() {
     const token = localStorage.getItem("access");
+    const { user } = useUser();
     const [details, setDetails] = useState<ClassDetails | null>(null);
 
     useEffect(() => {
@@ -17,7 +19,7 @@ export default function ClassDetails({student_id}: {student_id?: string}) {
                 const response = await axios.get(`/api/students-class-details/`,
                     {
                         headers: { Authorization: `Bearer ${token}` },
-                        params: { student_id: student_id },
+                        params: { student_regno: user?.regno },
                     },
                 );
                 setDetails(response.data);
@@ -28,7 +30,7 @@ export default function ClassDetails({student_id}: {student_id?: string}) {
         };
 
         fetchDetails();
-    }, [student_id]);
+    }, [user?.regno]);
 
     return (
         <div className="p-4 dark:bg-blue-600 rounded-xl shadow-md">

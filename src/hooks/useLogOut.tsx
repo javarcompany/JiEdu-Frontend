@@ -1,13 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useUser } from "../context/AuthContext";
 
 const useLogout = () => {
     const navigate = useNavigate();
+    const { user, clearUser } = useUser();
 
     const logout = async () => {
         const result = await Swal.fire({
             title: "Are you sure?",
-            text: "You will be logged out of your session.",
+            text: user
+                ? `${user.first_name || ""} ${user.last_name || ""}, you will be logged out of your session.`
+                : "You will be logged out of your session.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#FF0000",
@@ -17,12 +21,13 @@ const useLogout = () => {
         });
 
         if (result.isConfirmed) {
-            // 🔑 Clear tokens
+            // 🔑 Clear tokens and context
             localStorage.removeItem("authToken");
             localStorage.removeItem("access");
             localStorage.removeItem("refresh");
+            clearUser();
 
-            // ✅ Show success toast before redirect
+            // ✅ Show success toast
             Swal.fire({
                 icon: "success",
                 title: "Logged out",
@@ -33,10 +38,9 @@ const useLogout = () => {
                 background: "#f0f0f0",
             });
 
-            // Delay redirect slightly so user sees toast
+            // ⏳ Wait for toast to finish before redirect
             setTimeout(() => {
                 navigate("/signin", { replace: true });
-                localStorage.clear();
             }, 100);
         }
     };

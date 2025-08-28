@@ -1,36 +1,22 @@
 import ImageBannerBox from "../../../components/ui/Banner";
 import { CalendarRangeIcon, HandCoinsIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { Student } from "../../students/registeredstudents/StudentTable";
-import axios from "axios";
 import StudentTrend from "./StudentTrend";
 import CourseTrack from "./CourseTrack";
+import { Modal } from "../../../components/ui/modal";
+import PayFee from "../money/PayFee";
+import { useModal } from "../../../hooks/useModal";
+import { useUser } from "../../../context/AuthContext";
 
 export default function LeftComponents() {
 	const navigate = useNavigate();
+    const {user} = useUser();
     
-    const token = localStorage.getItem("access");
-    const student_id = localStorage.getItem("student_id");
-    const [student, setStudent] = useState<Student>();
+    const { isOpen, openModal, closeModal } = useModal();
 
-    useEffect(() => {
-		const fetchStudent = async () => {
-            try {
-                const response = await axios.get(`/api/students/${student_id}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                setStudent(response.data);
-
-            } catch (error) {
-                console.error("Failed to fetch student:", error);
-            }
-        };
-
-		fetchStudent();
-    }, [student_id]);
+    const onSubmit = () => {
+		closeModal();
+	}
 
     return (
         <>
@@ -38,12 +24,12 @@ export default function LeftComponents() {
                 <div className="col-span-12">
                     <ImageBannerBox
                         height={200}
-                        title={`Welcome ${student?.fname} ${student?.mname[0]}. ${student?.sname}`}
+                        title={`Welcome ${user?.first_name} ${user?.last_name}`}
                         subtitle="Your all in one college management information system"
                         
                         action1Label="Pay Fee"
                         startIcon1={<HandCoinsIcon />}
-                        onAction1Click={() => navigate("/pay-fee/")}
+                        onAction1Click={openModal}
 
                         action2Label="Timetable"
                         startIcon2={<CalendarRangeIcon />}
@@ -51,12 +37,28 @@ export default function LeftComponents() {
                     />
                 </div>
                 <div className="col-span-12">
-                    <StudentTrend student_regno={student?.regno} />
+                    <StudentTrend />
                 </div>
                 <div className="col-span-12 p-2 rounded-lg">
-                    <CourseTrack student_regno={student?.regno} />
+                    <CourseTrack />
                 </div>
             </div>
+
+            <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
+                <div className="relative w-full p-4 bg-white no-scrollbar rounded-3xl dark:bg-gray-900 lg:p-11">
+                    <div className="px-2 pr-14">
+                        <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+                            Pay Fee
+                        </h4>
+                        <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+                            Exapnd the functionality and services offered in the institution
+                        </p>
+                    </div>
+
+                    <PayFee onSubmit={onSubmit} />
+                    
+                </div>
+            </Modal>
         </>
     )
 }

@@ -9,7 +9,18 @@ import { setupInterceptors } from "./lib/axois";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 
+// TOOLS
+import BackButton from "./components/ui/button/BackButton";
+import PrivateRoute from "./components/PrivateComponent";
+import useAutoLogout from "./hooks/useAutoLogOut";
+import NotFound from "./pages/OtherPage/NotFound";
+import PublicRoute from "./components/PublicRoute";
+import useLogout from "./hooks/useLogOut";
+
 // Layout
+import AdminLayout from "./layout/AdminLayout";
+import StudentLayout from "./layout/StudentLayout";
+import StaffLayout from "./layout/StaffLayout";
 
 // ================================ADMINISTRATOR ROUTES=================================//
 // Dashboard
@@ -73,11 +84,6 @@ import FeeSetup from "./features/fee/FeeSetup";
 import FeeReportDashboard from "./features/fee/reports/FeeReportDashboard";
 import WalletViewer from "./features/fee/WalletViewer";
 
-// TOOLS
-import BackButton from "./components/ui/button/BackButton";
-import PrivateRoute from "./components/PrivateComponent";
-import useAutoLogout from "./hooks/useAutoLogOut";
-import NotFound from "./pages/OtherPage/NotFound";
 
 // AUXILLIARY
 import UserProfiles from "./pages/UserProfiles";
@@ -87,17 +93,20 @@ import Alerts from "./pages/UiElements/Alerts";
 import Badges from "./pages/UiElements/Badges";
 import Avatars from "./pages/UiElements/Avatars";
 import Buttons from "./pages/UiElements/Buttons";
-import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
-import AdminLayout from "./layout/AdminLayout";
-import StudentLayout from "./layout/StudentLayout";
-import PublicRoute from "./components/PublicRoute";
+
+// =======================STUDENT'S DASHBOARD ===================================#
 import StudentHome from "./features/studentui/home/StudentDashboard";
 import StudentCourseDashboard from "./features/studentui/course/CourseDashboard";
 import StudentFeeDashboard from "./features/studentui/money/MoneyDashboard";
 import StudentEventDashboard from "./features/studentui/events/StudentEventDashboard";
+
+// =======================STAFF'S DASHBOARD ===================================#
+import StaffHome from "./features/staffui/dashboard/StaffDashboard";
+import StaffEventDashboard from "./features/staffui/events/StaffEventDashboard";
+import StaffWorkloadDashboard from "./features/staffui/workload/WorkloadDashboard";
 
 export default function App() {
 	const navigate = useNavigate();
@@ -107,130 +116,135 @@ export default function App() {
 	}, [navigate]);
 
 	const token = localStorage.getItem("access");
- 	
-    const handleLogout = () => {
-        localStorage.removeItem("access");
-        navigate("/signin", { replace: true });
-    };
 
-    useAutoLogout({ token, onLogout: handleLogout });
+    useAutoLogout({ token, onLogout: useLogout });
 
 	return (
 		<>
-			<ToastContainer position="top-right" autoClose={3000} />
-			<ScrollToTop />
-			<BackButton />
-			<Routes>
-				{/* Authentication */}
-				<Route element={<PublicRoute />}>
-					<Route path="/signin" element={<SignIn />} />
-				</Route>
-				<Route path="/signup" element={<SignUp />} />
-
-				{/* Admin Routes */}
-        		<Route element={<PrivateRoute allowedRoles={['admin', "user"]}/>}>
-					<Route element={<AdminLayout />}>
-
-						<Route index path="/" element={<Home />} />
-	
-						{/* Student App */}
-						<Route path="/student" element={<Student />}/>
-						<Route path="/student-list" element={<StudentList />}/>
-						<Route path="/enrollments" element={<StudentEnrollments />}/>
-						<Route path="/allocations" element={<StudentAllocations />}/>
-						<Route path="/new-student" element={<StudentRegistration />}/>
-						<Route path="/approve" element={<ApproveDashboard />} />
-						<Route path="/allocate" element={<AllocateDashboard />} />
-						<Route path="/view-applicant/:id" element={<StudentApplication />}/>
-						<Route path="/view-student/:id" element={<StudentData />}/>
-						<Route path="/student-report" element={<StudentReportDashboard />} />
-
-						{/* Staff App */}
-						<Route path="/staff" element={<StaffDashboard />}/>
-						<Route path="/unit-workload" element={<StaffWorkload />}/>
-						<Route path="/staff-list" element={<StaffList />} />
-						<Route path="/new-staff" element={<StaffRegistration />} />
-						<Route path="/assign-workload" element={<AssignWorkload />} />
-						<Route path="/class-tutors" element={<ClassTutorDashboard />} />
-						<Route path="/view-staff/:id" element={<StaffData />}/>
-
-						{/* Timetable App */}
-						<Route path="/timetable" element={<TimetableDashboard />} />
-						<Route path="/table-setup" element={<SetupDashboard />} />
-						<Route path="/add-timetable" element={<Tables />} />
-						<Route path="/timetable-report" element={<TimetableReportDashboard />} />
-
-						{/* Attendance */}
-						<Route path="/attendance" element={<AttendanceDashboard />}/>
-						<Route path="/mark-attendance" element={<MarkAttendance />} />
-						<Route path="/attendance-report" element={<AttendanceReportDashboard />} />
-
-						{/* Fee Management */}
-						<Route path="/fee" element={<FeeDashboard />} />
-						<Route path="/fee-setup" element={<FeeSetup />}/>
-						<Route path="/fee-report" element={<FeeReportDashboard />}/>
-						<Route path="/view-wallets" element= {<WalletViewer />} />
-						
-						{/* Biometrics */}
-						<Route path="/enroll-face/:regno/:type" element={<FaceEnroll />} />
-
-						{/* Admin */}
-						<Route path="/admin" element={<AdminDashboard />}/>
-						<Route path="/manage-roles/:group/:id" element={<AssignRoles />} />
-						<Route path="/branches" element={<BranchDashboard />} />
-						<Route path="/departments" element={<DepartmentDashboard />} />
-						<Route path="/courses" element={<CoursesDashboard />} />
-						<Route path="/units" element={<UnitsDashboard />} />
-						<Route path="/classes" element={<ClassesDashboard />} />
-						<Route path="/classrooms" element={<ClassroomDashboard />} />
-						<Route path="/configs" element={<ConfigDashboard />} />
-						<Route path="/acyears" element={<AcYearTable />} />
-						<Route path="/intakes" element={<IntakeTable />} />
-						<Route path="/modules" element={<ModuleTable />} />
-						<Route path="/intake-series" element={<IntakeSeriesTable />} />
-						<Route path="/users" element={<UserList />} />
-						<Route path="/user-profiles/:userid" element={<UserInfoDashboard />} />
-						<Route path="/cameras" element={<CameraDashboard />} />
-
-						<Route path="/profile" element={<UserProfiles />} />
-						<Route path="/calendar" element={<Calendar />} />
-						<Route path="/blank" element={<Blank />} />
-
-						{/* Forms */}
-						<Route path="/form-elements" element={<FormElements />} />
-
-						{/* Tables */}
-						<Route path="/basic-tables" element={<BasicTables />} />
-
-						{/* Ui Elements */}
-						<Route path="/alerts" element={<Alerts />} />
-						<Route path="/avatars" element={<Avatars />} />
-						<Route path="/badge" element={<Badges />} />
-						<Route path="/buttons" element={<Buttons />} />
-						<Route path="/images" element={<Images />} />
-						<Route path="/videos" element={<Videos />} />
-
+				<ToastContainer position="top-right" autoClose={3000} />
+				<ScrollToTop />
+				<BackButton />
+				<Routes>
+					{/* Authentication */}
+					<Route element={<PublicRoute />}>
+						<Route path="/signin" element={<SignIn />} />
 					</Route>
-				</Route>
+					<Route path="/signup" element={<SignUp />} />
 
-				{/* Student Routes */}
-        		<Route element={<PrivateRoute allowedRoles={['Students']}/>}>
-					<Route element={<StudentLayout />}>
+						{/* Admin Routes */}
+						<Route element={<PrivateRoute allowedRoles={['admin', "user"]}/>}>
+							<Route element={<AdminLayout />}>
 
-						<Route index path="/home" element={<StudentHome />} />
-						<Route index path="/course" element={<StudentCourseDashboard />} />
-						<Route index path="/money" element={<StudentFeeDashboard />} />
-						<Route index path="/events" element={<StudentEventDashboard />} />
+								<Route index path="/" element={<Home />} />
+			
+								{/* Student App */}
+								<Route path="/student" element={<Student />}/>
+								<Route path="/student-list" element={<StudentList />}/>
+								<Route path="/enrollments" element={<StudentEnrollments />}/>
+								<Route path="/allocations" element={<StudentAllocations />}/>
+								<Route path="/new-student" element={<StudentRegistration />}/>
+								<Route path="/approve" element={<ApproveDashboard />} />
+								<Route path="/allocate" element={<AllocateDashboard />} />
+								<Route path="/view-applicant/:id" element={<StudentApplication />}/>
+								<Route path="/view-student/:id" element={<StudentData />}/>
+								<Route path="/student-report" element={<StudentReportDashboard />} />
 
-					</Route>
-				</Route>
+								{/* Staff App */}
+								<Route path="/staff" element={<StaffDashboard />}/>
+								<Route path="/unit-workload" element={<StaffWorkload />}/>
+								<Route path="/staff-list" element={<StaffList />} />
+								<Route path="/new-staff" element={<StaffRegistration />} />
+								<Route path="/assign-workload" element={<AssignWorkload />} />
+								<Route path="/class-tutors" element={<ClassTutorDashboard />} />
+								<Route path="/view-staff/:id" element={<StaffData />}/>
 
-				{/* Anonymous Registration Form */}
-				<Route path="/register-student" element={<AnonymousRegistrationForm/>} />
+								{/* Timetable App */}
+								<Route path="/timetable" element={<TimetableDashboard />} />
+								<Route path="/table-setup" element={<SetupDashboard />} />
+								<Route path="/add-timetable" element={<Tables />} />
+								<Route path="/timetable-report" element={<TimetableReportDashboard />} />
 
-				{/* Fallback Route */}
-				<Route path="*" element={<NotFound />} />
-			</Routes>
+								{/* Attendance */}
+								<Route path="/attendance" element={<AttendanceDashboard />}/>
+								<Route path="/mark-attendance" element={<MarkAttendance />} />
+								<Route path="/attendance-report" element={<AttendanceReportDashboard />} />
+
+								{/* Fee Management */}
+								<Route path="/fee" element={<FeeDashboard />} />
+								<Route path="/fee-setup" element={<FeeSetup />}/>
+								<Route path="/fee-report" element={<FeeReportDashboard />}/>
+								<Route path="/view-wallets" element= {<WalletViewer />} />
+								
+								{/* Biometrics */}
+								<Route path="/enroll-face/:regno/:type" element={<FaceEnroll />} />
+
+								{/* Admin */}
+								<Route path="/admin" element={<AdminDashboard />}/>
+								<Route path="/manage-roles/:group/:id" element={<AssignRoles />} />
+								<Route path="/branches" element={<BranchDashboard />} />
+								<Route path="/departments" element={<DepartmentDashboard />} />
+								<Route path="/courses" element={<CoursesDashboard />} />
+								<Route path="/units" element={<UnitsDashboard />} />
+								<Route path="/classes" element={<ClassesDashboard />} />
+								<Route path="/classrooms" element={<ClassroomDashboard />} />
+								<Route path="/configs" element={<ConfigDashboard />} />
+								<Route path="/acyears" element={<AcYearTable />} />
+								<Route path="/intakes" element={<IntakeTable />} />
+								<Route path="/modules" element={<ModuleTable />} />
+								<Route path="/intake-series" element={<IntakeSeriesTable />} />
+								<Route path="/users" element={<UserList />} />
+								<Route path="/user-profiles/:userid" element={<UserInfoDashboard />} />
+								<Route path="/cameras" element={<CameraDashboard />} />
+
+								<Route path="/profile" element={<UserProfiles />} />
+								<Route path="/blank" element={<Blank />} />
+
+								{/* Forms */}
+								<Route path="/form-elements" element={<FormElements />} />
+
+								{/* Tables */}
+								<Route path="/basic-tables" element={<BasicTables />} />
+
+								{/* Ui Elements */}
+								<Route path="/alerts" element={<Alerts />} />
+								<Route path="/avatars" element={<Avatars />} />
+								<Route path="/badge" element={<Badges />} />
+								<Route path="/buttons" element={<Buttons />} />
+								<Route path="/images" element={<Images />} />
+								<Route path="/videos" element={<Videos />} />
+
+							</Route>
+						</Route>
+
+						{/* Student Routes */}
+						<Route element={<PrivateRoute allowedRoles={['student']}/>}>
+							<Route element={<StudentLayout />}>
+
+								<Route index path="/home" element={<StudentHome />} />
+								<Route path="/course" element={<StudentCourseDashboard />} />
+								<Route path="/money" element={<StudentFeeDashboard />} />
+								<Route path="/events" element={<StudentEventDashboard />} />
+
+							</Route>
+						</Route>
+
+						{/* Staff Routes */}
+						<Route element={<PrivateRoute allowedRoles={['staff']}/>}>
+							<Route element={<StaffLayout />}>
+
+								<Route path="/dashboard" element={<StaffHome />} />
+								<Route path="/workload" element={<StaffWorkloadDashboard />} />
+								<Route path="/activities" element={<StaffEventDashboard />} />
+
+							</Route>
+						</Route>
+
+					{/* Anonymous Registration Form */}
+					<Route path="/register-student" element={<AnonymousRegistrationForm/>} />
+
+					{/* Fallback Route */}
+					<Route path="*" element={<NotFound />} />
+				</Routes>
 		</>
 	);
 }

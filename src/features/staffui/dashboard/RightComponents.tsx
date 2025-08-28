@@ -1,21 +1,19 @@
 import CalendarWithToggle from "../../../components/ui/Calendar";
-import ClassDetails from "./ClassCard";
+import UpcomingEvents from "../../events/CurrentEvents";
+import { useUser } from "../../../context/AuthContext";
 
-export default function CourseRightComponents() {
-
+export default function RightComponents() {
+    const { user } = useUser();
+    
     return (
         <>
             <div className="grid grid-cols-12 gap-4 md:col-span-12">
                 <div className="col-span-12">
-                    <ClassDetails/>
-                </div>
-
-                <div className="col-span-12 shadow-md rounded-xl bg-blue-100 dark:bg-gray-800">
                     <CalendarWithToggle />
                 </div>
 
                 <div className="col-span-12">
-
+                    <UpcomingEvents user_regno={user?.regno || ""} mode="small" reload={true} />
                 </div>
             </div>
         </>

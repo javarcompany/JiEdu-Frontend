@@ -2,7 +2,7 @@ import { SidebarProvider, useSidebar } from "../context/SidebarContext";
 import { Outlet } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
-import StudentSidebar from "./StudentSidebar";
+import StaffSidebar from "./StaffSidebar";
 
 const LayoutContent: React.FC = () => {
     const { isExpanded, isHovered, isMobileOpen } = useSidebar();
@@ -10,7 +10,7 @@ const LayoutContent: React.FC = () => {
     return (
         <div className="min-h-screen xl:flex">
             <div>
-                <StudentSidebar />
+                <StaffSidebar />
                 <Backdrop />
             </div>
 
@@ -24,7 +24,7 @@ const LayoutContent: React.FC = () => {
     );
 };
 
-const StudentLayout: React.FC = () => {
+const StaffLayout: React.FC = () => {
     return (
         <SidebarProvider>
             <LayoutContent />
@@ -32,4 +32,4 @@ const StudentLayout: React.FC = () => {
     );
 };
 
-export default StudentLayout;
+export default StaffLayout;

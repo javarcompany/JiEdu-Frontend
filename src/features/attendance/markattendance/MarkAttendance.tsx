@@ -9,7 +9,8 @@ export default function MarkAttendance() {
     const [filters, setFilters] = useState({
         term: "",
         class_: "",
-        mode: ""
+        mode: "",
+        who: ""
     });
     const [status, setStatus] = useState<{ [key: string]: string }>({});
     const [selectedMode, setSelectedMode] = useState<{ id: string, label: string }>({ id: "", label: "" });

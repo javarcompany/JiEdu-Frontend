@@ -145,25 +145,21 @@ export default function CalendarWithToggle() {
                             <div
                                 key={day.toISOString()}
                                 className={`h-[60px] xs:h-[80px] sm:h-[100px] md:h-[120px] lg:h-[20px] rounded-md p-1 sm:p-2
-                                    flex flex-col items-center justify-center bg-transparent
-                                    ${inCurrentMonth ? "bg-transparent" : "bg-gray-50"}
-                                    ${today ? "bg-blue-800 border-blue-600" : "border-white"}
+                                    flex flex-col items-center justify-center
+                                    ${today ? "bg-blue-800 text-white border border-blue-600 " : "border-white"}
                                 `}
                             >
-                                <div className="flex items-center">
+                                <div className="flex items-center flex-col">
                                     <span className={`text-[10px] sm:text-xs ${inCurrentMonth ? "dark:text-white" : "text-gray-400"}`}>
                                         {day.getDate()}
                                     </span>
                                     {today && (
                                         <>
                                             {/* Small devices: text + dot */}
-                                            <span className="inline-flex items-center gap-1 sm:hidden text-[10px] px-2 py-[2px] rounded-full bg-blue-600 text-white">
+                                            <span className="inline-flex items-center gap-1 sm:hidden text-[10px] px-2 py-[2px] rounded-full text-white">
                                                 <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
                                                 Today
                                             </span>
-
-                                            {/* Large devices: blinking dot only */}
-                                            <span className="inline w-2 h-2 rounded-full bg-blue-500 animate-ping"></span>
                                         </>
                                     )}
                                 </div>
@@ -182,14 +178,17 @@ export default function CalendarWithToggle() {
                                 today ? "border border-blue-600" : "border-gray-200"
                                 }`}
                             >
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center flex-col">
                                     <div className={`text-[10px] sm:text-sm font-medium ${today ? "dark:text-white text-blue-600" : "text-gray-800 "}`}>
                                         {day.toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                                     </div>
                                     {today && (
-                                        <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-500 animate-ping sm:hidden">
-                                            Today
-                                        </span>
+                                        <>
+                                            <span className="flex items-center gap-1 text-[10px] px-2 py-[2px] rounded-full text-white">
+                                                <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
+                                                Today
+                                            </span>
+                                        </>
                                     )}
                                 </div>
                             </div>

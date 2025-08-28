@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import LineShadedChart from "../../../components/ui/reports/LineShadedCharts";
 import axios from "axios";
+import { useUser } from "../../../context/AuthContext";
 
-export default function StudentTrend({student_regno}:{student_regno:string | undefined}) {
+export default function StudentTrend() {
     const token = localStorage.getItem("access");
-    const student_id = localStorage.getItem("student_id");
+    const { user } = useUser();
 	const [lessons, setLessons] = useState<[]>([]);
     const [register_values, setRegValues] = useState<[]>([]);
     
@@ -15,7 +16,7 @@ export default function StudentTrend({student_regno}:{student_regno:string | und
         const fetchAttendanceTrend = async () => {
             const resp_data = await axios.get(`/api/student-lesson-analysis/`, {
                 headers: { Authorization: `Bearer ${token}` },
-                params: { student_id: student_id },
+                params: { student_regno: user?.regno },
             });
             setLessons(resp_data.data.lessons);
             setRegValues(resp_data.data.reg_values);
@@ -26,7 +27,7 @@ export default function StudentTrend({student_regno}:{student_regno:string | und
                 const response = await axios.get("/api/fetch-reciept-summary/",
                     { 
                         headers: { Authorization: `Bearer ${token}` },
-                        params: { student_regno: student_regno } 
+                        params: { student_regno: user?.regno } 
                     },
                 );
                 setReceiptDate(response.data.recieptDates);
@@ -40,7 +41,6 @@ export default function StudentTrend({student_regno}:{student_regno:string | und
 
         fetchAttendanceTrend();
     }, []);
-
 
     return (
         <>

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Student } from "../../students/registeredstudents/StudentTable";
 import axios from "axios";
 import ClassTimetable from "../../timetable/report/ClassTimetable";
 import UnitCard from "./Unitcard";
 import AttendanceDonut from "./AttendanceDonuts";
+import { useUser } from "../../../context/AuthContext";
 
 type Units = {
     id: string;
@@ -30,8 +30,7 @@ export const VISIBLE_COLS = 3;
 
 export default function CourseLeftComponents() {
     const token = localStorage.getItem("access");
-    const student_id = localStorage.getItem("student_id");
-    const [student, setStudent] = useState<Student>();
+    const { user } = useUser();
     const [units, setUnits] = useState<Units[]>([]);
     const [offset, setOffset] = useState(0);
     
@@ -43,19 +42,12 @@ export default function CourseLeftComponents() {
     useEffect(() => {
 		const fetchStudent = async () => {
             try {
-                const response = await axios.get(`/api/students/${student_id}`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }
-                );
-                setStudent(response.data);
-
                 const unit_response = await axios.get(`/api/search-student-units/`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
-                        params: { student_regno: response.data.regno }
+                        params: { student_regno: user?.regno }
                     }
                 );
                 setUnits(unit_response.data.units || []);
@@ -70,7 +62,7 @@ export default function CourseLeftComponents() {
         };
 
 		fetchStudent();
-    }, [student_id]);
+    }, [user?.regno]);
 
     // Auto-slide 3 units at a time
     useEffect(() => {
@@ -178,7 +170,7 @@ export default function CourseLeftComponents() {
                             <div key={unit.id} className="flex-shrink-0 w-[300px]">
                                 <UnitCard
                                     image={UNIT_IMAGES[index % UNIT_IMAGES.length]}
-                                    title={unit.name}
+                                    title={unit.name + " - " + unit.uncode}
                                     details={{
                                         trainer: unit.trainer,
                                         lessons: unit.lessons,
@@ -191,10 +183,10 @@ export default function CourseLeftComponents() {
                 </div>
 
                 <div className="col-span-12">
-                    <ClassTimetable student_id={student_id || ""} />
+                    <ClassTimetable student_regno={user?.regno || ""} />
                 </div>
                 <div className="col-span-12">
-                    <AttendanceDonut student_id={student_id || ""} />
+                    <AttendanceDonut student_regno={user?.regno || ""} />
                 </div>
             </div>
         </>

@@ -1,21 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import useLogout from "../../hooks/useLogOut";
-import axios from "axios";
 import Button from "../ui/button/Button";
-
-type User = {
-    id: number;
-    username: string;
-    first_name: string;
-    last_name: string;
-    email: string;
-};
+import { useUser } from "../../context/AuthContext";
 
 export default function UserDropdown() {
-  const [user, setUser] = useState<User>();
-  const token = localStorage.getItem("access");
+  const { user } = useUser();
 
   const logout = useLogout();
   const [isOpen, setIsOpen] = useState(false);
@@ -28,23 +19,6 @@ export default function UserDropdown() {
     setIsOpen(false);
   }
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await axios.get("/api/current_user/", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setUser(response.data);
-      } catch (err) {
-        console.error("Error fetching user", err);
-      }
-    };
-
-    fetchUser();
-  }, [token]);
-
   return (
     <div className="relative">
       <button
@@ -55,7 +29,7 @@ export default function UserDropdown() {
           <img src="/images/logo/logo-icon.svg" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">{user?.username}</span>
+        <span className="block mr-1 font-medium text-theme-sm">{user?.first_name}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""

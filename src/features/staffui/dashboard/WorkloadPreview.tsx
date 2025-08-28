@@ -1,45 +1,91 @@
-import { useState } from "react";
 import { Table, TableBody, TableCell, TableRow } from "../../../components/ui/table";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router";
+import { useUser } from "../../../context/AuthContext";
 
 // Random images (unit passport placeholders)
-const EVENT_IMAGES = [
-  "https://source.unsplash.com/80x80/?book",
-  "https://source.unsplash.com/80x80/?education",
-  "https://source.unsplash.com/80x80/?classroom",
-  "https://source.unsplash.com/80x80/?study",
-  "https://source.unsplash.com/80x80/?university",
+const UNIT_IMAGES = [
+  "https://picsum.photos/seed/book/80/80",
+  "https://picsum.photos/seed/education/80/80",
+  "https://picsum.photos/seed/classroom/80/80",
+  "https://picsum.photos/seed/study/80/80",
+  "https://picsum.photos/seed/university/80/80",
 ];
 
-type Events = {
+type Units = {
     id: string;
     name: string;
-    date: string;
-    location: string;
+    uncode: string;
+    lessons: number;
+    Class: string;
+    progress: string;
 };
 
 export const SCROLL_INTERVAL = 3000;
 const ROW_HEIGHT = 75; // px per row height
 export const VISIBLE_ROWS = 3;
-
-export default function UpcomingEvents({ student_regno }: { student_regno: string | undefined }) {
+ 
+export default function WorkloadPreview() {
     const token = localStorage.getItem("access");
-    const [events, setEvents] = useState<Events[]>([]);
+    const { user } = useUser();
     const navigate = useNavigate();
     
+    const [units, setUnits] = useState<Units[]>([]);
+    const [offset, setOffset] = useState(0);
+
+    useEffect(() => {
+        const fetchUnits = async () => {
+            try {
+                const response = await axios.get(`/api/search-staff-workloads/`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        params: { staff_regno: user?.regno }
+                    }
+                );
+                setUnits(response.data.units || []);
+            } catch (error) {
+                console.error("Failed to fetch workloads", error);
+            }
+        };
+
+        fetchUnits();
+    }, [token]);
+
+    useEffect(() => {
+        if (units.length <= VISIBLE_ROWS) return; // no need to scroll
+
+        const interval = setInterval(() => {
+            setOffset((prevOffset) => {
+                const maxOffset = units.length - VISIBLE_ROWS;
+
+                if (maxOffset <= 0) return 0; // no scroll needed
+
+                if (prevOffset >= maxOffset) {
+                    return 0; // restart scrolling
+                }
+                return prevOffset + 1;
+            });
+        }, SCROLL_INTERVAL);
+            
+        return () => clearInterval(interval);
+    }, [units.length]);
+    
     return (
-        <div className="gap-6 shadow-md bg-blue-800 dark:bg-gray-800 rounded-2xl p-4">
-            {/* Right: My Events */}
+        <div className="grid grid-cols-1 gap-6 shadow rounded-2xl p-4">
+            {/* Right: My Workloads */}
             <div className="ml-4 mt-4">
                 <div className="flex gap-2 mb-4 flex-row justify-between">
-                    <div className="items-start" >
-                        <h3 className="text-md lg:text-lg font-semibold text-white">
-                            Current/ Upcoming Events
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+                            My Workloads
                         </h3>
                     </div>
 
-                    <div className="flex flex-row items-end">
-                        <button onClick={() => navigate("/events")} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                    <div className="flex items-center gap-3">
+                        <button onClick={() => navigate("/workload")} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
                             <svg
                                 className="stroke-current fill-white dark:fill-gray-800"
                                 width="20"
@@ -80,39 +126,40 @@ export default function UpcomingEvents({ student_regno }: { student_regno: strin
                     </div>
                 </div>
 
-                <div className="max-w-full max-h-[220px] overflow-hidden">
+                <div className="max-w-full max-h-[220px] overflow-x-auto relative overflow-hidden">
                     {/* h-[calc(4*48px)] */}
                     <Table>  
                         {/* Table Body */}
                         <TableBody 
                             className="divide-y divide-gray-100 dark:divide-gray-800 transition-transform duration-1000 ease-in-out"
-                            style={{ height: `${VISIBLE_ROWS * ROW_HEIGHT}px`, overflowY: "auto" }}
+                            style={{ transform: `translateY(-${offset * ROW_HEIGHT}px)` }}
                         >
-                            {events.length === 0 ? (
+                            {units.length === 0 ? (
                                 <TableRow>
                                     <TableCell  colSpan={5} className="px-5 py-4 sm:px-6 text-start">
-                                        <div className="p-4 text-sm text-gray-500">No Events found.....</div>
+                                        <div className="p-4 text-sm text-gray-500">No Workload found.....</div>
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                events.map((event, idx) => (
-                                    <TableRow key={event.id} className="">
+                                units.map((unit, idx) => (
+                                    <TableRow key={unit.id} className="">
                                         <TableCell className="py-3">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-[50px] w-[50px] overflow-hidden rounded-md">
                                                     <img
-                                                        src={EVENT_IMAGES[idx % EVENT_IMAGES.length]}
+                                                        src={`${UNIT_IMAGES[idx % UNIT_IMAGES.length]}`}
+                                                        // onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/80"; }}
                                                         className="h-[50px] w-[50px] object-cover"
-                                                        alt={event.name[0]}
+                                                        alt={unit.name[0]}
                                                     />
                                                 </div>
 
                                                 <div>
                                                     <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                                                        {event.name}
+                                                        {unit.name} - {unit.uncode}
                                                     </p>
                                                     <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                                                        {event.date} - {event.location}
+                                                        {unit.lessons} Lesson(s) - {unit.Class}
                                                     </span>
                                                 </div>
                                             </div>

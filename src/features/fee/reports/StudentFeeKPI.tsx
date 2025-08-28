@@ -22,7 +22,6 @@ interface TermTrend {
     reciept: number;
 };
 
-
 export default function StudentKPI({student, term, mode}: KPIProps) {
     const token = localStorage.getItem("access");
     const [receipt_dates, setReceiptDate] = useState<[]>([]);

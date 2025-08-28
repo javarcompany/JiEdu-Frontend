@@ -30,7 +30,7 @@ export interface StudentAttendance{
 }
 
 type AllocateActionsProps = {
-    filters: { term: string; class_: string; mode: string };
+    filters: { term: string; class_: string; mode: string; who: string; };
     status: { [key: string]: string };
     setStatus: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
 };
@@ -111,7 +111,7 @@ export default function MarkattendanceFR({ filters, setStatus }: AllocateActions
             </div>
 
             {/* Student Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+            <div className={`grid gap-4 ${filters.who === "staff" ? "grid-cols-3 max-h-[350px] overflow-y-auto no-scrollbar" : "grid-cols-2 sm:grid-cols-4 md:grid-cols-6"}`}>
                 {students.map((student) => {
                     const { color, Icon } = getStateStyle(student.state || "");
                     return (

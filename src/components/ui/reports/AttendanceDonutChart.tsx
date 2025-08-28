@@ -43,7 +43,7 @@ export default function RadialAttendanceChart({
 			},
 			dataLabels: {
 				name: {
-				show: false,
+					show: false,
 				},
 				value: {
 				fontSize: "100%",

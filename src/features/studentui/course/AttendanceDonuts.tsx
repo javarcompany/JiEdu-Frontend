@@ -18,7 +18,7 @@ interface CurrentData{
 	unmarked_percentage: number;
 };
 
-export default function AttendanceDonut({student_id}: {student_id: string | undefined}) {
+export default function AttendanceDonut({student_regno}: {student_regno: string | undefined}) {
     const token = localStorage.getItem("access");
     const [currentAttendanceData, setCurrentAttendanceData] = useState<CurrentData>({
         student: "", from: "", to: "", expected_days: "", marked_days: "",
@@ -32,7 +32,7 @@ export default function AttendanceDonut({student_id}: {student_id: string | unde
             try {
                 const response = await axios.get(`/api/student-analysis/`, {
                     headers: { Authorization: `Bearer ${token}` },
-                    params: { student_id: student_id },
+                    params: { student_regno: student_regno },
                 });
                 setCurrentAttendanceData(response.data);
             } catch (error) {
@@ -41,7 +41,7 @@ export default function AttendanceDonut({student_id}: {student_id: string | unde
 	    };
 
 	    fetchAttendanceData();
-    }, [student_id]);
+    }, [student_regno]);
 
     return (
         <div className="flex flex-wrap gap-4 md:flex-nowrap md:gap-6 xl:gap-4">

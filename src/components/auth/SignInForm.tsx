@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 
 import axios from "axios";
+import { useUser } from "../../context/AuthContext";
 
 export default function SignInForm() {
 	const navigate = useNavigate();
@@ -19,12 +20,15 @@ export default function SignInForm() {
 
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+
+	const { setUser } = useUser();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (isLoading) return; // prevent double clicks
 		setIsLoading(true);
+
 		try {
 			const response = await axios.post("/api/auth/login/", {
 				username: username,
@@ -36,28 +40,35 @@ export default function SignInForm() {
 			localStorage.setItem("authToken", response.data.token);
 			localStorage.setItem("access", access);
 			localStorage.setItem("refresh", refresh);
-			localStorage.setItem("role", user.role);
+
+			const user_response = await axios.get("/api/current_user/", {
+				headers: {
+					Authorization: `Bearer ${access}`,
+				},
+				params: { user_id: user.id },
+			});
+			const user_data = user_response.data;
+			setUser(user_data);
 
 			// Redirect or show success message
 			const roleRoutes: Record<string, string> = {
 				admin: "/",
-				Students: "/home",
-				lecturer: "/lecturer",
-				"class-tutor": "/class-tutor",
+				student: "/home",
+				staff: "/dashboard",
 				hod: "/hod",
-				principle: "/principle",
+				principal: "/principal",
 				user: "/",
 			};
 
-			const redirectPath = roleRoutes[user.role] || "/signin";
+			const redirectPath = roleRoutes[user_data.user_type] || "/signin";
 			navigate(redirectPath);
 
 			Swal.fire({
 				toast: true,
 				position: 'top-end', // top-right
 				icon: "success",
-				title: "Welcome!",
-				text: `Login successful ${user.role}🎉`,
+				title: `Welcome ${user_data.user_type}!`,
+				text: `Login successful ${user_data.user_full_name}!`,
 				timer: 3000,
 				showConfirmButton: false,
 				timerProgressBar: true,

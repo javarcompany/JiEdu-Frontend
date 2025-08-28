@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableRow } from "../../../components/ui/ta
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { useUser } from "../../../context/AuthContext";
 
 // Random images (unit passport placeholders)
 const UNIT_IMAGES = [
@@ -23,17 +24,22 @@ type Units = {
 };
 
 type LessonCount = {
-	completed: number | null,
-	total: number,
-	pending: number
+	unit_id: number | null,
+	unit_name: string | null,
+	unit_code: number | null,
+    lecturer: string | null,
+    attended: number | null,
+    total: number | null,
+    attendance_percentage : number | null
 }
 
 export const SCROLL_INTERVAL = 3000;
 const ROW_HEIGHT = 75; // px per row height
 export const VISIBLE_ROWS = 3;
 
-export default function CourseTrack({ student_regno }: { student_regno: string | undefined }) {
+export default function CourseTrack() {
     const token = localStorage.getItem("access");
+    const { user } = useUser();
     const navigate = useNavigate();
     const [lesson_count, setLessonCount] = useState<LessonCount>();
 
@@ -48,7 +54,7 @@ export default function CourseTrack({ student_regno }: { student_regno: string |
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
-                        params: { student_regno: student_regno }
+                        params: { student_regno: user?.regno }
                     }
                 );
                 setUnits(response.data.units || []);
@@ -64,10 +70,10 @@ export default function CourseTrack({ student_regno }: { student_regno: string |
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
-                        params: { student_regno: student_regno }
+                        params: { student_regno: user?.regno }
                     }
                 );
-                setLessonCount(response.data.counts || []);
+                setLessonCount(response.data.LessonData || []);
             } catch (error) {
                 console.error("Failed to fetch Student Lesson Count", error);
             }
@@ -75,9 +81,9 @@ export default function CourseTrack({ student_regno }: { student_regno: string |
 
         fetchUnits();
         fetchStudent_Lesson();
-    }, [student_regno, token]);
-    
-	const series = [lesson_count?.completed ?? 0];
+    }, [token]);
+
+	const series = [lesson_count?.attendance_percentage ?? 0];
 
     useEffect(() => {
         if (units.length <= VISIBLE_ROWS) return; // no need to scroll

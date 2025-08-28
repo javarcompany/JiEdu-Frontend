@@ -29,7 +29,7 @@ const attendanceOptions = [
 ];
 
 type AllocateActionsProps = {
-    filters: { term: string; class_: string; mode: string };
+    filters: { term: string; class_: string; mode: string; who:string; };
     status: { [key: string]: string };
     setStatus: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
 };
@@ -95,47 +95,6 @@ export default function MarkattendanceTable({ filters, status, setStatus }: Allo
 		return <div className="p-4 text-sm text-gray-500">Loading students...</div>;
 	}
 
-	if (students.length === 0) {
-		return (
-			<>
-				<div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-					<div className="max-w-full overflow-x-auto">
-						<Table>
-							{/* Table Header */}
-							<TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
-								<TableRow>
-									<TableCell
-										isHeader
-										className="py-3 px-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-									>
-										Student
-									</TableCell>
-
-									<TableCell
-										isHeader
-										className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-									>
-										Status
-									</TableCell>
-
-								</TableRow>
-							</TableHeader>
-
-							{/* Table Body */}
-							<TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-								<TableRow>
-									<TableCell>
-										<div className="p-4 text-sm text-gray-500">No student found!...</div>
-									</TableCell>
-								</TableRow>
-							</TableBody>
-						</Table>
-					</div>
-				</div>
-			</>
-		);
-	}
-
 	return (
 		<>
 			<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -147,10 +106,10 @@ export default function MarkattendanceTable({ filters, status, setStatus }: Allo
 					</div>
 				</div>
 
-				<div className="max-w-full overflow-x-auto">
+				<div className={`max-w-full overflow-x-auto ${filters.who === "staff" ? "max-h-[400px] overflow-y-auto no-scrollbar" : ""}`}>
 					<Table>
 						{/* Table Header */}
-						<TableHeader className="border-gray-100 dark:border-gray-800 border-y">
+						<TableHeader className="border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 border-y sticky top-0 z-10">
 							<TableRow>
 
 								<TableCell
@@ -170,51 +129,58 @@ export default function MarkattendanceTable({ filters, status, setStatus }: Allo
 							</TableRow>
 						</TableHeader>
 
-						{/* Table Body */}
-
-						<TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-							{students.map((student) => (
-								<TableRow key={student.id} className="">
-									
-									<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-										<div className="flex items-center gap-3">
-											<div className="w-10 h-10 overflow-hidden rounded-full">
-												<img
-													width={40}
-													height={40}
-													src={
-														student.passport?.trim()
-														? student.passport.startsWith("http")
-															? student.passport
-															: `${student.passport}`
-														: "/default-avatar.png"
-													}
-													alt={student.regno}
-												/>
-											</div>
-											<div>
-												<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-													{student.fname} {student.mname} {student.sname}
-												</span>
-												<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
-													{student.regno}
-												</span>
-											</div>
-										</div>
+						<TableBody className="divide-y divide-gray-100 dark:divide-gray-800 justify-between">
+							{ students.length === 0 ? (
+								<TableRow>
+									<TableCell colSpan={2}>
+										<div className="p-4 text-sm text-gray-500">No student found!...</div>
 									</TableCell>
-
-									<TableCell className="py-3 text-gray-500 text-theme-sm text-end items-end dark:text-gray-400">
-										<AttendanceRadio
-											name={student.regno}
-											options={attendanceOptions}
-											selected={status[student.regno] ?? student.state ?? ""}
-											onChange={(value) => handleStatusChange(student.regno, value)}
-										/>
-									</TableCell>
-
 								</TableRow>
-							))}
+							) : (
+								students.map((student) => (
+									<TableRow key={student.id} className="justify-between">
+										
+										<TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+											<div className="flex items-center gap-3">
+												<div className="w-10 h-10 overflow-hidden rounded-full">
+													<img
+														width={40}
+														height={40}
+														src={
+															student.passport?.trim()
+															? student.passport.startsWith("http")
+																? student.passport
+																: `${student.passport}`
+															: "/default-avatar.png"
+														}
+														alt={student.regno}
+													/>
+												</div>
+												<div>
+													<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+														{student.fname} {student.mname} {student.sname}
+													</span>
+													<span className="block text-gray-500 text-theme-xs dark:text-gray-400">
+														{student.regno}
+													</span>
+												</div>
+											</div>
+										</TableCell>
+
+										<TableCell className="py-3 text-gray-500 text-theme-sm text-start dark:text-gray-400">
+											<AttendanceRadio
+												name={student.regno}
+												options={attendanceOptions}
+												selected={status[student.regno] ?? student.state ?? ""}
+												onChange={(value) => handleStatusChange(student.regno, value)}
+											/>
+										</TableCell>
+
+									</TableRow>
+								))
+							)}
 						</TableBody>
+						
 					</Table>
 				</div>
 			</div>

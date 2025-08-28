@@ -21,7 +21,7 @@ export default function StudentData() {
 
                 <div className="col-span-12 space-y-6 xl:col-span-8">
                     <StudentMainBody />
-                    <ClassTimetable student_id={id}/>
+                    <ClassTimetable student_regno={id}/>
                 </div>
 
                 <div className="col-span-12 space-y-6 xl:col-span-4">

@@ -4,21 +4,21 @@ import Calendar from "../../../pages/Calendar";
 import UpcomingEvents from "../../events/CurrentEvents";
 import { useUser } from "../../../context/AuthContext";
 
-export default function StudentEventDashboard() {
+export default function StaffEventDashboard() {
     const {user} = useUser();
     const [reload, setReload] = useState(false);
 
     return (
         <>
             <PageMeta
-                title="JiEdu Students | Event Page"
-                description="Events Page for JiEdu Application showing student's event summary"
+                title="JiEdu Staff | Activity Page"
+                description="Activities Page for JiEdu Application showing staff's event summary"
             />
 
             <div className="grid grid-cols-12 gap-4">
 
                 <div className="col-span-12 xl:col-span-9">
-                    <Calendar user_regno={user?.regno || ""} user_type="student" setReload={setReload} />
+                    <Calendar user_regno={user?.regno || ""} user_type="staff" setReload={setReload} />
                 </div>
 
                 <div className="col-span-12 xl:col-span-3">

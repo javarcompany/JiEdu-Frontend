@@ -12,7 +12,7 @@ import { TimeTable } from "../dashboard/TablesPreview";
 import { Day } from "../setup/Days";
 import { Lesson } from "../setup/SetupPreview";
 
-export default function ClassTimetable({student_id}: {student_id: string | undefined}) {
+export default function ClassTimetable({student_regno}: {student_regno: string | undefined}) {
     const token = localStorage.getItem("access");
 
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -26,11 +26,12 @@ export default function ClassTimetable({student_id}: {student_id: string | undef
     useEffect(() => {
 		const fetchTimetables = async () => {
 			try {
-				const response = await axios.get(`/api/timetable/student/${student_id}`,
+				const response = await axios.get(`/api/timetable/student/`,
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
 						},
+                        params: {student_regno: student_regno}
 					}
 				);
                 setDays(response.data.days);
@@ -46,7 +47,7 @@ export default function ClassTimetable({student_id}: {student_id: string | undef
 
         fetchTimetables();
 
-	}, [student_id]);
+	}, [student_regno]);
 
     if (loading) {
 		return <div className="p-4 text-sm text-gray-500">Loading timetable...</div>;
