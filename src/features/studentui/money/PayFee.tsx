@@ -4,6 +4,7 @@ import { NumericFormat } from "react-number-format";
 import axios from "axios";
 import DictSearchableSelect_Avatar from "../../../components/form/DictAvatarSelect";
 import Swal from "sweetalert2";
+import { useUser } from "../../../context/AuthContext";
 
 interface SelectionOption{
     value: string;
@@ -13,7 +14,7 @@ interface SelectionOption{
 
 export default function PayFee({ onSubmit }: { onSubmit: (value: boolean) => void }) {
     const token = localStorage.getItem("access");
-    const student_id = localStorage.getItem("student_id");
+    const { user } = useUser();
     const [wallets, setWallets] = useState<SelectionOption[]>([]);
     
     const [arrears, setArrears] = useState<number | null>(null);
@@ -45,7 +46,7 @@ export default function PayFee({ onSubmit }: { onSubmit: (value: boolean) => voi
 
         const fetchStatus = async () => {
             try {
-                const response = await axios.get(`/api/feestatus/?student_id=${student_id}`, {
+                const response = await axios.get(`/api/feestatus/?student_id=${user?.regno}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -148,7 +149,7 @@ export default function PayFee({ onSubmit }: { onSubmit: (value: boolean) => voi
                 {
                     amount,
                     wallet_id: selectedWallet.value,
-                    student_id: student_id,
+                    student_id: user?.regno,
                 },
                 {
                     headers: {
@@ -184,6 +185,8 @@ export default function PayFee({ onSubmit }: { onSubmit: (value: boolean) => voi
             Swal.fire("STK Push Failed", errMessage, "error");
         }
     };
+
+    console.log("Selected Wallet: ", selectedWallet);
 
     return (
             <div className="max-w-full mx-auto space-y-4 p-4">

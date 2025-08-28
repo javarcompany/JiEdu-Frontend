@@ -52,8 +52,6 @@ export default function StudentKPI({student, term, mode}: KPIProps) {
 
 		fetchRecieptSummary();
     }, [student, term, mode]);
-    
-    console.log(term_series)
 
     return (
         <div className="space-y-6 p-6 rounded-xl shadow-md">

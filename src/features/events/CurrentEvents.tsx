@@ -82,6 +82,14 @@ export default function UpcomingEvents({ user_regno, mode, reload }: { user_regn
         return () => clearInterval(interval);
     }, [events.length]);
 
+    const handleClick = () => {
+        if (!user) return; // safeguard
+        if (user.user_type === "staff") {
+            navigate("/activities");
+        } else {
+            navigate("/events");
+        }
+    };
 
     return (
         <div className="gap-6 shadow-md bg-blue-800 dark:bg-gray-800 rounded-2xl p-4">
@@ -95,7 +103,7 @@ export default function UpcomingEvents({ user_regno, mode, reload }: { user_regn
                     </div>
                     {mode === "small" && (
                         <div className="flex flex-row items-end">
-                            <button onClick={() => {user?.user_type === "staff" ? navigate("/events") : navigate("/activities")}} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                            <button onClick={handleClick} className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
                                 <svg
                                     className="stroke-current fill-white dark:fill-gray-800"
                                     width="20"
