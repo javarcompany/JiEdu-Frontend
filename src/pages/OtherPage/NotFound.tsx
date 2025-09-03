@@ -1,15 +1,26 @@
 import GridShape from "../../components/common/GridShape";
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from 'react-router-dom';
+import { useUser } from "../../context/AuthContext";
 
 export default function NotFound() {
   const navigate = useNavigate();
+  const { user } = useUser();
 
   function handleGoBack() {
     if (window.history.length > 2) {
       navigate(-1); // Go back
     } else {
-      navigate('/'); // Go home if no history
+      if (user?.user_type === 'staff') {
+        navigate('/dashboard'); // Go to staff dashboard
+        return;
+      }else if (user?.user_type === 'student') {
+        navigate('/home'); // Go to student homepage
+        return;
+      }else {
+        navigate('/'); // Go home if no history
+      }
+
     }
   }
 

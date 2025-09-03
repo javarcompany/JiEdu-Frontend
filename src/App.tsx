@@ -84,7 +84,6 @@ import FeeSetup from "./features/fee/FeeSetup";
 import FeeReportDashboard from "./features/fee/reports/FeeReportDashboard";
 import WalletViewer from "./features/fee/WalletViewer";
 
-
 // AUXILLIARY
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";

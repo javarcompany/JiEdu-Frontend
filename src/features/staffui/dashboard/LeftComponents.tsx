@@ -63,18 +63,18 @@ export default function LeftComponents() {
             </div>
             
             <Modal isOpen={isOpen} onClose={onSubmit} className="max-w-[700px] w-full m-4">
-                <div className="relative w-full p-4 bg-white rounded-3xl dark:bg-gray-900 lg:p-11 max-h-[90vh] overflow-hidden">
+                <div className="relative w-full p-4 bg-white rounded-3xl dark:bg-gray-900 lg:p-11 max-h-[95vh] overflow-hidden">
                     <div className="px-2 pr-14">
                         <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
                             Mark Attendance
                         </h4>
-                        <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+                        <p className="mb-1 text-sm text-gray-500 dark:text-gray-400 lg:mb-2">
                             Expand the functionality and services offered in the institution
                         </p>
                     </div>
 
                     {/* Scrollable content */}
-                    <div className="px-6 py-4">
+                    <div className="px-6 py-2">
                         <MarkRegister onSubmit={onSubmit} />
                     </div>
                     

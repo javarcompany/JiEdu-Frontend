@@ -2,10 +2,12 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import { useUser } from "../../../context/AuthContext";
 
 export default function BackButton() {
 	const navigate = useNavigate();
 	const location = useLocation();
+	const { user } = useUser();
 	const [hovered, setHovered] = useState(false);
 
 	if (location.pathname === "/") return null; // Hide on dashboard
@@ -14,10 +16,26 @@ export default function BackButton() {
 	if (location.pathname === "/signin") return null; // Hide on signin
 	if (location.pathname === "/register-student") return null; // Hide on register student
 
+	function handleGoBack() {
+		if (window.history.length > 2) {
+			navigate(-1); // Go back
+		} else {
+			if (user?.user_type === 'staff') {
+				navigate('/dashboard'); // Go to staff dashboard
+				return;
+			}else if (user?.user_type === 'student') {
+				navigate('/home'); // Go to student homepage
+				return;
+			}else {
+				navigate('/'); // Go home if no history
+			}
+		}
+	}
+
 	return (
 		<div
 			className="fixed top-25 right-6 z-50 flex items-center gap-[-2] group"
-			onClick={() => navigate(-1)}
+			onClick={handleGoBack}
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
 			role="button"

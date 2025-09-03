@@ -290,59 +290,60 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
 
     return (
         <>
-        {/* Attendance Marking Actions */}
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-4 mb-4 justify-between">
-                <div>
-                    <DictSearchableSelect
-                        items={classes}
-                        resetTrigger={resetKey}
-                        placeholder="Select Class.."
-                        onSelect={(val) => handleSelectClass(val)}
-                    />
-                </div>
+            {/* Attendance Marking Actions */}
+            <div className="sticky top-0 z-50 py-2">
+                <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 gap-4 mb-2 justify-between">
+                    <div>
+                        <DictSearchableSelect
+                            items={classes}
+                            resetTrigger={resetKey}
+                            placeholder="Select Class.."
+                            onSelect={(val) => handleSelectClass(val)}
+                        />
+                    </div>
 
-                <div>
-                    <Select
-                        options={modes}
-                        placeholder = "Select Register Mode"
-                        onChange = {(val) => handleSelectMode(val)}
-                    />
-                </div>
+                    <div>
+                        <Select
+                            options={modes}
+                            placeholder = "Select Register Mode"
+                            onChange = {(val) => handleSelectMode(val)}
+                        />
+                    </div>
 
-                <div>
-                    <Button
-                        onClick={handleBatchRegister}
-                        size="sm"
-                        disabled={isLoading}
-                        variant={"primary"}
-                        className={isMarking ? "bg-red-600 hover:bg-red-800" : "bg-blue-800"}
-                        startIcon={isMarking ? <XCircleIcon className="w-5 h-5" /> : <UserCheckIcon className="w-5 h-5" />}
-                    >
-                        {markingLabel}
-                    </Button>
+                    <div>
+                        <Button
+                            onClick={handleBatchRegister}
+                            size="sm"
+                            disabled={isLoading}
+                            variant={"primary"}
+                            className={isMarking ? "bg-red-600 hover:bg-red-800" : "bg-blue-800"}
+                            startIcon={isMarking ? <XCircleIcon className="w-5 h-5" /> : <UserCheckIcon className="w-5 h-5" />}
+                        >
+                            {markingLabel}
+                        </Button>
 
+                    </div>
                 </div>
             </div>
 
-        {/* Attendance Marking Content */}
-        <div className="">
-            {mode.label === "Manual" && filters.class_ !== "" && (
-                <MarkattendanceTable 
-                    filters={filters}
-                    status={status}
-                    setStatus={setStatus}
-                />
-            )}
+            {/* Attendance Marking Content */}
+            <div className="">
+                {mode.label === "Manual" && filters.class_ !== "" && (
+                    <MarkattendanceTable 
+                        filters={filters}
+                        status={status}
+                        setStatus={setStatus}
+                    />
+                )}
 
-            {mode.label === "Face Recognition" && filters.class_ !== ""  && (
-                <MarkAttendanceFR
-                    filters={filters}
-                    status={status}
-                    setStatus={setStatus}
-                />
-            )}
-        </div>
-
+                {mode.label === "Face Recognition" && filters.class_ !== ""  && (
+                    <MarkAttendanceFR
+                        filters={filters}
+                        status={status}
+                        setStatus={setStatus}
+                    />
+                )}
+            </div>
         </>
     );
 }

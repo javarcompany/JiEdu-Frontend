@@ -5,6 +5,7 @@ import UserStack from "./UserList";
 import axios from "axios";
 import { useUser } from "../../context/AuthContext";
 import PasswordChange from "./ChangePassword";
+import StaffUserInfo from "./StaffUserInfo";
 
 export type User = {
     id: number;
@@ -52,7 +53,7 @@ export default function StaffProfileDashboard() {
                     </div>
 
                     <div className="col-span-12 xl:col-span-9">
-                        {/* <StudentUserInfo /> */}
+                        <StaffUserInfo />
                         <PasswordChange />
                         <UserStack users={users} />
                     </div>

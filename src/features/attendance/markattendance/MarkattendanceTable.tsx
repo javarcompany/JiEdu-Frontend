@@ -97,7 +97,7 @@ export default function MarkattendanceTable({ filters, status, setStatus }: Allo
 
 	return (
 		<>
-			<div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+			<div className="sticky overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
 				<div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
 					<div>
 						<h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
@@ -106,7 +106,7 @@ export default function MarkattendanceTable({ filters, status, setStatus }: Allo
 					</div>
 				</div>
 
-				<div className={`max-w-full overflow-x-auto ${filters.who === "staff" ? "max-h-[400px] overflow-y-auto no-scrollbar" : ""}`}>
+				<div className={`max-w-full overflow-x-auto ${filters.who === "staff" ? "max-h-[400px] overflow-y-auto no-scrollbar pb-6" : ""}`}>
 					<Table>
 						{/* Table Header */}
 						<TableHeader className="border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 border-y sticky top-0 z-10">
@@ -129,7 +129,7 @@ export default function MarkattendanceTable({ filters, status, setStatus }: Allo
 							</TableRow>
 						</TableHeader>
 
-						<TableBody className="divide-y divide-gray-100 dark:divide-gray-800 justify-between">
+						<TableBody className="divide-y divide-gray-100 sticky dark:divide-gray-800 justify-between">
 							{ students.length === 0 ? (
 								<TableRow>
 									<TableCell colSpan={2}>
@@ -173,6 +173,7 @@ export default function MarkattendanceTable({ filters, status, setStatus }: Allo
 												options={attendanceOptions}
 												selected={status[student.regno] ?? student.state ?? ""}
 												onChange={(value) => handleStatusChange(student.regno, value)}
+  												extClass="focus:outline-none focus:ring-1"
 											/>
 										</TableCell>
 

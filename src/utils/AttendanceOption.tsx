@@ -8,6 +8,7 @@ type Props = {
   name: string;
   options: RadioCircleOption[];
   selected: string;
+  extClass: string;
   onChange: (value: string) => void;
 };
 
@@ -15,6 +16,7 @@ export default function RadioCircleSelector({
   name,
   options,
   selected,
+  extClass,
   onChange,
 }: Props) {
   return (
@@ -27,7 +29,7 @@ export default function RadioCircleSelector({
             value={option.value}
             checked={selected === option.value}
             onChange={() => onChange(option.value)}
-            className="sr-only"
+            className={`sr-only ${extClass}`}
           />
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center border-2 font-bold transition-all

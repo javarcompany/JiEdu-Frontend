@@ -33,7 +33,15 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
         if (previousUrl) {
             navigate(previousUrl);
         } else {
-            navigate("/"); // fallback if no previous url
+            if (user?.user_type === 'staff') {
+				navigate('/dashboard'); // Go to staff dashboard
+				return;
+			}else if (user?.user_type === 'student') {
+				navigate('/home'); // Go to student homepage
+				return;
+			}else {
+				navigate('/'); // Go home if no history
+			}
         }
     };
 

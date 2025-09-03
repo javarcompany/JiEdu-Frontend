@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { useUser } from '../context/AuthContext';
 
 const api = axios.create({
 	baseURL: 'http://192.168.100.3:8000',
@@ -6,6 +7,7 @@ const api = axios.create({
 });
 
 export const setupInterceptors = (navigate: (path: string) => void) => {
+	// const { user } = useUser();
 	api.interceptors.request.use(
 		(config) => {
 			const token = localStorage.getItem('access');
@@ -25,6 +27,18 @@ export const setupInterceptors = (navigate: (path: string) => void) => {
 				localStorage.removeItem('refresh');
 				navigate('/signin');
 			}
+
+			// if (error.response?.status === 403) {
+			// 	// user is authenticated but not allowed
+			// 	if (user?.user_type === 'student') {
+			// 		navigate('/home');
+			// 	} else if (user?.user_type === 'staff') {
+			// 		navigate('/dashboard');
+			// 	} else {
+			// 		navigate('/'); // fallback
+			// 	}
+			// }
+
 			return Promise.reject(error);
 		}
 	);
