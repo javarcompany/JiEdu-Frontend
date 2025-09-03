@@ -4,7 +4,6 @@ import UpcomingEvents from "../../events/CurrentEvents";
 
 export default function RightComponents() {
     const {user} = useUser();
-
     return (
         <>
             <div className="grid grid-cols-12 gap-4 md:col-span-12">

@@ -27,7 +27,7 @@ export default function Alerts() {
 						variant="success"
 						title="Success Message"
 						message="Be cautious when performing this action."
-						showLink={false}
+						showLink={true}
 					/>
 				</ComponentCard>
 

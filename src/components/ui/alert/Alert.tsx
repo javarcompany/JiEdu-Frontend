@@ -1,5 +1,11 @@
 import { Link } from "react-router";
 
+interface AlertAction {
+	label: string;
+	onClick: () => void;
+	variant?: "primary" | "secondary" | "danger"; // for button styles
+}
+
 interface AlertProps {
 	variant: "success" | "error" | "warning" | "info"; // Alert type
 	title: string; // Title of the alert
@@ -7,9 +13,10 @@ interface AlertProps {
 	showLink?: boolean; // Whether to show the "Learn More" link
 	linkHref?: string; // Link URL
 	linkText?: string; // Link text
+	actions?: AlertAction[];
 }
 
-const Alert: React.FC<AlertProps> = ({variant, title, message, showLink = false, linkHref = "#", linkText = "Learn more",}) => {
+const Alert: React.FC<AlertProps> = ({variant, title, message, showLink = false, linkHref = "#", linkText = "Learn more", actions = []}) => {
 	// Tailwind classes for each variant
 	const variantClasses = {
 		success: {
@@ -28,6 +35,12 @@ const Alert: React.FC<AlertProps> = ({variant, title, message, showLink = false,
 			container: "border-blue-light-500 bg-blue-light-50 dark:border-blue-light-500/30 dark:bg-blue-light-500/15",
 			icon: "text-blue-light-500",
 		},
+	};
+
+	const buttonClasses = {
+		primary: "bg-blue-500 text-white hover:bg-blue-600",
+		secondary: "bg-gray-200 text-gray-700 hover:bg-gray-300",
+		danger: "bg-red-500 text-white hover:bg-red-600",
 	};
 
 	// Icon for each variant
@@ -75,7 +88,7 @@ const Alert: React.FC<AlertProps> = ({variant, title, message, showLink = false,
 
 	return (
 		<div
-			className={`rounded-xl border p-4 ${variantClasses[variant].container}`}
+			className={`rounded-xl border mb-2 p-4 ${variantClasses[variant].container}`}
 		>
 			<div className="flex items-start gap-3">
 				<div className={`-mt-0.5 ${variantClasses[variant].icon}`}>
@@ -96,6 +109,20 @@ const Alert: React.FC<AlertProps> = ({variant, title, message, showLink = false,
 						>
 							{linkText}
 						</Link>
+					)}
+
+					{actions.length > 0 && (
+						<div className="mt-3 flex gap-2">
+							{actions.map((action, index) => (
+								<button
+									key={index}
+									onClick={action.onClick}
+									className={`px-3 py-1 rounded-md text-sm font-medium transition ${buttonClasses[action.variant || "primary"]}`}
+								>
+									{action.label}
+								</button>
+							))}
+						</div>
 					)}
 				</div>
 			</div>

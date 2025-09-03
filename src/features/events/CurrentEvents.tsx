@@ -26,7 +26,7 @@ type Events = {
 };
 
 export const SCROLL_INTERVAL = 5000;
-const ROW_HEIGHT = 140; // px per row height
+const LG_ROW_HEIGHT = 140; // px per row height
 let VISIBLE_ROWS = 2;
 
 export default function UpcomingEvents({ user_regno, mode, reload }: { user_regno: string | undefined, mode: string, reload: boolean }) {
@@ -151,7 +151,7 @@ export default function UpcomingEvents({ user_regno, mode, reload }: { user_regn
                         {/* Table Body */}
                         <TableBody 
                             className="divide-y divide-gray-100 dark:divide-gray-800 transition-transform duration-1000 ease-in-out"
-                            style={{ transform: `translateY(-${offset * ROW_HEIGHT}px)` }}
+                            style={{ transform: `translateY(-${offset * LG_ROW_HEIGHT}px)` }}
                         >
                             {events.length === 0 ? (
                                 <TableRow>
