@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import DictSearchableSelect from "../../../components/form/DictSelect";
 import Select from "../../../components/form/Select";
-import { UserCheckIcon } from "lucide-react";
+import { UserCheckIcon, XCircleIcon } from "lucide-react";
 import MarkattendanceTable from "../../attendance/markattendance/MarkattendanceTable";
 import MarkAttendanceFR from "../../attendance/markattendance/MarkAttendanceFR";
 import { useUser } from "../../../context/AuthContext";
@@ -25,8 +25,12 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
     const [modes, setModes] = useState<SelectOption[]>([]);
     const [classes, setClasses] = useState<SelectOption[]>([]);
     
+    const [isLoading, setIsLoading] = useState(false);
     const [isMarking, setIsMarking] = useState(false);
     const [markingLabel, setMarkingLabel] = useState("Mark Attendance");
+
+    // Track if face recognition session is active
+    const [isFaceRecognitionActive, setIsFaceRecognitionActive] = useState(false);
 
     const [filters, setFilters] = useState<{ term: string; class_: string; mode: string; who: string }>({
         term: "",
@@ -38,6 +42,8 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
     const [mode, setSelectedMode] = useState<{ id: string; label: string }>({ id: "", label: "" });
     const [status, setStatus] = useState<{ [key: string]: string }>({});
     const [lesson_id, setLessonId] = useState<string | null>("0");
+
+    const [isRunning, setIsRunning] = useState(false);
 
     useEffect(() => {
         const fetchModes = async () => {
@@ -81,6 +87,24 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
         fetchClasses();
     }, []);
 
+    useEffect(() => {
+        if (!isRunning) return;
+
+        const ws = new WebSocket(`ws://localhost:8000/ws/attendance/${lesson_id}/`);
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === "recognition_stopped") {
+                setIsRunning(false); // reset button
+                setIsMarking(false);
+                setIsFaceRecognitionActive(false);
+                setMarkingLabel("Mark Attendance");
+            }
+        };
+
+        return () => ws.close();
+    }, [isRunning, lesson_id]);
+
     const handleSelectClass = async (selected_id: string) => {
         try {
             // Step 1: Check if class has a lesson now
@@ -115,6 +139,25 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
             setResetKey(prev => prev + 1);
         }
     };
+
+     const showToast = (icon: "success" | "error" | "info", message: string) => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+
+        Toast.fire({
+            icon,
+            title: message,
+        });
+    };
     
     const handleSelectMode = async (selected_id: string) => {
         setFilters({ ...filters, mode: selected_id });
@@ -122,7 +165,7 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
         setSelectedMode({ id: selected_id, label: selectedOption?.label || "" });
     };
     
-    const handleBatchAllocation = async () => {
+    const handleBatchRegister = async () => {
         if (!filters.class_) {
             Swal.fire("No selection", "Please select Class to mark attendance.", "info");
             setStatus({});
@@ -138,52 +181,81 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
         const isFaceMode = selectedMode?.label?.toLowerCase().includes("face");
 
         if (isFaceMode) {
-            // Face Recognition mode behavior
-            setIsMarking(true);
-            setMarkingLabel("Recognizing Faces...");
+            // 👇 If already active → stop recognition
+            if (isFaceRecognitionActive) {
+                try {
+                    setIsLoading(true);
+                    setIsMarking(true);
+                    setMarkingLabel("Stopping...");
 
+                    const response = await axios.post(
+                        "/api/stop-face-attendance/",
+                        { lesson_id },
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
+
+                    if (response.data?.success.length > 0) {
+                        showToast( "success", response.data.success );
+                    }
+                    
+                    if (response.data?.info.length > 0) {
+                        showToast("info", response.data.info );
+                    }
+
+                    if (response.data?.errors.length > 0) {
+                        showToast("error", response.data.errors || "Unknown error");
+                    }
+
+                } catch (err: any) {
+                    Swal.fire("Error", err.response?.data?.error || "Failed to stop recognition.", "error");
+                } finally {
+                    setIsLoading(false);
+                    setIsMarking(false);
+                    setIsFaceRecognitionActive(false);
+                    setMarkingLabel("Mark Attendance");
+                }
+                return;
+            }
+
+            // 👇 Otherwise → start recognition
+            setIsMarking(true);
+            setIsLoading(true);
+            setMarkingLabel("Starting...");
             try {
-                const payload = { lesson_id: lesson_id };
+                const payload = { lesson_id };
                 const res = await axios.post("/api/face-attendance/", payload, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                console.log(res)
- 
-                // Handle success
-                if (res.data?.success) {
-                    Swal.fire("Success", res.data.success, "success");
-                } 
-                // Handle custom message from backend (e.g., "no face found")
-                else if (res.data?.message) {
-                    Swal.fire("Info", res.data.message, "info");
-                } 
-                // Fallback if no structured response
-                else {
-                    Swal.fire("Error", res.data.error, "error");
+                if (res.data?.success.length > 0) {
+                    showToast( "success", res.data.success );
+                    setIsFaceRecognitionActive(true);
+                    setMarkingLabel("Stop Registering");
+                    setIsLoading(false);
+                } else{
+                    setIsMarking(false);
+                    setMarkingLabel("Mark Attendance");
+                    setIsLoading(false);
                 }
+                
+                if (res.data?.info.length > 0) {
+                    showToast("info", res.data.info );
+                }
+
+                if (res.data?.errors.length > 0) {
+                    showToast("error", res.data.errors || "Unknown error");
+                }
+
             } catch (err: any) {
-                console.error("Face recognition error", err);
-
-                let message = "Face recognition failed. Try again.";
-
-                // Extract server error message if available
-                if (err.response?.data?.error) {
-                    message = err.response.data.error;
-                } else if (err.response?.data?.detail) {
-                    message = err.response.data.detail;
-                } else if (err.message) {
-                    message = err.message;
-                }
-
-                Swal.fire("Error", message, "error");
-            } finally {
-                setIsMarking(false);
-                setMarkingLabel("Mark Attendance");
-            }
-
+                let message =
+                    err.response?.data?.error ||
+                    err.response?.data?.detail ||
+                    err.message ||
+                    "Face recognition failed.";
+                showToast("error", message);
+            } 
         } else {
-            // Manual mode
+            // ✅ Manual mode stays same
             if (Object.keys(status).length === 0) {
                 Swal.fire("No selection", "Please mark at least one record.", "info");
                 return;
@@ -197,12 +269,7 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
                     didOpen: () => Swal.showLoading(),
                 });
 
-                const payload = {
-                    attendance: status,
-                    mode_id: filters.mode,
-                    lesson_id: lesson_id
-                };
-
+                const payload = { attendance: status, mode_id: filters.mode, lesson_id };
                 const res = await axios.post("/api/mark-attendance/", payload, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -217,7 +284,6 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
             } catch (error) {
                 Swal.close();
                 Swal.fire("Error", "Attendance marking failed. Please try again.", "error");
-                console.error(error);
             }
         }
     };
@@ -245,12 +311,12 @@ export default function MarkRegister({ onSubmit }: { onSubmit: (value: boolean) 
 
                 <div>
                     <Button
-                        onClick={handleBatchAllocation}
+                        onClick={handleBatchRegister}
                         size="sm"
-                        disabled={isMarking}
+                        disabled={isLoading}
                         variant={"primary"}
-                        className={isMarking ? "bg-red" : "bg-blue-800"}
-                        startIcon={<UserCheckIcon className="w-5 h-5" />}
+                        className={isMarking ? "bg-red-600 hover:bg-red-800" : "bg-blue-800"}
+                        startIcon={isMarking ? <XCircleIcon className="w-5 h-5" /> : <UserCheckIcon className="w-5 h-5" />}
                     >
                         {markingLabel}
                     </Button>

@@ -211,7 +211,6 @@ export default function LecturerTimetable() {
                         </TableBody>
                     </Table>
                 </div>
-                
             </div>
         </>
     )

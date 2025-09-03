@@ -27,7 +27,7 @@ export default function CameraActions({onSave, onSearch }: {onSave:(value: boole
 
     useEffect(() => {
         const loadDropdowns = async () => {
-            setClassrooms(await fetchDropdownData("/api/classrooms/"));
+            setClassrooms(await fetchDropdownData("/api/classrooms/?all=true"));
         };
         loadDropdowns();
     }, []);

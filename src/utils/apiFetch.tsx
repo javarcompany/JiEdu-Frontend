@@ -1,10 +1,10 @@
 // utils/apiFetch.ts
-import api from "../lib/axois";
+import axios from "axios";
 
 export const fetchDropdownData = async (url: string, labelKey = "name", valueKey = "id") => {
 	const token = localStorage.getItem("access");
 	try {
-		const response = await api.get(url,
+		const response = await axios.get(url,
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,

@@ -13,6 +13,7 @@ import debounce from "lodash.debounce";
 import Swal from "sweetalert2";
 import Label from "../components/form/Label";
 import Input from "../components/form/input/InputField";
+import { useUser } from "../context/AuthContext";
 
 const colorMap: Record<string, string> = {
 	danger: "bg-red-500 text-white",
@@ -52,6 +53,9 @@ interface CalendarEvent extends EventInput {
     description?: string;
     location?: string;
     isHoliday?: boolean;
+    Class?: string;
+    event_type?: string;
+	created_by?: string;
   };
 }
 
@@ -62,9 +66,10 @@ interface CalendarProps {
 }
 
 const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload }) => {
-
+	const { user } = useUser();
 	const token = localStorage.getItem("access");
 	const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+	const [classes, setClasses] = useState<{ id: string; name: string }[]>([]);
 
 	const [formData, setFormData] = useState({
         title: "",
@@ -73,7 +78,9 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
         end_datetime: "",
         is_all_day: false,
         location: "",
-		level: "primary"
+		level: "primary",
+		Class: "",
+		event_type: "Personal"
     });
 
 	const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -88,7 +95,7 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 		Primary: "primary",
 		Warning: "warning",
 	};
-
+	
 	const fetchEvents = useCallback(
 		debounce(async () => {
 			try {
@@ -107,6 +114,7 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 						description: ev.description,
 						location: ev.location,
 						isHoliday: false,
+						created_by: ev.created_by
 					},
 				}));
 
@@ -119,9 +127,26 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 	);
 
 	useEffect(() => {
-		fetchEvents();
-		return () => fetchEvents.cancel();
+			fetchEvents();
+			return () => fetchEvents.cancel();
 	}, [added, fetchEvents]);
+
+	useEffect(() => {
+		const fetchClasses = async () => {
+			try {
+				const res = await axios.get("/api/lecturer-classes/", {
+					headers: { Authorization: `Bearer ${token}` },
+					params: { staff_regno: user?.regno },
+				});
+				setClasses(res.data); // expect [{id, name}, ...]
+			} catch (err) {
+				console.error("Failed to fetch classes", err);
+			}
+		};
+		if (user?.user_type === "staff") {
+			fetchClasses();
+		}
+	}, [user?.user_type, token]);
 
 	// ---------------- EVENT CLICK ----------------
 	const handleEventClick = (clickInfo: EventClickArg) => {
@@ -137,7 +162,9 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 				end_datetime: event.end ? formatDateTimeLocal(event.end) : "",
 				is_all_day: event.allDay || false,
 				location: event.extendedProps?.location || "",
-				level: event.extendedProps?.calendar || "Primary",
+				level: event.extendedProps?.calendar || "primary",
+				Class: event.extendedProps?.Class || "",
+				event_type: event.extendedProps?.event_type || "Personal",
 			});
 		}
 		openModal();
@@ -152,7 +179,9 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 			end_datetime: selectInfo.endStr || selectInfo.startStr,
 			is_all_day: false,
 			location: "",
-			level: "primary"
+			level: "primary",
+			Class: "",
+			event_type: "Personal"
 		});
 		openModal();
 	};
@@ -207,7 +236,8 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 		setFormData({
 			title : "", description:"",
 			start_datetime : "", end_datetime : "",
-			is_all_day : false, location : "", level : "Primary"
+			is_all_day : false, location : "", level : "primary",
+			Class: "", event_type: "Personal"
 		})
 		setSelectedEvent(null);
 	};
@@ -263,7 +293,10 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 						customButtons={{
 							addEventButton: {
 								text: "Add Event +",
-								click: openModal,
+								click: () => {
+									resetModalFields();
+									openModal();
+								},
 							},
 						}}
 					/>
@@ -313,26 +346,26 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 														className="flex items-center text-sm text-gray-700 dark:text-gray-400 cursor-pointer"
 														htmlFor={`modal${value}`}
 													>
-													<input
-														className="sr-only"
-														type="radio"
-														name="level"
-														value={value}
-														id={`modal${value}`}
-														checked={formData.level === value}
-														onChange={handleChange}
-													/>
-													<span
-														className={`flex items-center justify-center w-5 h-5 mr-2 border border-gray-300 rounded-full dark:border-gray-700 
-														${formData.level === value ? colorClasses : ""}`}
-													>
-														<span
-															className={`h-2 w-2 rounded-full bg-white ${
-																formData.level === value ? "block" : "hidden"
-															}`}
+														<input
+															className="sr-only"
+															type="radio"
+															name="level"
+															value={value}
+															id={`modal${value}`}
+															checked={formData.level === value}
+															onChange={handleChange}
 														/>
-													</span>
-													{key}
+														<span
+															className={`flex items-center justify-center w-5 h-5 mr-2 border border-gray-300 rounded-full dark:border-gray-700 
+															${formData.level === value ? colorClasses : ""}`}
+														>
+															<span
+																className={`h-2 w-2 rounded-full bg-white ${
+																	formData.level === value ? "block" : "hidden"
+																}`}
+															/>
+														</span>
+														{key}
 													</label>
 												</div>
 											</div>
@@ -340,6 +373,88 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 									})}
 								</div>
 							</div>
+
+							{user?.user_type === "staff" && (
+								<div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+									{/* Event Type Radio Buttons */}
+									<div>
+										<Label> Event Type </Label>
+										<div className="flex items-center space-x-4">
+											<label
+												className="flex items-center text-sm text-gray-700 dark:text-gray-400 cursor-pointer"
+											>
+												<input
+													className="sr-only"
+													type="radio"
+													name="event_type"
+													value="Personal"
+													checked={formData.event_type === "Personal"}
+													onChange={handleChange}
+												/>
+												<span
+													className="flex items-center justify-center w-5 h-5 mr-2 border border-gray-300 rounded-full dark:border-gray-700"
+												>
+													<span
+														className={`h-3 w-3 rounded-full ${
+															formData.event_type === "Personal" ? "bg-blue-500" : "hidden"
+														}`}
+													/>
+												</span>
+												Personal
+											</label>
+
+											<label
+												className="flex items-center text-sm text-gray-700 dark:text-gray-400 cursor-pointer"
+											>
+												<input
+													className="sr-only"
+													type="radio"
+													name="event_type"
+													value="Class"
+													id="id_event_type_class"
+													checked={formData.event_type === "Class"}
+													onChange={handleChange}
+												/>
+												<span
+													className="flex items-center justify-center w-5 h-5 mr-2 border border-gray-300 rounded-full dark:border-gray-700"
+												>
+													<span
+														className={`h-3 w-3 rounded-full ${
+															formData.event_type === "Class" ? "bg-red-500" : "hidden"
+														}`}
+													/>
+												</span>
+												Class
+											</label>
+										</div>
+									</div>
+
+									{/* Class Dropdown – only show if "class" is selected */}
+									{formData.event_type === "Class" && (
+										<div>
+											<label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+											Class
+											</label>
+											<div className="relative">
+												<select
+													id="event-class"
+													name="Class"
+													value={formData.Class}
+													onChange={handleChange}
+													className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800"
+												>
+													<option value="">-- Select Class --</option>
+													{classes.map(c => (
+														<option key={c.id} value={c.id}>
+															{c.name}
+														</option>
+													))}
+												</select>
+											</div>
+										</div>
+									)}
+								</div>
+							)}
 
 							<div className="mt-6">
 								<div>
@@ -405,7 +520,7 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 						</div>
 
 						<div className="flex items-center gap-3 mt-6 modal-footer sm:justify-end">
-							{selectedEvent && (
+							{selectedEvent && selectedEvent.extendedProps.created_by === user?.regno && (
 								<button
 									onClick={() => {
 									axios.delete(`/api/events/${selectedEvent.id}/`, {
@@ -431,13 +546,25 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 								Close
 							</button>
 
-							<button
-								onClick={handleAddOrUpdateEvent}
-								type="button"
-								className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
-							>
-								{selectedEvent ? "Update Changes" : "Add Event"}
-							</button>
+							{!selectedEvent ? (
+								// Case 1: No event selected → show Add button
+								<button
+									onClick={handleAddOrUpdateEvent}
+									type="button"
+									className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+								>
+									Add Event
+								</button>
+								) : selectedEvent.extendedProps.created_by === user?.regno && (
+								// Case 2: Event selected & created by current user → show Update button
+								<button
+									onClick={handleAddOrUpdateEvent}
+									type="button"
+									className="btn btn-success btn-update-event flex w-full justify-center rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600 sm:w-auto"
+								>
+									Update Changes
+								</button>
+							)}	
 						</div>
 					</div>
 				</Modal>

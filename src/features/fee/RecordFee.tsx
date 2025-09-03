@@ -95,12 +95,12 @@ export default function FeePayment({ onSubmit }: { onSubmit: (value: boolean) =>
 
         while (polling && attempts < retries) {
             try {
-                const statusResponse = await axios.post(
+                const statusResponse = await axios.get(
                     "/api/payments/stk-status/",
-                    { checkout_request_id: checkoutRequestID },
                     {
                         headers: { Authorization: `Bearer ${token}` },
-                    } 
+                        params: { checkout_request_id: checkoutRequestID }
+                    }
                 );
 
                 const statusResult = statusResponse.data;

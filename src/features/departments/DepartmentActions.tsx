@@ -50,7 +50,6 @@ export default function DepartmentActions({onSave, onSearch }: {onSave:(value: b
             closeModal();
         }
     };
-      
 
     return (
         <>

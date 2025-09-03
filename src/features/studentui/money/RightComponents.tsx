@@ -177,7 +177,7 @@ export default function RightComponents({ filters, setFilters, payment, setPayme
                             Pay Fee
                         </h4>
                         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
-                            Exapnd the functionality and services offered in the institution
+                            Expand the functionality and services offered in the institution
                         </p>
                     </div>
 

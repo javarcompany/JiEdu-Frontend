@@ -64,7 +64,7 @@ export default function TutorTimetable({staff_regno}: {staff_regno: string}) {
         return entry ? (
             <div className="">
                 <div>
-                    <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                    <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90 sm:text-theme-xs break-words whitespace-normal">
                         {entry.unit_name}
                     </p>
                     <span className="text-gray-500 text-theme-xs dark:text-gray-400">
@@ -80,15 +80,15 @@ export default function TutorTimetable({staff_regno}: {staff_regno: string}) {
 
     return(
         <>
-            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-                <div className="max-w-full overflow-x-auto">
-                    <Table>
+            <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+                <div className="w-full">
+                    <Table className="w-full table-fixed  text-[10px]">
                         {/* Table Header */}
                         <TableHeader className="border-b border-gray-100 bg-blue-800 dark:border-white/[0.05] dark:bg-gray-900">
                             <TableRow>
                                 <TableCell
                                     isHeader
-                                    className="px-5 py-3 font-medium text-white text-start text-theme-sm dark:text-gray-400"
+                                    className="px-6 py-3 font-medium text-white text-start text-theme-sm dark:text-gray-400"
                                 >
                                     Day
                                 </TableCell>
@@ -96,7 +96,7 @@ export default function TutorTimetable({staff_regno}: {staff_regno: string}) {
                                     <TableCell
                                         key={lesson.id}
                                         isHeader
-                                        className="px-5 py-3 font-medium text-white text-center text-theme-xs dark:text-gray-400"
+                                        className="px-2 py-3 font-medium text-white text-center text-theme-xs dark:text-gray-400"
                                     >
                                         {lesson.name}<br/>
                                         {lesson.start}-{lesson.end}
@@ -110,14 +110,14 @@ export default function TutorTimetable({staff_regno}: {staff_regno: string}) {
                             {days.map(day => (
                             
                                 <TableRow key={day.id}>
-                                    <TableCell className="px-5 py-1 sm:px-6 text-start">
+                                    <TableCell className="px-2 py-1 sm:px-6 text-start">
                                         <p className="font-medium text-theme-sm text-gray-800 dark:text-white/90">
                                             {day.name}
                                         </p>
                                     </TableCell>
                                     
                                     {lessons.map(lesson => (
-                                        <TableCell className="px-5 py-1 sm:px-6 text-center" key={lesson.id}>
+                                        <TableCell className="px-2 py-1 text-center" key={lesson.id}>
                                             {getCell(day.name, lesson.name)}
                                         </TableCell>
                                     ))}

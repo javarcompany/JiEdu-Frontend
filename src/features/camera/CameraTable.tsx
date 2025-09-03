@@ -79,15 +79,15 @@ export default function CameraTable({saveValue, searchTerm }: {saveValue:boolean
 		if (!token) {return;}
 		
 		fetchCameras(searchTerm, page);
-	}, [token, searchTerm, page, saveValue]);
+	}, [token, searchTerm, page, saveValue, saved]);
 
 	useEffect(() => {
 		const loadDropdowns = async () => {
-			setClassrooms(await fetchDropdownData("/api/classrooms/"));
+			setClassrooms(await fetchDropdownData("/api/classrooms/?all=true"));
 		};
 		loadDropdowns();
 	}, []);
-	
+	console.log("Classrooms:", classrooms)
     const handleSelect = (name: string, value: string) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };

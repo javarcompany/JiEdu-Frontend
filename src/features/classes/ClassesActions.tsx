@@ -56,10 +56,10 @@ export default function ClassesActions({onSave, onSearch }: {onSave:(value: bool
  
     useEffect(() => {
         const loadDropdowns = async () => {
-          setCourse(await fetchDropdownData("/api/courses/"));
-          setModule(await fetchDropdownData("/api/modules/"));
-          setBranch(await fetchDropdownData("/api/branches/"));
-          setIntake(await fetchDropdownData("/api/terms/", "termyear"));
+          setCourse(await fetchDropdownData("/api/courses/?all=true"));
+          setModule(await fetchDropdownData("/api/modules/?all=true"));
+          setBranch(await fetchDropdownData("/api/branches/?all=true"));
+          setIntake(await fetchDropdownData("/api/terms/?all=true", "termyear"));
         };
     
         loadDropdowns();

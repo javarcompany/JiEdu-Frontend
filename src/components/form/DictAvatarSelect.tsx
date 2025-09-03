@@ -52,7 +52,7 @@ export default function DictSearchableSelect_Avatar({
             {selectedItem.image && (
               <img
                 src={selectedItem.image}
-                alt={selectedItem.label}
+                alt={selectedItem.value}
                 className="h-8  object-cover"
               />
             )}

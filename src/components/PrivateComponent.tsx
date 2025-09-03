@@ -23,6 +23,9 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ allowedRoles }) => {
         if (unauthorized && token) {
             openModal();
         }
+        if(unauthorized && !token){
+            navigate("/signin");
+        }
     }, [unauthorized, openModal]);
 
     const handleCloseModal = () => {

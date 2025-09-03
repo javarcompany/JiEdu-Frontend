@@ -66,7 +66,7 @@ export default function ClassTimetable({student_regno}: {student_regno: string |
         return entry ? (
             <div className="">
                 <div>
-                    <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90 sm:text-theme-sm break-words whitespace-normal">
+                    <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90 sm:text-theme-xs break-words whitespace-normal">
                         {entry.unit_name}
                     </p>
                     <span className="text-gray-500 text-theme-xs dark:text-gray-400">
