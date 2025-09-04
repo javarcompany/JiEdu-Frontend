@@ -1,12 +1,11 @@
-import { useState } from "react";
 import PageMeta from "../../../components/common/PageMeta";
 import TutorTimetable from "./TutorTimetable";
 import TopAction from "./TopAction";
 import { useUser } from "../../../context/AuthContext";
+import UnitRegister from "../../attendance/attendancereports/UnitReport";
 
 export default function StaffWorkloadDashboard() {
     const {user} = useUser();
-    const [reload, setReload] = useState(false);
 
     return (
         <>
@@ -23,7 +22,7 @@ export default function StaffWorkloadDashboard() {
                 </div>
 
                 <div className="col-span-12 xl:col-span-3">
-                    
+                    <UnitRegister />
                 </div>
 
                 <div className="col-span-12">

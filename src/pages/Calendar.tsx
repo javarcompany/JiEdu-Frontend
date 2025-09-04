@@ -433,7 +433,7 @@ const Calendar: React.FC<CalendarProps> = ({ user_regno, user_type, setReload })
 									{formData.event_type === "Class" && (
 										<div>
 											<label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-											Class
+												Class
 											</label>
 											<div className="relative">
 												<select
