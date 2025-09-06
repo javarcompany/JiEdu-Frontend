@@ -84,6 +84,9 @@ import FeeSetup from "./features/fee/FeeSetup";
 import FeeReportDashboard from "./features/fee/reports/FeeReportDashboard";
 import WalletViewer from "./features/fee/WalletViewer";
 
+// LMS
+import AdminLMSashboard from "./features/lms/AdminLmsDashboard";
+
 // AUXILLIARY
 import UserProfiles from "./pages/UserProfiles";
 import Videos from "./pages/UiElements/Videos";
@@ -176,6 +179,9 @@ export default function App() {
 						<Route path="/fee-report" element={<FeeReportDashboard />}/>
 						<Route path="/view-wallets" element= {<WalletViewer />} />
 						
+						{/* LMS */}
+						<Route path="/lms" element={<AdminLMSashboard />} />
+
 						{/* Biometrics */}
 						<Route path="/enroll-face/:regno/:type" element={<FaceEnroll />} />
 

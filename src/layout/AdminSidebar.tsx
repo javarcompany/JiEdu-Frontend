@@ -13,7 +13,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import { Calendar1Icon, UserCheckIcon } from "lucide-react";
+import { BookKeyIcon, Calendar1Icon, UserCheckIcon } from "lucide-react";
 
 
 type NavItem = {
@@ -58,6 +58,12 @@ const navItems: NavItem[] = [
 		icon: <BankIcon />,
 		name: "Fee",
 		path: "/fee",
+	},
+
+  {
+		icon: <BookKeyIcon />,
+		name: "LMS",
+		path: "/lms",
 	},
 ];
 

@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 const adminButtons = [
     { title: "Students", icon: <Users className="w-8 h-8" />, back: "Manage student records", color: "bg-blue-500 hover:bg-blue-900", link: "/student" },
-    { title: "Courses", icon: <BookOpen className="w-8 h-8" />, back: "View and edit courses", color: "bg-green-500 hover:bg-green-900", link: "/units" },
-    { title: "Attendance", icon: <FileText className="w-8 h-8" />, back: "View registers", color: "bg-purple-500 hover:bg-purple-900", link: "/timetable" },
+    { title: "Courses", icon: <BookOpen className="w-8 h-8" />, back: "View and edit courses", color: "bg-green-500 hover:bg-green-900", link: "/lms" },
+    { title: "Attendance", icon: <FileText className="w-8 h-8" />, back: "View registers", color: "bg-purple-500 hover:bg-purple-900", link: "/attendance" },
     { title: "Finance", icon: <DollarSign className="w-8 h-8" />, back: "Handle payments", color: "bg-yellow-500 hover:bg-yellow-900", link: "/fee-report" },
     { title: "Timetable", icon: <Calendar className="w-8 h-8" />, back: "Schedule classes", color: "bg-pink-500 hover:bg-pink-900", link: "/timetable" },
     { title: "Settings", icon: <Settings className="w-8 h-8" />, back: "System preferences", color: "bg-gray-500 hover:bg-gray-900", link: "/admin" },

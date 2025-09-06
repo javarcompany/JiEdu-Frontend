@@ -33,6 +33,9 @@ export interface Units {
     module: string;
 	module_name: string;
     dor: string;
+	is_published: boolean;
+	total_topics: number;
+	rating: number;
 }
   
 export default function UnitsTable({saveValue, searchTerm }: {saveValue:boolean, searchTerm: string }) {
