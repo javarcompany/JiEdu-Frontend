@@ -186,8 +186,6 @@ export default function PayFee({ onSubmit }: { onSubmit: (value: boolean) => voi
         }
     };
 
-    console.log("Selected Wallet: ", selectedWallet);
-
     return (
             <div className="max-w-full mx-auto space-y-4 p-4">
                 <DictSearchableSelect_Avatar 

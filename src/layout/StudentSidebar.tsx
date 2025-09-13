@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
 	},
 	{
 		icon: <BankIcon />,
-		name: "Fee Management",
+		name: "Fee",
 		path: "/money",
 	},
 ];
