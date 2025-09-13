@@ -2,6 +2,7 @@ import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import { User, BookOpen } from "lucide-react";
 import { useMemo } from "react";
+import { useNavigate } from "react-router";
 
 const getRandomColor = () => {
     const letters = "0123456789ABCDEF";
@@ -12,8 +13,8 @@ const getRandomColor = () => {
     return color;
 };
 
-const UnitCard = ({ image, title, details, progress }: {image: string; title: string; details: {trainer: string; lessons: number}; progress: number}) => {
-    
+const UnitCard = ({id, image, title, details, progress }: {id: string; image: string; title: string; details: {trainer: string; lessons: number}; progress: number}) => {
+    const navigate = useNavigate();
     // Generate two random colors only once per component render
     const randomColors = useMemo(() => [getRandomColor(), getRandomColor()], []);
   
@@ -107,8 +108,11 @@ const UnitCard = ({ image, title, details, progress }: {image: string; title: st
                 </div>
 
                 {/* Button */}
-                <button className="w-full py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition">
-                    Continue
+                <button
+                    onClick={() => navigate(`/learn/${id}`)}
+                    className="w-full py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition"
+                >
+                    Learn
                 </button>
             </div>
         </div>

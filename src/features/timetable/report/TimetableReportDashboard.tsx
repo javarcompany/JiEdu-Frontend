@@ -12,6 +12,7 @@ export default function TimetableReportDashboard() {
         module: "",
         term: "",
         class_: "",
+        branch: "",
         lecturer: ""
     });
 
@@ -34,19 +35,19 @@ export default function TimetableReportDashboard() {
                     />
 
                     {filters.mode === "Institution" && (
-                        <InstitutionTimetable />
+                        <InstitutionTimetable branch={filters.branch}/>
                     )}
 
                     {filters.mode === "Department" && (
-                        <DepartmentTimetable />
+                        <DepartmentTimetable branch={filters.branch}/>
                     )}
 
                     {filters.mode === "Class" && (
-                        <KlassTimetable />
+                        <KlassTimetable branch={filters.branch} />
                     )}
 
                     {filters.mode === "Lecturer" && (
-                        <LecturerTimetable />
+                        <LecturerTimetable branch={filters.branch}/>
                     )}
 
                 </div>

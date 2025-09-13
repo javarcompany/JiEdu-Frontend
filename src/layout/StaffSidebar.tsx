@@ -7,9 +7,8 @@ import {
     HorizontaLDots
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import SidebarWidget from "./SidebarWidget";
 import { CalendarFoldIcon, LayoutDashboardIcon, WeightIcon,} from "lucide-react";
-
+import { useUser } from "../context/AuthContext";
 
 type NavItem = {
     name: string;
@@ -40,6 +39,7 @@ const othersItems: NavItem[] = [
 ];
 
 const StaffSidebar: React.FC = () => {
+    const { user } = useUser();
     const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
     const location = useLocation();
 
@@ -252,7 +252,7 @@ const StaffSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/">
+        <Link to={`${user?.user_type === 'student' ? "/home" : user?.user_type === "staff" ? "/dashboard" : "/"}`}>
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
@@ -317,7 +317,6 @@ const StaffSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
     </aside>
   );

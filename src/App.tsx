@@ -111,6 +111,8 @@ import StaffHome from "./features/staffui/dashboard/StaffDashboard";
 import StaffEventDashboard from "./features/staffui/events/StaffEventDashboard";
 import StaffWorkloadDashboard from "./features/staffui/workload/WorkloadDashboard";
 import StaffProfileDashboard from "./components/UserProfile/StaffProfileDashboard";
+import TopicDashboard from "./features/lms/TopicsDashboard";
+import LessonDashboard from "./features/lms/LessonDashboard";
 
 export default function App() {
 	const navigate = useNavigate();
@@ -181,6 +183,8 @@ export default function App() {
 						
 						{/* LMS */}
 						<Route path="/lms" element={<AdminLMSashboard />} />
+						<Route path="/unit/:unitid" element={<TopicDashboard />} />
+						<Route path="/lesson/:lessonid" element={<LessonDashboard />} />
 
 						{/* Biometrics */}
 						<Route path="/enroll-face/:regno/:type" element={<FaceEnroll />} />
@@ -231,6 +235,8 @@ export default function App() {
 						<Route path="/money" element={<StudentFeeDashboard />} />
 						<Route path="/events" element={<StudentEventDashboard />} />
 						<Route path="/student-profile" element={<StudentProfileDashboard />} />
+						<Route path="/learn/:unitid" element={<TopicDashboard />} />
+						<Route path="/learn/lesson/:lessonid" element={<LessonDashboard />} />
 
 					</Route>
 				</Route>

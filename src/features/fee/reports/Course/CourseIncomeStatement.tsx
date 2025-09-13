@@ -210,13 +210,13 @@ export default function CourseIncomeStatement({ courseId, termId }: Props) {
                                         {/* Student cell with image, name, regno */}
                                         <td className="px-4 py-3 flex items-center gap-3">
                                             <img
-                                            src={s.profile_picture || "/default-profile.png"}
-                                            alt={s.student_name}
-                                            className="w-10 h-10 rounded-full object-cover border"
+                                                src={s.profile_picture || "/default-profile.png"}
+                                                alt={s.student_name}
+                                                className="w-10 h-10 rounded-full object-cover border"
                                             />
                                             <div className="flex flex-col text-sm leading-tight">
-                                            <span className="font-medium">{s.student_name}</span>
-                                            <span className="text-xs text-gray-500 dark:text-gray-400">{s.regno}</span>
+                                                <span className="font-medium">{s.student_name}</span>
+                                                <span className="text-xs text-gray-500 dark:text-gray-400">{s.regno}</span>
                                             </div>
                                         </td>
 

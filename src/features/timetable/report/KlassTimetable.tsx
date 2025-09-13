@@ -1,10 +1,4 @@
-import {
-Table,
-TableBody,
-TableCell,
-TableHeader,
-TableRow,
-} from "../../../components/ui/table";
+import { Table, TableBody, TableCell, TableHeader, TableRow, } from "../../../components/ui/table";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -22,7 +16,7 @@ type SelectOption = {
     term?: string;
 };
 
-export default function KlassTimetable() {
+export default function KlassTimetable({branch}: {branch: string}) {
     const token = localStorage.getItem("access");
     const [resetKey, setResetKey] = useState(0);
     const [filters, setFilters] = useState<SelectOption>({
@@ -46,7 +40,7 @@ export default function KlassTimetable() {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
-                        params: {class_id: selectedClass}
+                        params: {class_id: selectedClass, branch_id: branch}
                     }
                 );
                 setDays(response.data.days);
@@ -62,7 +56,7 @@ export default function KlassTimetable() {
 
         const fetchClasses = async () => {
             try {
-                const response = await axios.get("/api/classes/?all=true", {
+                const response = await axios.get(`/api/classes/?all=true`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const formatted = response.data.results.map((cls: any) => ({
@@ -97,6 +91,51 @@ export default function KlassTimetable() {
         fetchTimetables();
 
     }, [selectedClass]);
+
+    useEffect(() => {
+        setResetKey(prev => prev + 1);
+        setClasses([]);
+
+        const fetchTimetables = async () => {
+            try {
+                const response = await axios.get(`/api/timetable/class/`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        params: {class_id: selectedClass, branch_id: branch}
+                    }
+                );
+                setDays(response.data.days);
+                setTables(response.data.timetable);
+                setLessons(response.data.lessons);
+            } catch (error) {
+                console.error("Failed to fetch Timetable", error);
+                setError('Failed to fetch timetable');
+            } finally{
+                setLoading(false);
+            }
+        };
+        
+        const fetchClasses = async () => {
+            try {
+                const response = await axios.get(`/api/classes/?branch_id=${branch}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const formatted = response.data.results.map((cls: any) => ({
+                    value: cls.id.toString(),
+                    label: cls.name.toString(),
+                    term: cls.intake.toString()
+                }));
+                setClasses(formatted);
+            } catch (error) {
+                console.error("Failed to load classes", error);
+            }
+        };
+
+        fetchClasses();
+        fetchTimetables();
+    }, [branch])
 
 	const filteredClasses = classes.filter((cls) => {
         const intakeMatch = !filters.term || cls.term?.toString() === filters.term;

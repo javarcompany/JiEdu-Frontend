@@ -3,6 +3,8 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import axios from 'axios';
 import { Modal } from '../../../../components/ui/modal';
 
+import { formatCurrencyShort } from '../../../../utils/format';
+
 interface DataProp{
     total_students: string;
     total_invoice: string;
@@ -117,19 +119,45 @@ const FeePredictionModal = ({ open, onClose }: PredProp) => {
                                     <tbody>
                                         {data.departments.map((dept) => (
                                             <React.Fragment key={dept.id}>
-                                                <tr className="border-b">
+                                                <tr
+                                                    className="border-t dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                                    onClick={(e) => {
+                                                        const isExpanding = expandedDept !== dept.id;
+                                                        toggleDepartment(dept.id)
+
+                                                        // Scroll into view after setting expanded
+                                                        if (isExpanding) {
+                                                            setTimeout(() => {
+                                                                const rowElement = e.currentTarget;
+                                                                rowElement?.scrollIntoView({ behavior: "smooth", block: "start" });
+                                                            }, 100);
+                                                        }
+                                                    }}
+                                                    key={dept.id}
+                                                >
                                                     <td className="px-4 py-2 font-semibold">
                                                         <span className="block md:hidden">{dept.abbr}</span>
                                                         <span className="hidden md:block">{dept.name}</span>
                                                     </td>
-                                                    <td className="px-4 py-2 text-center">{dept.students}</td>
-                                                    <td className="px-4 py-2 text-center">KES {dept.invoice.toLocaleString()}</td>
-                                                    <td className="px-4 py-2 text-center">KES {dept.receipt.toLocaleString()}</td>
-                                                    <td className="px-4 py-2 text-center">KES {dept.balance.toLocaleString()}</td>
                                                     <td className="px-4 py-2 text-center">
-                                                    <button onClick={() => toggleDepartment(dept.id)}>
-                                                        {expandedDept === dept.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                                    </button>
+                                                        {dept.students}
+                                                    </td>
+                                                    <td className="px-4 py-2 text-center">
+                                                        <span className="block md:hidden">KES {formatCurrencyShort(dept.invoice)}</span>
+                                                        <span className="hidden md:block">KES {dept.invoice.toLocaleString()}</span>
+                                                    </td>
+                                                    <td className="px-4 py-2 text-center">
+                                                        <span className="block md:hidden">KES {formatCurrencyShort(dept.receipt)}</span>
+                                                        <span className="hidden md:block">KES {dept.receipt.toLocaleString()}</span>
+                                                    </td>
+                                                    <td className="px-4 py-2 text-center">
+                                                        <span className="block md:hidden">KES {formatCurrencyShort(dept.balance)}</span>
+                                                        <span className="hidden md:block">KES {dept.balance.toLocaleString()}</span>
+                                                    </td>
+                                                    <td className="px-4 py-2 text-center">
+                                                        <button onClick={() => toggleDepartment(dept.id)}>
+                                                            {expandedDept === dept.id ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                                        </button>
                                                     </td>
                                                 </tr>
 
@@ -148,15 +176,24 @@ const FeePredictionModal = ({ open, onClose }: PredProp) => {
                                                                 </thead>
                                                                 <tbody>
                                                                     {dept.courses.map((course) => (
-                                                                        <tr key={course.id} className="border-t">
+                                                                        <tr key={course.id} className="border-t bg-gray-200 dark:bg-gray-700">
                                                                             <td className="px-4 py-1">
                                                                                 <span className="block md:hidden">{course.abbr}</span>
                                                                                 <span className="hidden md:block">{course.name}</span>
                                                                             </td>
                                                                             <td className="px-4 py-1 text-center">{course.students}</td>
-                                                                            <td className="px-4 py-1 text-center">KES {course.invoice.toLocaleString()}</td>
-                                                                            <td className="px-4 py-1 text-center">KES {course.receipt.toLocaleString()}</td>
-                                                                            <td className="px-4 py-1 text-center">KES {course.balance.toLocaleString()}</td>
+                                                                            <td className="px-4 py-2 text-center">
+                                                                                <span className="block md:hidden">KES {formatCurrencyShort(course.invoice)}</span>
+                                                                                <span className="hidden md:block">KES {course.invoice.toLocaleString()}</span>
+                                                                            </td>
+                                                                            <td className="px-4 py-2 text-center">
+                                                                                <span className="block md:hidden">KES {formatCurrencyShort(course.receipt)}</span>
+                                                                                <span className="hidden md:block">KES {course.receipt.toLocaleString()}</span>
+                                                                            </td>
+                                                                            <td className="px-4 py-2 text-center">
+                                                                                <span className="block md:hidden">KES {formatCurrencyShort(course.balance)}</span>
+                                                                                <span className="hidden md:block">KES {course.balance.toLocaleString()}</span>
+                                                                            </td>
                                                                         </tr>
                                                                     ))}
                                                                 </tbody>

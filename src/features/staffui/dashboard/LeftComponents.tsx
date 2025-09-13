@@ -9,6 +9,8 @@ import { useModal } from "../../../hooks/useModal";
 import MarkRegister from "./AttendanceModal";
 import { useUser } from "../../../context/AuthContext";
 import axios from "axios";
+import UserStack from "../../../components/UserProfile/UserList";
+import { User } from "../../../components/UserProfile/StaffProfileDashboard";
 
 export default function LeftComponents() {
 	const navigate = useNavigate();
@@ -18,6 +20,23 @@ export default function LeftComponents() {
 
     const [lessons, setLessons] = useState<[]>([]);
     const [register_values, setRegValues] = useState<[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get("/api/fetch-staffmates/", {
+                    headers: { Authorization: `Bearer ${token}` },
+                    params: { staff_regno: user?.regno }  // replace with actual regno
+                });
+                setUsers(response.data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
 
     useEffect( () => {
         const fetchAttendanceTrend = async () => {
@@ -59,6 +78,9 @@ export default function LeftComponents() {
                 </div>
                 <div className="col-span-12 md:col-span-6 rounded-lg">
                     <LineShadedChart title="Attendance Trend" categories={lessons} seriesData={register_values} />
+                </div>
+                <div className="col-span-12">
+                    <UserStack users={users} />
                 </div>
             </div>
             

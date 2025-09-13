@@ -26,7 +26,7 @@ export interface TimeTable {
     course: string;
     branch: string;
     module: string;
-	Class: string;
+	Class: number;
     class_name: string;
     day_name: string;
     classroom_name: string;

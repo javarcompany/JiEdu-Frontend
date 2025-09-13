@@ -169,6 +169,7 @@ export default function CourseLeftComponents() {
                         {units.map((unit, index) => (
                             <div key={unit.id} className="flex-shrink-0 w-[300px]">
                                 <UnitCard
+                                    id = {unit.id}
                                     image={UNIT_IMAGES[index % UNIT_IMAGES.length]}
                                     title={unit.name + " - " + unit.uncode}
                                     details={{

@@ -33,7 +33,7 @@ interface Staff {
     department_name: string;
     designation: string;
     weekly_hours: string;
-    passport: string;
+    passporturl: string;
 	state: string;
 }
 
@@ -141,7 +141,7 @@ export default function StaffTable({ searchTerm }: { searchTerm: string }) {
 										<TableCell className="px-5 py-4 sm:px-6 text-start">
 											<div className="flex items-center gap-3">
 												<div className="w-10 h-10 overflow-hidden rounded-full">
-													<img src={staff.passport} alt={staff.fname} />
+													<img src={staff.passporturl} alt={staff.fname} />
 												</div>
 												<div>
 													<span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">

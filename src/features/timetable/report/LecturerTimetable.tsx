@@ -22,8 +22,10 @@ type SelectOption = {
     term?: string;
 };
 
-export default function LecturerTimetable() {
+export default function LecturerTimetable({branch}: {branch: string}) {
     const token = localStorage.getItem("access");
+
+    const [resetKey, setResetKey] = useState(0);
 
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [days, setDays] = useState<Day[]>([]);
@@ -45,7 +47,7 @@ export default function LecturerTimetable() {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
-                        params: {staff_id: selectedLecturer, term_id: selectedTerm}
+                        params: {staff_id: selectedLecturer, branch_id: branch, term_id: selectedTerm}
                     }
                 );
                 setDays(response.data.days);
@@ -97,9 +99,55 @@ export default function LecturerTimetable() {
         fetchLecturers();
 
     }, [selectedLecturer, selectedTerm]);
-    
+
+    useEffect(() => {
+        setResetKey(prev => prev + 1);
+        setLecturers([]);
+        
+        const fetchTimetables = async () => {
+            try {
+                const response = await axios.get(`/api/timetable/staff/`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                        params: {staff_id: selectedLecturer, branch_id: branch, term_id: selectedTerm}
+                    }
+                );
+                setDays(response.data.days);
+                setTables(response.data.timetable);
+                setLessons(response.data.lessons);
+            } catch (error) {
+                console.error("Failed to fetch Timetable", error);
+                setError('Failed to fetch timetable');
+            } finally{
+                setLoading(false);
+            }
+        };
+        
+        const fetchLecturers = async () => {
+            try {
+                const response = await axios.get(`/api/staffs/?branch_id=${branch}`, 
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                const formatted = response.data.results.map((lecturer: any) => ({
+                    value: lecturer.id.toString(),
+                    label: lecturer.fullname,
+                }));
+                setLecturers(formatted);
+            } catch (error) {
+            console.error("Failed to load lecturers", error);
+            }
+        };
+
+        fetchLecturers();
+        fetchTimetables();
+    }, [branch])
     
     const handleChangeTerm = async (selected_id: string) => {
+        setResetKey(prev => prev + 1);
         setSelectedTerm(selected_id);
     };
 
@@ -149,6 +197,7 @@ export default function LecturerTimetable() {
                     />
                     <DictSearchableSelect
                         items={lecturers}
+                        resetTrigger={resetKey}
                         placeholder="Select Lecturer.."
                         onSelect={(val) => handleSelectLecturer(val)}
                     />

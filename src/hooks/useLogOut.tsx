@@ -39,9 +39,10 @@ const useLogout = () => {
             });
 
             // ⏳ Wait for toast to finish before redirect
-            setTimeout(() => {
-                navigate("/signin", { replace: true });
-            }, 100);
+            // setTimeout(() => {
+            //     navigate("/signin", { replace: true });
+            // }, 100);
+            navigate("/signin", { replace: true });
         }
     };
 

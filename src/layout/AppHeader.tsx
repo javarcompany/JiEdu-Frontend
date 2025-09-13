@@ -5,8 +5,10 @@ import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
 import UserDropdown from "../components/header/UserDropdown";
+import { useUser } from "../context/AuthContext";
 
 const AppHeader: React.FC = () => {
+	const { user } = useUser();
 	const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
 	const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -83,7 +85,7 @@ const AppHeader: React.FC = () => {
 						{/* Cross Icon */}
 					</button>
 
-					<Link to="/" className="lg:hidden">
+	  				<Link to={`${user?.user_type === 'student' ? "/home" : user?.user_type === "staff" ? "/dashboard" : "/"}`} className="lg:hidden">
 						<img
 							className="dark:hidden"
 							src="/images/logo/logo.svg"

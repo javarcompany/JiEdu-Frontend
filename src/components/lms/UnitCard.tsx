@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { BookOpen, Edit, Star, StarHalf, ToggleLeft, ToggleRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function UnitCard({
+	unitId,
 	image,
 	title,
 	rating = 0,
@@ -15,6 +17,7 @@ export default function UnitCard({
 	unitCode,
 	abbreviation,
 }: {
+	unitId: number;
 	image: string;
 	title: string;
 	rating: number;
@@ -28,6 +31,9 @@ export default function UnitCard({
 	unitCode: string;
 	abbreviation: string;
 }) {
+	
+	const navigate = useNavigate();
+
 	const formatDate = (date: string | Date) => {
 		const d = new Date(date);
 		return d.toLocaleDateString(undefined, {
@@ -112,7 +118,10 @@ export default function UnitCard({
 				</button>
 
 				{/* Read Button */}
-				<button className="flex flex-col items-center justify-center gap-1 p-3 rounded-lg bg-purple-500 text-white hover:bg-purple-600">
+				<button 
+					className="flex flex-col items-center justify-center gap-1 p-3 rounded-lg bg-purple-500 text-white hover:bg-purple-600"
+					onClick={() => navigate(`/unit/${unitId}`)}
+				>
 					<BookOpen className="w-5 h-5" />
 					<span className="text-sm font-medium">Read</span>
 				</button>

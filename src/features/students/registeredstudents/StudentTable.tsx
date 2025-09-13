@@ -19,7 +19,7 @@ import Checkbox from "../../../components/form/input/Checkbox";
 export interface Student {
 	id: number;
 	regno: string;
-	passport: string;
+	passporturl: string;
 	fname: string;
 	mname: string;
 	sname: string;
@@ -196,7 +196,7 @@ export default function StudentTable(
 													<img
 														width={40}
 														height={40}
-														src={student.passport  || "/default-avatar.png"}
+														src={student.passporturl  || "/default-avatar.png"}
 														alt={student.regno}
 													/>
 												</div>

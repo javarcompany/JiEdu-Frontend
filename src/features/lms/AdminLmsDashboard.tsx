@@ -9,17 +9,26 @@ import debounce from "lodash.debounce";
 import axios from "axios";
 import { Units } from "../units/UnitsTable";
 import UnitListRow from "../../components/lms/UnitList";
+import Swal from "sweetalert2";
 
-const LMSButtons = [
-    { title: "Images", icon: ImageIcon, iconColor: "text-pink-500", glowColor: "shadow-pink-300", borderColor: "border-pink-300", fileCount: 249, usagePercentage: 15, fileSize: "20.54GB" },
-    { title: "Audio", icon: MusicIcon, iconColor: "text-green-500", glowColor: "shadow-green-300", borderColor: "border-green-300", fileCount: 120, usagePercentage: 35, fileSize: "10.2GB" },
-    { title: "Video", icon: VideoIcon, iconColor: "text-purple-500", glowColor: "shadow-purple-300", borderColor: "border-purple-300", fileCount: 89, usagePercentage: 55, fileSize: "50.7GB" },
-    { title: "Documents", icon: FileTextIcon, iconColor: "text-red-500", glowColor: "shadow-red-500", borderColor: "border-red-500", fileCount: 120, usagePercentage: 10, fileSize: "27.7GB" },
-];
+interface Content {
+    name: string;
+    quantity: string;
+    percentage: string;
+    fileSize: string;
+}
+
+interface ContentType {
+    images: Content;
+    video: Content;
+    documents: Content;
+    audio: Content;
+}
 
 export default function AdminLMSashboard() {
     const token = localStorage.getItem("access");
     const [units, setUnits] = useState<Units[]>([]);
+    const [statistics, setStatistics] = useState<ContentType>();
     const [search, setSearch] = useState("");
     const [course, setCourse] = useState("");
     const [module, setModule] = useState("");
@@ -30,6 +39,14 @@ export default function AdminLMSashboard() {
 	const [totalPages, setTotalPages] = useState<number>(1);
     
     const [layout, setLayout] = useState<"grid" | "list">("grid");
+
+    
+    const LMSButtons = [
+        { title: "Images", icon: ImageIcon, iconColor: "text-pink-500", glowColor: "shadow-pink-300", borderColor: "border-pink-300", fileCount: 300, usagePercentage: 15, fileSize: "20.54GB" },
+        { title: "Audio", icon: MusicIcon, iconColor: "text-green-500", glowColor: "shadow-green-300", borderColor: "border-green-300", fileCount: 120, usagePercentage: 35, fileSize: "10.2GB" },
+        { title: "Video", icon: VideoIcon, iconColor: "text-purple-500", glowColor: "shadow-purple-300", borderColor: "border-purple-300", fileCount: 89, usagePercentage: 55, fileSize: "50.7GB" },
+        { title: "Documents", icon: FileTextIcon, iconColor: "text-red-500", glowColor: "shadow-red-500", borderColor: "border-red-500", fileCount: 120, usagePercentage: 10, fileSize: "27.7GB" },
+    ];
 
     const buildQuery = () => {
         return [search, course, module, rating]
@@ -61,6 +78,23 @@ export default function AdminLMSashboard() {
 		}
 	}, 100);
 
+    const fetchContentType = debounce(async () => {
+		try {
+			const response = await axios.get(`/api/contents-statistics/`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			setStatistics(response.data.results);
+			setLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch media statistics", error);
+			setLoading(false);
+		}
+	}, 100);
+
 	useEffect(() => {
 		if (!token) {return;}
         const query = buildQuery();
@@ -69,11 +103,26 @@ export default function AdminLMSashboard() {
 
     const handleTogglePublish = async (unitId: number) => {
         try {
-            await axios.patch(
-            `/api/units/${unitId}/toggle-publish/`,
-            {},
-            { headers: { Authorization: `Bearer ${token}` } }
+            const response = await axios.put( `/api/unit/toggle-publish/`, {}, { 
+                    headers: { Authorization: `Bearer ${token}` }, 
+                    params: {unitid: unitId}
+                }
             );
+            if (response?.data.error){
+                Swal.fire({
+                    icon: "error",
+                    title: "Error", 
+                    text: response.data.error,
+                });
+            }
+            
+            if (response.data.success){
+                Swal.fire({
+                    icon: "success",
+                    title: "Success", 
+                    text: response.data.success,
+                });
+            }
             // Refresh units after toggling
             fetchUnits(buildQuery(), page);
         } catch (err) {
@@ -126,6 +175,7 @@ export default function AdminLMSashboard() {
                         units.map((unit, i) => (
                             <UnitCard
                                 key={i}
+                                unitId={unit.id}
                                 image="https://via.placeholder.com/150"
                                 title={unit.name}
                                 rating={unit.rating || 0}
@@ -154,6 +204,7 @@ export default function AdminLMSashboard() {
                         units.map((unit, i) => (
                             <UnitListRow
                                 key={i}
+                                unitId={unit.id}
                                 image="https://via.placeholder.com/150"
                                 title={unit.name}
                                 rating={unit.rating || 0}

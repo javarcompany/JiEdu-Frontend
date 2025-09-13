@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { BookOpen, Edit, Star, ToggleLeft, ToggleRight } from "lucide-react";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface UnitListRowProps {
+	unitId: number;
   image: string;
   title: string;
   rating: number;
@@ -19,6 +21,7 @@ interface UnitListRowProps {
 }
 
 export default function UnitListRow({
+	unitId,
   image,
   title,
   rating,
@@ -31,8 +34,9 @@ export default function UnitListRow({
   isPublished,
   onTogglePublish,
   onEdit,
-  onRead,
 }: UnitListRowProps) {
+	const navigate = useNavigate();
+  
   const formatDate = (date: string | Date) => {
     const d = new Date(date);
     return d.toLocaleDateString(undefined, {
@@ -103,7 +107,7 @@ export default function UnitListRow({
 
         {/* Read */}
         <button
-          onClick={onRead}
+          onClick={() => navigate(`/unit/${unitId}`)}
           className="flex flex-col items-center p-2 rounded bg-purple-500 text-white hover:bg-purple-600 text-xs"
         >
           <BookOpen className="w-4 h-4" />

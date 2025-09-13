@@ -8,8 +8,8 @@ import {
     HorizontaLDots
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
-import SidebarWidget from "./SidebarWidget";
 import { BookOpenCheckIcon, CalendarFoldIcon, HomeIcon,} from "lucide-react";
+import { useUser } from "../context/AuthContext";
 
 
 type NavItem = {
@@ -46,6 +46,7 @@ const othersItems: NavItem[] = [
 ];
 
 const StudentSidebar: React.FC = () => {
+    const { user } = useUser();
     const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
     const location = useLocation();
 
@@ -258,7 +259,7 @@ const StudentSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link to="/">
+        <Link to={`${user?.user_type === 'student' ? "/home" : user?.user_type === "staff" ? "/dashboard" : "/"}`}>
           {isExpanded || isHovered || isMobileOpen ? (
             <>
               <img
@@ -323,7 +324,6 @@ const StudentSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
     </aside>
   );

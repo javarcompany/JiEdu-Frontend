@@ -28,7 +28,7 @@ interface Staff {
     weekly_hours: string;
 	used_hours: string;
 	load_state: string;
-    passport: string;
+    passporturl: string;
 	state: string;
 }
 
@@ -169,7 +169,7 @@ export default function StaffPreview() {
 										<div className="flex items-center gap-3">
 											<div className="h-[50px] w-[50px] overflow-hidden rounded-md">
 												<img
-													src={staff.passport}
+													src={staff.passporturl}
 													className="h-[50px] w-[50px]"
 													alt={staff.fname}
 												/>

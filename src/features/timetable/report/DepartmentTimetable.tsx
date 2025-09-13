@@ -23,7 +23,7 @@ type SelectOption = {
 	term?: string;
 };
 
-export default function DepartmentTimetable() {
+export default function DepartmentTimetable({branch}: {branch: string}) {
 	const token = localStorage.getItem("access");
 	const [lessons, setLessons] = useState<Lesson[]>([]);
 	const [classes, setClasses] = useState<Class[]>([]);
@@ -44,7 +44,7 @@ export default function DepartmentTimetable() {
 					headers: {
 					Authorization: `Bearer ${token}`,
 					},
-					params: { department_id: selectedDepartment, term_id: selectedTerm },
+					params: { department_id: selectedDepartment, branch_id: branch, term_id: selectedTerm },
 				});
 				setDays(response.data.days);
 				setTables(response.data.timetable);
@@ -91,7 +91,7 @@ export default function DepartmentTimetable() {
 		fetchDepartments();
 		fetchTerms();
 		fetchTimetables();
-	}, [selectedDepartment, selectedTerm]);
+	}, [selectedDepartment, selectedTerm, branch]);
 
 	const handleChangeTerm = async (selected_id: string) => {
 		setSelectedTerm(selected_id);
@@ -101,12 +101,12 @@ export default function DepartmentTimetable() {
 		setSelectedDepartment(selected_id);
 	};
 
-	const getEntry = (day: string, lesson: string, className: string) => {
+	const getEntry = (day: string, lesson: string, classID: number) => {
 		return timetables.find(
 			(e) =>
 			e.day_name === day &&
 			e.lesson_name === lesson &&
-			e.class_name === className
+			e.Class === classID
 		);
 	};
 
@@ -172,13 +172,16 @@ export default function DepartmentTimetable() {
 									)}
 
 									{/* Class Name */}
-									<TableCell className="font-medium text-sm text-gray-800 dark:text-gray-400 px-4 py-2">
-										{cls.name}
+									<TableCell className="flex flex-col text-center font-medium text-sm text-gray-800 dark:text-gray-400 px-4 py-2">
+										<span>{cls.name}</span>
+										{ branch === "" && (
+											<span className="bg-blue-800 text-white rounded-lg p-1">{cls.branch_name}</span>
+										)}
 									</TableCell>
 
 									{/* Lesson cells */}
 									{lessons.map((lesson) => {
-										const entry = getEntry(day.name, lesson.name, cls.name);
+										const entry = getEntry(day.name, lesson.name, cls.id);
 										return (
 											<TableCell className="px-4 py-2 text-xs text-center" key={lesson.id}>
 												{entry ? (

@@ -43,7 +43,7 @@ export default function StudentMainBody() {
             <div className="px-6 py-4 gap-1 md:gap-1 sm:gap-1 shadow-lg rounded-lg dark:border dark:border-gray-800 border border-brand-300 border-blur">
                 <div className="flex items-center gap-4">
                     <div className="w-20 h-20 overflow-hidden border border-gray-200 rounded-full dark:border-gray-800">
-                        <img src={student?.passport} alt="user" />
+                        <img src={student?.passporturl} alt="user" />
                     </div>
 
                     <div className="order-3 xl:order-2">

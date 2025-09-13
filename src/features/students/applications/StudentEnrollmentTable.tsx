@@ -27,7 +27,7 @@ export interface Applicant {
 	intake: string;
 	intake_name: string;
 	category: string; 
-	passport: string;
+	passporturl: string;
 	state: string;
 }
 
@@ -181,7 +181,7 @@ export default function StudentEnrollmentTable({ searchTerm }: { searchTerm: str
 											<div className="flex items-center gap-3">
 												<div className="h-[50px] w-[50px] overflow-hidden rounded-lg">
 													<img
-														src={applicant.passport}
+														src={applicant.passporturl}
 														className="h-[50px] w-[50px]"
 														alt={applicant.nat_id}
 													/>
